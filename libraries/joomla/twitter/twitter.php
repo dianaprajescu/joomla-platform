@@ -31,6 +31,12 @@ class JTwitter
 	protected $client;
 
 	/**
+	 * @var    JTwitterStatuses  Twitter API object for statuses.
+	 * @since  12.1
+	 */
+	protected $statuses;
+
+	/**
 	 * Constructor.
 	 *
 	 * @param   JRegistry     $options  Twitter options object.
@@ -58,6 +64,14 @@ class JTwitter
 	 */
 	public function __get($name)
 	{
+		if ($name == 'statuses')
+		{
+			if ($this->statuses == null)
+			{
+				$this->statuses = new JTwitterStatuses($this->options, $this->client);
+			}
+			return $this->statuses;
+		}
 	}
 
 	/**

@@ -72,6 +72,18 @@ class JTwitterTest extends TestCase
 	}
 
 	/**
+	 * Tests the magic __get method - statuses
+	 * @since  11.3
+	 */
+	public function test__GetStatuses()
+	{
+		$this->assertThat(
+			$this->object->statuses,
+			$this->isInstanceOf('JTwitterStatuses')
+		);
+	}
+
+	/**
 	 * Tests the setOption method
 	 *
 	 * @return  void
