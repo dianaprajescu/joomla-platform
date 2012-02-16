@@ -1,0 +1,26 @@
+<?php
+/**
+ * @package     Joomla.UnitTest
+ * @subpackage  Twitter
+ *
+ * @copyright   Copyright (C) 2005 - 2012 Open Source Matters, Inc. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE
+ */
+
+require_once JPATH_PLATFORM . '/joomla/twitter/object.php';
+
+/**
+ * Test class for JTwitterObject.
+ */
+class JTwitterObjectTest extends PHPUnit_Framework_TestCase
+{
+	/**
+	 * @covers JTwitterObject::fetchUrl
+	 * @todo   Implement testFetchUrl().
+	 */
+	public function testFetchUrl()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete('This test has not been implemented yet.');
+	}
+}
