@@ -31,6 +31,12 @@ class JTwitter
 	protected $client;
 
 	/**
+	 * @var    JTwitterFriends  Twitter API object for friends.
+	 * @since  12.1
+	 */
+	protected $friends;
+
+	/**
 	 * @var    JTwitterStatuses  Twitter API object for statuses.
 	 * @since  12.1
 	 */
@@ -64,6 +70,15 @@ class JTwitter
 	 */
 	public function __get($name)
 	{
+		if ($name == 'friends')
+		{
+			if ($this->friends == null)
+			{
+				$this->friends = new JTwitterFriends($this->options, $this->client);
+			}
+			return $this->friends;
+		}
+
 		if ($name == 'statuses')
 		{
 			if ($this->statuses == null)

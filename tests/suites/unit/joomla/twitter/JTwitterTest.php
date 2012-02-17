@@ -57,6 +57,21 @@ class JTwitterTest extends TestCase
 	}
 
 	/**
+	 * Tests the magic __get method - friends
+	 *
+	 * @return  void
+	 *
+	 * @since   12.1
+	 */
+	public function test__GetFriends()
+	{
+		$this->assertThat(
+			$this->object->friends,
+			$this->isInstanceOf('JTwitterFriends')
+		);
+	}
+
+	/**
 	 * Tests the magic __get method - other (non existant)
 	 *
 	 * @return  void
@@ -73,7 +88,10 @@ class JTwitterTest extends TestCase
 
 	/**
 	 * Tests the magic __get method - statuses
-	 * @since  11.3
+	 *
+	 * @return  void
+	 *
+	 * @since   12.1
 	 */
 	public function test__GetStatuses()
 	{
