@@ -85,17 +85,7 @@ class JTwitterStatuses extends JTwitterObject
 		$path = $base . $username . $since . $count_param . $max . $page_num . $trim . $inc_entities;
 
 		// Send the request.
-		$response = $this->client->get($this->fetchUrl($path));
-
-		// Validate the response code.
-		if ($response->code != 200)
-		{
-			// Decode the error response and throw an exception.
-			$error = json_decode($response->body);
-			throw new DomainException($error->error, $response->code);
-		}
-
-		return json_decode($response->body);
+		return $this->sendRequest($path, 200);
 	}
 
 	/**
@@ -136,17 +126,7 @@ class JTwitterStatuses extends JTwitterObject
 		$path = $base . $id_string . $trim . $inc_entities;
 
 		// Send the request.
-		$response = $this->client->get($this->fetchUrl($path));
-
-		// Validate the response code.
-		if ($response->code != 200)
-		{
-			// Decode the error response and throw an exception.
-			$error = json_decode($response->body);
-			throw new DomainException($error->error, $response->code);
-		}
-
-		return json_decode($response->body);
+		return $this->sendRequest($path, 200);
 	}
 
 	/**
@@ -251,16 +231,6 @@ class JTwitterStatuses extends JTwitterObject
 		$path = $base . $username . $since . $count_param . $max . $page_num . $trim . $rts . $inc_entities . $ex_replies;
 
 		// Send the request.
-		$response = $this->client->get($this->fetchUrl($path));
-
-		// Validate the response code.
-		if ($response->code != 200)
-		{
-			// Decode the error response and throw an exception.
-			$error = json_decode($response->body);
-			throw new DomainException($error->error, $response->code);
-		}
-
-		return json_decode($response->body);
+		return $this->sendRequest($path, 200);
 	}
 }

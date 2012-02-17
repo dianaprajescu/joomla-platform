@@ -63,17 +63,7 @@ class JTwitterFriends extends JTwitterObject
 		$path = $base . $username . $stringify_ids;
 
 		// Send the request.
-		$response = $this->client->get($this->fetchUrl($path));
-
-		// Validate the response code.
-		if ($response->code != 200)
-		{
-			// Decode the error response and throw an exception.
-			$error = json_decode($response->body);
-			throw new DomainException($error->error, $response->code);
-		}
-
-		return json_decode($response->body);
+		return $this->sendRequest($path, 200);
 	}
 
 	/**
@@ -129,17 +119,7 @@ class JTwitterFriends extends JTwitterObject
 		$path = $base . $username_a . $username_b;
 
 		// Send the request.
-		$response = $this->client->get($this->fetchUrl($path));
-
-		// Validate the response code.
-		if ($response->code != 200)
-		{
-			// Decode the error response and throw an exception.
-			$error = json_decode($response->body);
-			throw new DomainException($error->error, $response->code);
-		}
-
-		return json_decode($response->body);
+		return $this->sendRequest($path, 200);
 	}
 
 	/**
@@ -195,17 +175,7 @@ class JTwitterFriends extends JTwitterObject
 		$path = $base . $username_a . $username_b;
 
 		// Send the request.
-		$response = $this->client->get($this->fetchUrl($path));
-
-		// Validate the response code.
-		if ($response->code != 200)
-		{
-			// Decode the error response and throw an exception.
-			$error = json_decode($response->body);
-			throw new DomainException($error->error, $response->code);
-		}
-
-		return json_decode($response->body);
+		return $this->sendRequest($path, 200);
 	}
 
 	/**
@@ -253,16 +223,6 @@ class JTwitterFriends extends JTwitterObject
 		$path = $base . $username . $stringify_ids;
 
 		// Send the request.
-		$response = $this->client->get($this->fetchUrl($path));
-
-		// Validate the response code.
-		if ($response->code != 200)
-		{
-			// Decode the error response and throw an exception.
-			$error = json_decode($response->body);
-			throw new DomainException($error->error, $response->code);
-		}
-
-		return json_decode($response->body);
+		return $this->sendRequest($path, 200);
 	}
 }

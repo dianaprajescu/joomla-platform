@@ -108,13 +108,30 @@ abstract class JTwitterObject
 		$path = '/1/account/rate_limit_status.json';
 
 		// Send the request.
+		return $this->sendRequest($path, 200);
+	}
+
+	/**
+	 * Method to send the request.
+	 *
+	 * @param   string   $path  The path of the request to make
+	 * @param   integer  $code  The expected response code
+	 *
+	 * @return  array  The decoded JSON response
+	 *
+	 * @since   12.1
+	 * @throws  DomainException
+	 */
+	public function sendRequest($path, $code)
+	{
+		// Send the request.
 		$response = $this->client->get($this->fetchUrl($path));
 
 		// Validate the response code.
-		if ($response->code != 200)
+		if ($response->code != $code)
 		{
-			// Decode the error response and throw an exception.
 			$error = json_decode($response->body);
+
 			throw new DomainException($error->error, $response->code);
 		}
 

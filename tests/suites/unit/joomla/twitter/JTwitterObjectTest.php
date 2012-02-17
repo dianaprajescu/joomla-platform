@@ -139,4 +139,17 @@ class JTwitterObjectTest extends TestCase
 
 		$this->object->getRateLimit();
 	}
+
+	/**
+	 * @covers JTwitterObject::sendRequest
+	 *
+	 * @return  void
+	 *
+	 * @since   12.1
+	 */
+	public function testSendRequest()
+	{
+		// Method tested via requesting classes
+		$this->markTestSkipped('This method is tested via requesting classes.');
+	}
 }
