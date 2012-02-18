@@ -72,6 +72,21 @@ class JTwitterTest extends TestCase
 	}
 
 	/**
+	 * Tests the magic __get method - help
+	 *
+	 * @return  void
+	 *
+	 * @since   12.1
+	 */
+	public function test__GetHelp()
+	{
+		$this->assertThat(
+			$this->object->help,
+			$this->isInstanceOf('JTwitterHelp')
+		);
+	}
+
+	/**
 	 * Tests the magic __get method - other (non existant)
 	 *
 	 * @return  void

@@ -37,6 +37,12 @@ class JTwitter
 	protected $friends;
 
 	/**
+	 * @var    JTwitterHelp  Twitter API object for friends.
+	 * @since  12.1
+	 */
+	protected $help;
+
+	/**
 	 * @var    JTwitterStatuses  Twitter API object for statuses.
 	 * @since  12.1
 	 */
@@ -77,6 +83,15 @@ class JTwitter
 				$this->friends = new JTwitterFriends($this->options, $this->client);
 			}
 			return $this->friends;
+		}
+
+		if ($name == 'help')
+		{
+			if ($this->help == null)
+			{
+				$this->help = new JTwitterHelp($this->options, $this->client);
+			}
+			return $this->help;
 		}
 
 		if ($name == 'statuses')
