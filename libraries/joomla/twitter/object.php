@@ -45,6 +45,28 @@ abstract class JTwitterObject
 	}
 
 	/**
+	 * Method to check the rate limit for the requesting IP address
+	 *
+	 * @return  void
+	 *
+	 * @since   12.1
+	 * @throws  RuntimeException
+	 */
+	public function checkRateLimit()
+	{
+		// Check the rate limit for remaining hits
+		$rate_limit = $this->getRateLimit();
+
+		if ($rate_limit->remaining_hits == 0)
+		{
+			// The IP has exceeded the Twitter API rate limit
+			throw new RuntimeException('This server has exceed the Twitter API rate limit for the given period.  The limit will reset at '
+						. $rate_limit->reset_time
+			);
+		}
+	}
+
+	/**
 	 * Method to build and return a full request URL for the request.  This method will
 	 * add appropriate pagination details if necessary and also prepend the API url
 	 * to have a complete URL for the request.
@@ -71,5 +93,31 @@ abstract class JTwitterObject
 		}
 
 		return (string) $uri;
+	}
+
+	/**
+	 * Method to retrieve the rate limit for the requesting IP address
+	 *
+	 * @return  array  The JSON response decoded
+	 *
+	 * @since   12.1
+	 */
+	public function getRateLimit()
+	{
+		// Build the request path.
+		$path = '/1/account/rate_limit_status.json';
+
+		// Send the request.
+		$response = $this->client->get($this->fetchUrl($path));
+
+		// Validate the response code.
+		if ($response->code != 200)
+		{
+			// Decode the error response and throw an exception.
+			$error = json_decode($response->body);
+			throw new DomainException($error->error, $response->code);
+		}
+
+		return json_decode($response->body);
 	}
 }
