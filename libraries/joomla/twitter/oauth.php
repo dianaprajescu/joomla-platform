@@ -34,7 +34,7 @@ class JTwitterOAuth
 	protected $user_token = array();
 
 	/**
-	 * @var array  Contains access token key and secret.
+	 * @var array  Contains access token key, secret and verifier.
 	 * @since 12.1
 	 */
 	protected $token = array();
@@ -99,6 +99,49 @@ class JTwitterOAuth
 		$this->callback_url = $callback_url;
 		$this->client = isset($client) ? $client : new JTwitterHttp($this->options);
 	}
+	
+	public function getAccessToken()
+	{
+		// Browser session
+		
+		$request = JFactory::getApplication()->input;
+		$verifier = $request->get('oauth_verifier');
+
+		if (empty($verifier))
+		{
+			// There is no request token.
+			if (!array_key_exists('key', $this->token))
+			{
+				$this->getRequestToken();
+				echo 'aaaaaa';
+				print_r($this->token);
+			}
+			else {
+				print_r($this->token);
+			}
+
+			// Authenticate the user.
+			if(!array_key_exists('verifier', $this->token))
+				$this->authenticate();
+		}
+		else
+		{
+			$session = JFactory::getSession(array('input' => JFactory::getApplication()->input));
+			if($session->isActive() == false){
+				$session->start();
+			}
+			
+			print_r($verifier);
+			echo '<br>';
+			$x = $session->get('oauth_token', null, 'key');
+			print_r($x);
+			//print_r($this->token);
+			echo '<br><br>';
+			$this->token['oauth_verifier'] = $request->get('oauth_verifier');
+			$this->token['key'] = $request->get('oauth_token');
+			print_r($this->token);
+		}
+	}
 
 	/**
 	 * Method used to get a request token.
@@ -109,17 +152,6 @@ class JTwitterOAuth
 	 */
 	public function getRequestToken()
 	{
-		// Set the parameters.
-		$this->parameters = array(
-			'oauth_callback' => $this->callback_url,
-			'oauth_consumer_key' => $this->consumer['key'],
-			'oauth_nonce' => $this->generateNonce(),
-			'oauth_signature_method' => 'HMAC-SHA1',
-			'oauth_timestamp' => time(),
-			'oauth_token' => $this->user_token['key'],
-			'oauth_version' => '1.0'
-		);
-
 		// Make an OAuth request for the Request Token.
 		$response = $this->oauthRequest($this->requestTokenURL, 'POST');
 
@@ -135,7 +167,26 @@ class JTwitterOAuth
 			// Save the request token.
 			$this->token = array('key' => $params['oauth_token'], 'secret' => $params['oauth_token_secret']);
 			$this->parameters['oauth_token'] = $this->token['key'];
+			
+			// Browser session
+			$session = JFactory::getSession(array('input' => JFactory::getApplication()->input));
+			if($session->isActive() == false){
+				$session->start();
+			}
+			
+			$session->set('oauth_token', $this->token['key'], 'key');
+			$session->set('oauth_token', $this->token['secret'], 'secret');
 		}
+		
+		//print_r($this->token);
+	}
+	
+	public function authenticate()
+	{
+		JResponse::getHeaders();
+		$url = $this->authenticateURL . '?oauth_token=' . $this->token['key'];
+		JResponse::setHeader('Location', $url, true);
+		JResponse::sendHeaders();
 	}
 
 	/**
@@ -150,6 +201,17 @@ class JTwitterOAuth
 	 */
 	public function oauthRequest($url, $method)
 	{
+		// Set the parameters.
+		$this->parameters = array(
+			'oauth_callback' => $this->callback_url,
+			'oauth_consumer_key' => $this->consumer['key'],
+			'oauth_signature_method' => 'HMAC-SHA1',
+			'oauth_token' => $this->user_token['key'],
+			'oauth_version' => '1.0'
+		);
+		$this->parameters['oauth_nonce'] = $this->generateNonce();
+		$this->parameters['oauth_timestamp'] = time();
+
 		// Sign the request.
 		$this->signRequest($url, $method);
 
@@ -172,19 +234,23 @@ class JTwitterOAuth
 	 */
 	public function createHeader()
 	{
+		// Sort the parameters alphabetically
+		uksort($this->parameters, 'strcmp');
+
 		$header = 'OAuth ';
 
 		foreach ($this->parameters as $key => $value)
 		{
 			if (!strcmp($header, 'OAuth '))
 			{
-				$header .= $key . '="' . $value . '"';
+				$header .= $key . '="' . $this->safeEncode($value) . '"';
 			}
 			else
 			{
 				$header .= ', ' . $key . '="' . $value . '"';
 			}
 		}
+
 		return $header;
 	}
 
@@ -248,6 +314,9 @@ class JTwitterOAuth
 	 */
 	private function baseString($url, $method)
 	{
+		// Sort the parameters alphabetically
+		uksort($this->parameters, 'strcmp');
+
 		// Encode parameters.
 		foreach ($this->parameters as $key => $value)
 		{
