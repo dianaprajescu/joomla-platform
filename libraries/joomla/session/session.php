@@ -930,6 +930,11 @@ class JSession implements IteratorAggregate
 			$this->_force_ssl = (bool) $options['force_ssl'];
 		}
 
+		if (isset($options['input']))
+		{
+			$this->_input = $options['input'];
+		}
+
 		// Sync the session maxlifetime
 		ini_set('session.gc_maxlifetime', $this->_expire);
 
