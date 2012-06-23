@@ -34,6 +34,12 @@ class JTwitterOAuth
 	protected $user_token = array();
 
 	/**
+	 * @var array  Contains user's id and screen name.
+	 * @since 12.1
+	 */
+	protected $user = array();
+
+	/**
 	 * @var array  Contains access token key, secret and verifier.
 	 * @since 12.1
 	 */
@@ -50,11 +56,6 @@ class JTwitterOAuth
 	 * @since  12.1
 	 */
 	protected $client;
-
-	/**
-	 * @var array  Array containg request parameters.
-	 */
-	protected $parameters = array();
 
 	/**
 	 * @var string  The access token URL
@@ -81,17 +82,17 @@ class JTwitterOAuth
 	protected $requestTokenURL = 'https://api.twitter.com/oauth/request_token';
 
 	/**
-	* Constructor.
-	*
-	* @param   string        $consumer_key     Twitter consumer key.
-	* @param   string        $consumer_secret  Twitter consumer secret.
-	* @param   string        $user_key         Twitter user token key.
-	* @param   string        $user_secret      Twitter user token secret used to sign requests.
-	* @param   string        $callback_url     Twitter calback URL.
-	* @param   JTwitterHttp  $client           The HTTP client object.
-	*
-	* @since 12.1
-	*/
+	 * Constructor.
+	 *
+	 * @param   string        $consumer_key     Twitter consumer key.
+	 * @param   string        $consumer_secret  Twitter consumer secret.
+	 * @param   string        $user_key         Twitter user token key.
+	 * @param   string        $user_secret      Twitter user token secret used to sign requests.
+	 * @param   string        $callback_url     Twitter calback URL.
+	 * @param   JTwitterHttp  $client           The HTTP client object.
+	 *
+	 * @since 12.1
+	 */
 	public function __construct($consumer_key, $consumer_secret, $user_key, $user_secret, $callback_url, JTwitterHttp $client = null)
 	{
 		$this->consumer = array('key' => $consumer_key, 'secret' => $consumer_secret);
@@ -99,47 +100,47 @@ class JTwitterOAuth
 		$this->callback_url = $callback_url;
 		$this->client = isset($client) ? $client : new JTwitterHttp($this->options);
 	}
-	
-	public function getAccessToken()
+
+	/**
+	 * Method to for the oauth flow.
+	 * 
+	 * @return void
+	 * 
+	 * @since  12.1
+	 * 
+	 * @throws DomainException
+	 */
+	public function oauthFlow()
 	{
-		// Browser session
-		
 		$request = JFactory::getApplication()->input;
 		$verifier = $request->get('oauth_verifier');
 
 		if (empty($verifier))
 		{
-			// There is no request token.
-			if (!array_key_exists('key', $this->token))
-			{
-				$this->getRequestToken();
-				echo 'aaaaaa';
-				print_r($this->token);
-			}
-			else {
-				print_r($this->token);
-			}
+			// Generate a request token.
+			$this->generateRequestToken();
 
 			// Authenticate the user.
-			if(!array_key_exists('verifier', $this->token))
-				$this->authenticate();
+			$this->authenticate();
 		}
+		// Callback from Twitter.
 		else
 		{
-			$session = JFactory::getSession(array('input' => JFactory::getApplication()->input));
-			if($session->isActive() == false){
-				$session->start();
+			$session = JFactory::getSession();
+
+			// Get token form session.
+			$this->token = array('key' => $session->get('key', null, 'oauth_token'), 'secret' => $session->get('secret', null, 'oauth_token'));
+
+			// Verify the returned request token.
+			if ($this->token['key'] != $request->get('oauth_token'))
+			{
+				throw new DomainException('Bad session!');
 			}
-			
-			print_r($verifier);
-			echo '<br>';
-			$x = $session->get('oauth_token', null, 'key');
-			print_r($x);
-			//print_r($this->token);
-			echo '<br><br>';
-			$this->token['oauth_verifier'] = $request->get('oauth_verifier');
-			$this->token['key'] = $request->get('oauth_token');
-			print_r($this->token);
+
+			// Set token verifier.
+			$this->token['verifier'] = $request->get('oauth_verifier');
+
+			$this->generateAccessToken();
 		}
 	}
 
@@ -150,10 +151,21 @@ class JTwitterOAuth
 	 * 
 	 * @since  12.1
 	 */
-	public function getRequestToken()
+	public function generateRequestToken()
 	{
+		// Set the parameters.
+		$parameters = array(
+			'oauth_callback' => $this->callback_url,
+			'oauth_consumer_key' => $this->consumer['key'],
+			'oauth_signature_method' => 'HMAC-SHA1',
+			'oauth_token' => $this->user_token['key'],
+			'oauth_version' => '1.0',
+			'oauth_nonce' => $this->generateNonce(),
+			'oauth_timestamp' => time()
+		);
+
 		// Make an OAuth request for the Request Token.
-		$response = $this->oauthRequest($this->requestTokenURL, 'POST');
+		$response = $this->oauthRequest($this->requestTokenURL, 'POST', $parameters);
 
 		// Validate the response.
 		if ($response->code != 200)
@@ -166,80 +178,117 @@ class JTwitterOAuth
 		{
 			// Save the request token.
 			$this->token = array('key' => $params['oauth_token'], 'secret' => $params['oauth_token_secret']);
-			$this->parameters['oauth_token'] = $this->token['key'];
-			
-			// Browser session
-			$session = JFactory::getSession(array('input' => JFactory::getApplication()->input));
-			if($session->isActive() == false){
-				$session->start();
-			}
-			
-			$session->set('oauth_token', $this->token['key'], 'key');
-			$session->set('oauth_token', $this->token['secret'], 'secret');
+
+			// Save the request token in session
+			$session = JFactory::getSession();
+			$session->set('key', $this->token['key'], 'oauth_token');
+			$session->set('secret', $this->token['secret'], 'oauth_token');
 		}
-		
-		//print_r($this->token);
+		else
+		{
+			throw new DomainException('Bad request token!');
+		}
 	}
-	
+
+	/**
+	 * Method used to authenticate the user.
+	 * 
+	 * @return void
+	 * @since  12.1
+	 */
 	public function authenticate()
 	{
-		JResponse::getHeaders();
 		$url = $this->authenticateURL . '?oauth_token=' . $this->token['key'];
 		JResponse::setHeader('Location', $url, true);
 		JResponse::sendHeaders();
 	}
 
 	/**
+	 * Method used to authorize the application.
+	 * 
+	 * @return void
+	 * @since  12.1
+	 */
+	public function authorize()
+	{
+		$url = $this->authorizeURL . '?oauth_token=' . $this->token['key'];
+		JResponse::setHeader('Location', $url, true);
+		JResponse::sendHeaders();
+	}
+
+	public function generateAccessToken()
+	{
+		// Set the parameters.
+		$parameters = array(
+			'oauth_callback' => $this->callback_url,
+			'oauth_verifier' => $this->token['verifier'],
+			'oauth_consumer_key' => $this->consumer['key'],
+			'oauth_signature_method' => 'HMAC-SHA1',
+			'oauth_token' => $this->token['key'],
+			'oauth_version' => '1.0',
+			'oauth_nonce' => $this->generateNonce(),
+			'oauth_timestamp' => time()
+		);
+
+		$response = $this->oauthRequest($this->accessTokenURL, 'POST', $parameters);
+
+		// Validate the response.
+		if ($response->code != 200)
+		{
+			throw new DomainException($response->body);
+		}
+
+		parse_str($response->body, $params);
+
+		// Save the access token.
+		$this->token = array('key' => $params['oauth_token'], 'secret' => $params['oauth_token_secret']);
+		$this->user = array('id' => $params['user_id'], 'screen_name' => $params['screen_name']);
+		print_r($this->user);
+	}
+
+	/**
 	 * Method used to make an OAuth request.
 	 * 
-	 * @param   string  $url     The request URL.
-	 * @param   string  $method  The request method.
+	 * @param   string  $url         The request URL.
+	 * @param   string  $method      The request method.
+	 * @param   array   $parameters  Array containg request parameters.
 	 * 
 	 * @return  object  The JHttpResponse object.
 	 * 
 	 * @since 12.1
 	 */
-	public function oauthRequest($url, $method)
+	public function oauthRequest($url, $method, &$parameters)
 	{
-		// Set the parameters.
-		$this->parameters = array(
-			'oauth_callback' => $this->callback_url,
-			'oauth_consumer_key' => $this->consumer['key'],
-			'oauth_signature_method' => 'HMAC-SHA1',
-			'oauth_token' => $this->user_token['key'],
-			'oauth_version' => '1.0'
-		);
-		$this->parameters['oauth_nonce'] = $this->generateNonce();
-		$this->parameters['oauth_timestamp'] = time();
-
 		// Sign the request.
-		$this->signRequest($url, $method);
+		$this->signRequest($url, $method, $parameters);
 
 		// Send the request.
 		switch ($method)
 		{
 			case 'GET':
-				return $this->client->get($this->to_url($url));
+				return $this->client->get($this->to_url($url, $parameters));
 			case 'POST':
-				return $this->client->post($url, null, array('Authorization' => $this->createHeader()));
+				return $this->client->post($url, null, array('Authorization' => $this->createHeader($parameters)));
 		}
 	}
 
 	/**
 	 * Method used to create the header for the POST request.
 	 * 
+	 * @param   array   $parameters  Array containg request parameters.
+	 * 
 	 * @return  string  The header.
 	 * 
 	 * @since 12.1
 	 */
-	public function createHeader()
+	public function createHeader(&$parameters)
 	{
 		// Sort the parameters alphabetically
-		uksort($this->parameters, 'strcmp');
+		uksort($parameters, 'strcmp');
 
 		$header = 'OAuth ';
 
-		foreach ($this->parameters as $key => $value)
+		foreach ($parameters as $key => $value)
 		{
 			if (!strcmp($header, 'OAuth '))
 			{
@@ -257,15 +306,16 @@ class JTwitterOAuth
 	/**
 	 * Method to create the URL formed string with the parameters.
 	 * 
-	 * @param   string  $url  The request URL.
+	 * @param   string  $url         The request URL.
+	 * @param   array   $parameters  Array containg request parameters.
 	 * 
 	 * @return  string  The formed URL.
 	 * 
 	 * @since  12.1
 	 */
-	public function to_url($url)
+	public function to_url($url, &$parameters)
 	{
-		foreach ($this->parameters as $key => $value)
+		foreach ($parameters as $key => $value)
 		{
 			if (strpos($url, '?') === false)
 			{
@@ -283,19 +333,20 @@ class JTwitterOAuth
 	/**
 	 * Method used to sign requests.
 	 * 
-	 * @param   string  $url     The URL to sign.
-	 * @param   string  $method  The request method.
+	 * @param   string  $url         The URL to sign.
+	 * @param   string  $method      The request method.
+	 * @param   array   $parameters  Array containg request parameters.
 	 * 
 	 * @return  void
 	 * 
 	 * @since   12.1
 	 */
-	public function signRequest($url, $method)
+	public function signRequest($url, $method, &$parameters)
 	{
 		// Create the signature base string.
-		$base = $this->baseString($url, $method);
+		$base = $this->baseString($url, $method, $parameters);
 
-		$this->parameters['oauth_signature'] = $this->safeEncode(
+		$parameters['oauth_signature'] = $this->safeEncode(
 			base64_encode(
 				hash_hmac('sha1', $base, $this->prepare_signing_key(), true)
 				)
@@ -305,20 +356,21 @@ class JTwitterOAuth
 	/**
 	 * Prepare the signature base string.
 	 * 
-	 * @param   string  $url     The URL to sign.
-	 * @param   string  $method  The request method.
+	 * @param   string  $url         The URL to sign.
+	 * @param   string  $method      The request method.
+	 * @param   array   $parameters  Array containg request parameters.
 	 *
 	 * @return string  The base string.
 	 * 
 	 * @since 12.1
 	 */
-	private function baseString($url, $method)
+	private function baseString($url, $method, &$parameters)
 	{
 		// Sort the parameters alphabetically
-		uksort($this->parameters, 'strcmp');
+		uksort($parameters, 'strcmp');
 
 		// Encode parameters.
-		foreach ($this->parameters as $key => $value)
+		foreach ($parameters as $key => $value)
 		{
 			$key = $this->safeEncode($key);
 			$value = $this->safeEncode($value);
