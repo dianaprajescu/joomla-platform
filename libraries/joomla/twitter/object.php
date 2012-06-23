@@ -114,18 +114,28 @@ abstract class JTwitterObject
 	/**
 	 * Method to send the request.
 	 *
-	 * @param   string   $path  The path of the request to make
-	 * @param   integer  $code  The expected response code
+	 * @param   string   $path    The path of the request to make
+	 * @param   integer  $code    The expected response code
+	 * @param   string   $method  The request method.
+	 * @param   mixed    $data    Either an associative array or a string to be sent with the post request.
 	 *
 	 * @return  array  The decoded JSON response
 	 *
 	 * @since   12.1
 	 * @throws  DomainException
 	 */
-	public function sendRequest($path, $code)
+	public function sendRequest($path, $code, $method='get', $data='')
 	{
 		// Send the request.
-		$response = $this->client->get($this->fetchUrl($path));
+		switch ($method)
+		{
+			case 'get':
+				$response = $this->client->get($this->fetchUrl($path));
+				break;
+			case 'post':
+				$response = $this->client->post($this->fetchUrl($path), $data);
+				break;
+		}
 
 		// Validate the response code.
 		if ($response->code != $code)

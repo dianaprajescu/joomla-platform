@@ -233,4 +233,27 @@ class JTwitterStatuses extends JTwitterObject
 		// Send the request.
 		return $this->sendRequest($path, 200);
 	}
+	
+	public function tweet($oauth, $status)
+	{
+		$base = 'https://api.twitter.com/1/statuses/update.json';
+		//$data = array('status' => 'status=' . $oauth->safeEncode($status));
+		$data = array('status' => utf8_encode($status));
+		
+		$parameters = array('oauth_consumer_key' => $oauth->consumer['key'], 
+              'oauth_nonce' => $oauth->generateNonce(), 
+              'oauth_signature_method' => "HMAC-SHA1", 
+              'oauth_timestamp' => time(), 
+              'oauth_token' => $oauth->token['key'], 
+              'oauth_version' => "1.0",
+			  'status' => utf8_encode($status)
+              );
+        
+        echo $oauth->token['key'].'</br></br>';
+		
+        $response = $oauth->oauthRequest($base, 'POST', $parameters, $data);
+        
+        //print_r($parameters);
+        print_r($response);
+	}
 }
