@@ -28,12 +28,6 @@ class JTwitterOAuth
 	protected $consumer = array();
 
 	/**
-	 * @var array  Contains user access token key and secret.
-	 * @since 12.1
-	 */
-	protected $user_token = array();
-
-	/**
 	 * @var array  Contains user's id and screen name.
 	 * @since 12.1
 	 */
@@ -121,7 +115,7 @@ class JTwitterOAuth
 			$this->generateRequestToken();
 
 			// Authenticate the user.
-			$this->authenticate();
+			$this->authorize();
 		}
 		// Callback from Twitter.
 		else
@@ -140,6 +134,7 @@ class JTwitterOAuth
 			// Set token verifier.
 			$this->token['verifier'] = $request->get('oauth_verifier');
 
+			// Generate access token.
 			$this->generateAccessToken();
 		}
 	}
@@ -155,13 +150,7 @@ class JTwitterOAuth
 	{
 		// Set the parameters.
 		$parameters = array(
-			'oauth_callback' => $this->callback_url,
-			'oauth_consumer_key' => $this->consumer['key'],
-			'oauth_signature_method' => 'HMAC-SHA1',
-			'oauth_token' => $this->user_token['key'],
-			'oauth_version' => '1.0',
-			'oauth_nonce' => $this->generateNonce(),
-			'oauth_timestamp' => time()
+			'oauth_token' => $this->consumer['key']
 		);
 
 		// Make an OAuth request for the Request Token.
@@ -194,6 +183,7 @@ class JTwitterOAuth
 	 * Method used to authenticate the user.
 	 * 
 	 * @return void
+	 * 
 	 * @since  12.1
 	 */
 	public function authenticate()
@@ -207,6 +197,7 @@ class JTwitterOAuth
 	 * Method used to authorize the application.
 	 * 
 	 * @return void
+	 * 
 	 * @since  12.1
 	 */
 	public function authorize()
@@ -216,18 +207,19 @@ class JTwitterOAuth
 		JResponse::sendHeaders();
 	}
 
+	/**
+	 * Method used to get an access token.
+	 * 
+	 * @return void
+	 * 
+	 * @since  12.1
+	 */
 	public function generateAccessToken()
 	{
 		// Set the parameters.
 		$parameters = array(
-			'oauth_callback' => $this->callback_url,
 			'oauth_verifier' => $this->token['verifier'],
-			'oauth_consumer_key' => $this->consumer['key'],
-			'oauth_signature_method' => 'HMAC-SHA1',
-			'oauth_token' => $this->token['key'],
-			'oauth_version' => '1.0',
-			'oauth_nonce' => $this->generateNonce(),
-			'oauth_timestamp' => time()
+			'oauth_token' => $this->token['key']
 		);
 
 		$response = $this->oauthRequest($this->accessTokenURL, 'POST', $parameters);
@@ -243,22 +235,37 @@ class JTwitterOAuth
 		// Save the access token.
 		$this->token = array('key' => $params['oauth_token'], 'secret' => $params['oauth_token_secret']);
 		$this->user = array('id' => $params['user_id'], 'screen_name' => $params['screen_name']);
-		print_r($this->user);
 	}
 
 	/**
 	 * Method used to make an OAuth request.
 	 * 
-	 * @param   string  $url         The request URL.
-	 * @param   string  $method      The request method.
-	 * @param   array   $parameters  Array containg request parameters.
+	 * @param   string  $url          The request URL.
+	 * @param   string  $method       The request method.
+	 * @param   array   &$parameters  Array containg request parameters.
+	 * @param   array   $data         The POST request data.
 	 * 
 	 * @return  object  The JHttpResponse object.
 	 * 
 	 * @since 12.1
 	 */
-	public function oauthRequest($url, $method, &$parameters)
+	public function oauthRequest($url, $method, &$parameters, $data=null)
 	{
+		// Set the parameters.
+		$defaults = array(
+			'oauth_callback' => $this->callback_url,
+			'oauth_consumer_key' => $this->consumer['key'],
+			'oauth_signature_method' => 'HMAC-SHA1',
+			'oauth_version' => '1.0',
+			'oauth_nonce' => $this->generateNonce(),
+			'oauth_timestamp' => time()
+		);
+
+		// Sort the parameters alphabetically
+		uksort($parameters, 'strcmp');
+
+		$parameters = array_merge($parameters, $defaults);
+
 		// Sign the request.
 		$this->signRequest($url, $method, $parameters);
 
@@ -268,14 +275,14 @@ class JTwitterOAuth
 			case 'GET':
 				return $this->client->get($this->to_url($url, $parameters));
 			case 'POST':
-				return $this->client->post($url, null, array('Authorization' => $this->createHeader($parameters)));
+				return $this->client->post($url, $data, array('Authorization' => $this->createHeader($parameters)));
 		}
 	}
 
 	/**
 	 * Method used to create the header for the POST request.
 	 * 
-	 * @param   array   $parameters  Array containg request parameters.
+	 * @param   array  &$parameters  Array containg request parameters.
 	 * 
 	 * @return  string  The header.
 	 * 
@@ -283,9 +290,6 @@ class JTwitterOAuth
 	 */
 	public function createHeader(&$parameters)
 	{
-		// Sort the parameters alphabetically
-		uksort($parameters, 'strcmp');
-
 		$header = 'OAuth ';
 
 		foreach ($parameters as $key => $value)
@@ -306,8 +310,8 @@ class JTwitterOAuth
 	/**
 	 * Method to create the URL formed string with the parameters.
 	 * 
-	 * @param   string  $url         The request URL.
-	 * @param   array   $parameters  Array containg request parameters.
+	 * @param   string  $url          The request URL.
+	 * @param   array   &$parameters  Array containg request parameters.
 	 * 
 	 * @return  string  The formed URL.
 	 * 
@@ -333,9 +337,9 @@ class JTwitterOAuth
 	/**
 	 * Method used to sign requests.
 	 * 
-	 * @param   string  $url         The URL to sign.
-	 * @param   string  $method      The request method.
-	 * @param   array   $parameters  Array containg request parameters.
+	 * @param   string  $url          The URL to sign.
+	 * @param   string  $method       The request method.
+	 * @param   array   &$parameters  Array containg request parameters.
 	 * 
 	 * @return  void
 	 * 
@@ -356,9 +360,9 @@ class JTwitterOAuth
 	/**
 	 * Prepare the signature base string.
 	 * 
-	 * @param   string  $url         The URL to sign.
-	 * @param   string  $method      The request method.
-	 * @param   array   $parameters  Array containg request parameters.
+	 * @param   string  $url          The URL to sign.
+	 * @param   string  $method       The request method.
+	 * @param   array   &$parameters  Array containg request parameters.
 	 *
 	 * @return string  The base string.
 	 * 
@@ -400,7 +404,7 @@ class JTwitterOAuth
 	 * 
 	 * @since 12.1
 	 */
-	private function safeEncode($data)
+	public function safeEncode($data)
 	{
 		if (is_array($data))
 		{
@@ -427,7 +431,7 @@ class JTwitterOAuth
 	 * 
 	 * @since 12.1
 	 */
-	private static function generateNonce()
+	public static function generateNonce()
 	{
 		$mt = microtime();
 		$rand = mt_rand();
@@ -446,5 +450,31 @@ class JTwitterOAuth
 	private function prepare_signing_key()
 	{
 		return $this->safeEncode($this->consumer['secret']) . '&' . $this->safeEncode(($this->token) ? $this->token['secret'] : '');
+	}
+
+	/**
+	 * Get the current user id and screen name.
+	 * 
+	 * @return  array  The user array.
+	 *
+	 * @since   12.1
+	 */
+	public function getUser()
+	{
+		return $this->user;
+	}
+
+	/**
+	 * Get the oauth token key or secret.
+	 * 
+	 * @param   string  $key  The array key.
+	 * 
+	 * @return  array  The oauth token key and secret.
+	 *
+	 * @since   12.1
+	 */
+	public function getToken($key)
+	{
+		return $this->token[$key];
 	}
 }

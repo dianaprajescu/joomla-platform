@@ -233,27 +233,95 @@ class JTwitterStatuses extends JTwitterObject
 		// Send the request.
 		return $this->sendRequest($path, 200);
 	}
-	
-	public function tweet($oauth, $status)
+
+	/**
+	 * Method to post a tweet.
+	 * 
+	 * @param   JTwitterOAuth  $oauth                  The JTwitterOAuth object.
+	 * @param   string         $status                 The text of the tweet.
+	 * @param   integer        $in_reply_to_status_id  The ID of an existing status that the update is in reply to.
+	 * @param   float          $lat                    The latitude of the location this tweet refers to.
+	 * @param   float          $long                   The longitude of the location this tweet refers to.
+	 * @param   string         $place_id               A place in the world.
+	 * @param   boolean        $display_coordinates    Whether or not to put a pin on the exact coordinates a tweet has been sent from.
+	 * @param   boolean        $trim_user              When set to true, each tweet returned in a timeline will include a user object including only
+	 *                                                 the status author's numerical ID.
+	 * @param   boolean        $entities               When set to true,  each tweet will include a node called "entities,". This node offers a variety
+	 * 												   of metadata about the tweet in a discreet structure, including: user_mentions, urls, and hashtags.
+	 * 
+	 * @return  array  The decoded JSON response
+	 *
+	 * @since   12.1
+	 */
+	public function tweet($oauth, $status, $in_reply_to_status_id = null, $lat = null, $long = null, $place_id = null, $display_coordinates = false,
+		$trim_user = false, $entities = false)
 	{
-		$base = 'https://api.twitter.com/1/statuses/update.json';
-		//$data = array('status' => 'status=' . $oauth->safeEncode($status));
+		// Set the API base.
+		$base = '/1/statuses/update.json';
+
+		// Set POST data.
 		$data = array('status' => utf8_encode($status));
-		
-		$parameters = array('oauth_consumer_key' => $oauth->consumer['key'], 
-              'oauth_nonce' => $oauth->generateNonce(), 
-              'oauth_signature_method' => "HMAC-SHA1", 
-              'oauth_timestamp' => time(), 
-              'oauth_token' => $oauth->token['key'], 
-              'oauth_version' => "1.0",
-			  'status' => utf8_encode($status)
-              );
-        
-        echo $oauth->token['key'].'</br></br>';
-		
-        $response = $oauth->oauthRequest($base, 'POST', $parameters, $data);
-        
-        //print_r($parameters);
-        print_r($response);
+
+		// Set parameters.
+		$parameters = array(
+			'oauth_token' => $oauth->getToken('key'),
+			'status' => utf8_encode($status)
+		);
+
+		// Check if in_reply_to_status_id is specified.
+		if ($in_reply_to_status_id)
+		{
+			$data['in_reply_to_status_id'] = $in_reply_to_status_id;
+			$parameters['in_reply_to_status_id'] = $in_reply_to_status_id;
+		}
+
+		// Check if lat is specified.
+		if ($lat)
+		{
+			$data['lat'] = $lat;
+			$parameters['lat'] = $lat;
+		}
+
+		// Check if long is specified.
+		if ($long)
+		{
+			$data['long'] = $long;
+			$parameters['long'] = $long;
+		}
+
+		// Check if place_id is specified.
+		if ($place_id)
+		{
+			$data['place_id'] = $place_id;
+			$parameters['place_id'] = $place_id;
+		}
+
+		// Check if display_coordinates is true.
+		if ($display_coordinates)
+		{
+			$data['display_coordinates'] = $display_coordinates;
+			$parameters['display_coordinates'] = $display_coordinates;
+		}
+
+		// Check if trim_user is true.
+		if ($trim_user)
+		{
+			$data['trim_user'] = $trim_user;
+			$parameters['trim_user'] = $trim_user;
+		}
+
+		// Check if entities is true.
+		if ($entities)
+		{
+			$data['include_entities'] = $entities;
+			$parameters['include_entities'] = $entities;
+		}
+
+		// Build the request path.
+		$path = $this->getOption('api.url') . $base;
+
+		// Send the request.
+		$response = $oauth->oauthRequest($path, 'POST', $parameters, $data);
+		return json_decode($response->body);
 	}
 }
