@@ -147,4 +147,35 @@ abstract class JTwitterObject
 
 		return json_decode($response->body);
 	}
+
+	/**
+	 * Get an option from the JTwitterObject instance.
+	 *
+	 * @param   string  $key  The name of the option to get.
+	 *
+	 * @return  mixed  The option value.
+	 *
+	 * @since   12.1
+	 */
+	public function getOption($key)
+	{
+		return $this->options->get($key);
+	}
+
+	/**
+	 * Set an option for the JTwitterObject instance.
+	 *
+	 * @param   string  $key    The name of the option to set.
+	 * @param   mixed   $value  The option value to set.
+	 *
+	 * @return  JTwitterObject  This object for method chaining.
+	 *
+	 * @since   12.1
+	 */
+	public function setOption($key, $value)
+	{
+		$this->options->set($key, $value);
+
+		return $this;
+	}
 }
