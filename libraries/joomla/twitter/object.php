@@ -82,16 +82,6 @@ abstract class JTwitterObject
 		// Get a new JUri object fousing the api url and given path.
 		$uri = new JUri($this->options->get('api.url') . $path);
 
-		if ($this->options->get('api.username', false))
-		{
-			$uri->setUser($this->options->get('api.username'));
-		}
-
-		if ($this->options->get('api.password', false))
-		{
-			$uri->setPass($this->options->get('api.password'));
-		}
-
 		return (string) $uri;
 	}
 
