@@ -156,12 +156,6 @@ class JTwitterOAuth
 		// Make an OAuth request for the Request Token.
 		$response = $this->oauthRequest($this->requestTokenURL, 'POST', $parameters);
 
-		// Validate the response.
-		if ($response->code != 200)
-		{
-			throw new DomainException($response->body);
-		}
-
 		parse_str($response->body, $params);
 		if ($params['oauth_callback_confirmed'] == true)
 		{
@@ -224,12 +218,6 @@ class JTwitterOAuth
 
 		$response = $this->oauthRequest($this->accessTokenURL, 'POST', $parameters);
 
-		// Validate the response.
-		if ($response->code != 200)
-		{
-			throw new DomainException($response->body);
-		}
-
 		parse_str($response->body, $params);
 
 		// Save the access token.
@@ -273,10 +261,22 @@ class JTwitterOAuth
 		switch ($method)
 		{
 			case 'GET':
-				return $this->client->get($this->to_url($url, $parameters));
+				$response = $this->client->get($this->to_url($url, $parameters));
+				break;
 			case 'POST':
-				return $this->client->post($url, $data, array('Authorization' => $this->createHeader($parameters)));
+				$response = $this->client->post($url, $data, array('Authorization' => $this->createHeader($parameters)));
+				break;
 		}
+
+		// Validate the response code.
+		if ($response->code != 200)
+		{
+			$error = json_decode($response->body);
+
+			throw new DomainException($error->error, $response->code);
+		}
+
+		return $response;
 	}
 
 	/**

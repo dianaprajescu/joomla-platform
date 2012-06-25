@@ -44,7 +44,7 @@ class JTwitterStatusesTest extends TestCase
 	 * @var    string  Sample JSON error message.
 	 * @since  12.1
 	 */
-	protected $errorString = '{"message": "Generic Error"}';
+	protected $errorString = '{"error": "Generic Error."}';
 
 	/**
 	 * Sets up the fixture, for example, opens a network connection.
@@ -103,9 +103,6 @@ class JTwitterStatusesTest extends TestCase
 	 */
 	public function testGetRetweetedByUserFailure()
 	{
-		// Remove the following lines when you implement this test.
-		$this->markTestIncomplete('This test currently fails.');
-
 		$returnData = new stdClass;
 		$returnData->code = 500;
 		$returnData->body = $this->errorString;
@@ -153,9 +150,6 @@ class JTwitterStatusesTest extends TestCase
 	 */
 	public function testGetTweetByIdFailure()
 	{
-		// Remove the following lines when you implement this test.
-		$this->markTestIncomplete('This test currently fails.');
-
 		$returnData = new stdClass;
 		$returnData->code = 500;
 		$returnData->body = $this->errorString;
