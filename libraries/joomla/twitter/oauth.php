@@ -476,4 +476,19 @@ class JTwitterOAuth
 	{
 		return $this->token[$key];
 	}
+
+	/**
+	 * Set the oauth token.
+	 *
+	 * @param   string  $key     The token key to set.
+	 * @param   string  $secret  The token value to set.
+	 *
+	 * @return  void
+	 *
+	 * @since   12.1
+	 */
+	public function setToken($key, $secret)
+	{
+		$this->token = array('key' => $key, 'secret' => $secret);
+	}
 }
