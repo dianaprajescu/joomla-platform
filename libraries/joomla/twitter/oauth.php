@@ -87,10 +87,9 @@ class JTwitterOAuth
 	 *
 	 * @since 12.1
 	 */
-	public function __construct($consumer_key, $consumer_secret, $user_key, $user_secret, $callback_url, JTwitterHttp $client = null)
+	public function __construct($consumer_key, $consumer_secret, $callback_url, JTwitterHttp $client = null)
 	{
 		$this->consumer = array('key' => $consumer_key, 'secret' => $consumer_secret);
-		$this->user_token = array('key' => $user_key, 'secret' => $user_secret);
 		$this->callback_url = $callback_url;
 		$this->client = isset($client) ? $client : new JTwitterHttp($this->options);
 	}

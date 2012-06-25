@@ -98,14 +98,13 @@ abstract class JTwitterObject
 		$path = '/1/account/rate_limit_status.json';
 
 		// Send the request.
-		return $this->sendRequest($path, 200);
+		return $this->sendRequest($path);
 	}
 
 	/**
 	 * Method to send the request.
 	 *
 	 * @param   string   $path    The path of the request to make
-	 * @param   integer  $code    The expected response code
 	 * @param   string   $method  The request method.
 	 * @param   mixed    $data    Either an associative array or a string to be sent with the post request.
 	 *
@@ -114,7 +113,7 @@ abstract class JTwitterObject
 	 * @since   12.1
 	 * @throws  DomainException
 	 */
-	public function sendRequest($path, $code, $method='get', $data='')
+	public function sendRequest($path, $method='get', $data='')
 	{
 		// Send the request.
 		switch ($method)
@@ -128,7 +127,7 @@ abstract class JTwitterObject
 		}
 
 		// Validate the response code.
-		if ($response->code != $code)
+		if ($response->code != 200)
 		{
 			$error = json_decode($response->body);
 
