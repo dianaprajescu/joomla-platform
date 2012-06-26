@@ -85,7 +85,7 @@ class JTwitterStatuses extends JTwitterObject
 		$path = $base . $username . $since . $count_param . $max . $page_num . $trim . $inc_entities;
 
 		// Send the request.
-		return $this->sendRequest($path, 200);
+		return $this->sendRequest($path);
 	}
 
 	/**
@@ -126,7 +126,7 @@ class JTwitterStatuses extends JTwitterObject
 		$path = $base . $id_string . $trim . $inc_entities;
 
 		// Send the request.
-		return $this->sendRequest($path, 200);
+		return $this->sendRequest($path);
 	}
 
 	/**
@@ -231,7 +231,7 @@ class JTwitterStatuses extends JTwitterObject
 		$path = $base . $username . $since . $count_param . $max . $page_num . $trim . $rts . $inc_entities . $ex_replies;
 
 		// Send the request.
-		return $this->sendRequest($path, 200);
+		return $this->sendRequest($path);
 	}
 
 	/**
