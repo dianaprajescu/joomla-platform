@@ -402,4 +402,59 @@ class JTwitterStatusesTest extends TestCase
 		// Remove the following lines when you implement this test.
 		$this->markTestIncomplete('This test is not implemented.');
 	}
+
+	/**
+	 * Tests the getRetweetedBy method
+	 *
+	 * @return  void
+	 *
+	 * @since   12.1
+	 */
+	public function testGetRetweetedBy()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete('This test currently fails.');
+		$id = '217781292748652545';
+
+		$returnData = new stdClass;
+		$returnData->code = 200;
+		$returnData->body = $this->sampleString;
+
+		$this->client->expects($this->once())
+		->method('get')
+		->with('/1/statuses/' . $id . '/retweeted_by.json?count=20')
+		->will($this->returnValue($returnData));
+
+		$this->assertThat(
+			$this->object->getRetweetedBy($id),
+			$this->equalTo(json_decode($this->sampleString))
+		);
+	}
+
+	/**
+	 * Tests the getRetweetedBy method - failure
+	 *
+	 * @return  void
+	 *
+	 * @since   12.1
+	 *
+	 * @expectedException  DomainException
+	 */
+	public function testGetRetweetedByFailure()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete('This test currently fails.');
+		$id = '217781292748652545';
+
+		$returnData = new stdClass;
+		$returnData->code = 500;
+		$returnData->body = $this->errorString;
+
+		$this->client->expects($this->once())
+		->method('get')
+		->with('/1/statuses/' . $id . '/retweeted_by.json?count=20')
+		->will($this->returnValue($returnData));
+
+		$this->object->getRetweetedBy($id);
+	}
 }

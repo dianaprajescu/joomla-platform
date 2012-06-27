@@ -564,4 +564,40 @@ class JTwitterStatuses extends JTwitterObject
 		$response = $oauth->oauthRequest($path, 'GET', $parameters, $data);
 		return json_decode($response->body);
 	}
+
+	/**
+	 * Method to show user objects of up to 100 members who retweeted the status.
+	 * 
+	 * @param   integer        $id     The numerical ID of the desired status.
+	 * @param   integer        $count  Specifies the number of retweets to try and retrieve, up to a maximum of 100.
+	 * @param   integer        $page   Specifies the page of results to retrieve.
+	 *
+	 * @return  array  The decoded JSON response
+	 *
+	 * @since   12.1
+	 */
+	public function getRetweetedBy($id, $count = 20, $page = 0)
+	{
+		// Check the rate limit for remaining hits
+		$this->checkRateLimit();
+
+		// Set the API base
+		$base = '/1/statuses/' . $id . '/retweeted_by.json';
+
+		// Set the count string
+		$count_param = '?count=' . $count;
+
+		// Check if a page is specified
+		$page_num = '';
+		if ($page > 0)
+		{
+			$page_num = '&page=' . (int) $page;
+		}
+
+		// Build the request path.
+		$path = $base . $count_param . $page_num;
+
+		// Send the request.
+		return $this->sendRequest($path);
+	}
 }
