@@ -263,10 +263,7 @@ class JTwitterStatuses extends JTwitterObject
 		$data = array('status' => utf8_encode($status));
 
 		// Set parameters.
-		$parameters = array(
-			'oauth_token' => $oauth->getToken('key'),
-			'status' => utf8_encode($status)
-		);
+		$parameters = array('oauth_token' => $oauth->getToken('key'));
 
 		// Check if in_reply_to_status_id is specified.
 		if ($in_reply_to_status_id)
@@ -322,6 +319,93 @@ class JTwitterStatuses extends JTwitterObject
 
 		// Send the request.
 		$response = $oauth->oauthRequest($path, 'POST', $parameters, $data);
+		return json_decode($response->body);
+	}
+
+	/**
+	 * Method to retrieve the most recent mentions for the authenticating user.
+	 *
+	 * @param   JTwitterOAuth  $oauth        The JTwitterOAuth object.
+	 * @param   integer        $count        Specifies the number of tweets to try and retrieve, up to a maximum of 200.  Retweets are always included
+	 *                                       in the count, so it is always suggested to set $include_rts to true
+	 * @param   boolean        $include_rts  When set to true, the timeline will contain native retweets in addition to the standard stream of tweets.
+	 * @param   boolean        $entities     When set to true,  each tweet will include a node called "entities,". This node offers a variety of metadata
+	 *                                       about the tweet in a discreet structure, including: user_mentions, urls, and hashtags.
+	 * @param   integer        $since_id     Returns results with an ID greater than (that is, more recent than) the specified ID.
+	 * @param   integer        $max_id       Returns results with an ID less than (that is, older than) the specified ID.
+	 * @param   integer        $page         Specifies the page of results to retrieve.
+	 * @param   boolean        $trim_user    When set to true, each tweet returned in a timeline will include a user object including only
+	 *                                       the status author's numerical ID.
+	 * @param   string         $contributor  This parameter enhances the contributors element of the status response to include the screen_name 
+	 *                                       of the contributor.
+	 *
+	 * @return  array  The decoded JSON response
+	 *
+	 * @since   12.1
+	 * @throws  RuntimeException
+	 */
+	public function getMentions($oauth, $count = 20, $include_rts = true, $entities = false, $since_id = 0, $max_id = 0,
+		$page = 0, $trim_user = false, $contributor = false)
+	{
+		// Check the rate limit for remaining hits
+		$this->checkRateLimit();
+
+		// Set the API base
+		$base = '/1/statuses/mentions.json';
+
+		// Set parameters.
+		$parameters = array('oauth_token' => $oauth->getToken('key'));
+
+		// Check if a since_id is specified
+		if ($since_id > 0)
+		{
+			$data['since_id'] = (int) $since_id;
+		}
+
+		// Set the count string
+		$data['count'] = $count;
+
+		// Check if a max_id is specified
+		if ($max_id > 0)
+		{
+			$data['max_id'] = (int) $max_id;
+		}
+
+		// Check if a page is specified
+		if ($page > 0)
+		{
+			$data['page'] = (int) $page;
+		}
+
+		// Check if trim_user is true
+		if ($trim_user)
+		{
+			$data['trim_user'] = true;
+		}
+
+		// Check if include_rts is true
+		if ($include_rts)
+		{
+			$data['include_rts'] = true;
+		}
+
+		// Check if entities is true
+		if ($entities)
+		{
+			$data['include_entities'] = $entities;
+		}
+
+		// Check if contributor is true
+		if ($contributor)
+		{
+			$data['contributor_details'] = $contributor;
+		}
+
+		// Build the request path.
+		$path = $this->getOption('api.url') . $base;
+
+		// Send the request.
+		$response = $oauth->oauthRequest($path, 'GET', $parameters, $data);
 		return json_decode($response->body);
 	}
 }
