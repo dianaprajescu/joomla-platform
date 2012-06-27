@@ -664,7 +664,7 @@ class JTwitterStatuses extends JTwitterObject
 	 *
 	 * @since   12.1
 	 */
-	public function getRetweets($oauth, $id, $count = 20, $entities = false, $trim_user = false)
+	public function getRetweetsById($oauth, $id, $count = 20, $entities = false, $trim_user = false)
 	{
 		// Check the rate limit for remaining hits
 		$this->checkRateLimit();

@@ -493,7 +493,7 @@ class JTwitterStatusesTest extends TestCase
 	 *
 	 * @since   12.1
 	 */
-	public function testGetRetweets()
+	public function testGetRetweetsById()
 	{
 		// Remove the following lines when you implement this test.
 		$this->markTestIncomplete('This test is not implemented.');
@@ -508,7 +508,7 @@ class JTwitterStatusesTest extends TestCase
 	 * 
 	 * @expectedException  DomainException
 	 */
-	public function testGetRetweetsFailure()
+	public function testGetRetweetsByIdFailure()
 	{
 		// Remove the following lines when you implement this test.
 		$this->markTestIncomplete('This test is not implemented.');
