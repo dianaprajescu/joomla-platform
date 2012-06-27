@@ -568,9 +568,9 @@ class JTwitterStatuses extends JTwitterObject
 	/**
 	 * Method to show user objects of up to 100 members who retweeted the status.
 	 * 
-	 * @param   integer        $id     The numerical ID of the desired status.
-	 * @param   integer        $count  Specifies the number of retweets to try and retrieve, up to a maximum of 100.
-	 * @param   integer        $page   Specifies the page of results to retrieve.
+	 * @param   integer  $id     The numerical ID of the desired status.
+	 * @param   integer  $count  Specifies the number of retweets to try and retrieve, up to a maximum of 100.
+	 * @param   integer  $page   Specifies the page of results to retrieve.
 	 *
 	 * @return  array  The decoded JSON response
 	 *
@@ -599,5 +599,102 @@ class JTwitterStatuses extends JTwitterObject
 
 		// Send the request.
 		return $this->sendRequest($path);
+	}
+
+	/**
+	 * Method to show user ids of up to 100 members who retweeted the status.
+	 * 
+	 * @param   JTwitterOAuth  $oauth       The JTwitterOAuth object.
+	 * @param   integer        $id          The numerical ID of the desired status.
+	 * @param   integer        $count       Specifies the number of retweets to try and retrieve, up to a maximum of 100.
+	 * @param   integer        $page        Specifies the page of results to retrieve.
+	 * @param   boolean        $string_ids  Set to true to return IDs as strings, false to return as integers.
+	 *
+	 * @return  array  The decoded JSON response
+	 *
+	 * @since   12.1
+	 */
+	public function getRetweetedByIds($oauth, $id, $count = 20, $page = 0, $string_ids = false)
+	{
+		// Check the rate limit for remaining hits
+		$this->checkRateLimit();
+
+		// Set the API base
+		$base = '/1/statuses/' . $id . '/retweeted_by.json';
+
+		// Set parameters.
+		$parameters = array('oauth_token' => $oauth->getToken('key'));
+
+		// Set the count string
+		$data['count'] = $count;
+
+		// Check if a page is specified
+		if ($page > 0)
+		{
+			$data['page'] = (int) $page;
+		}
+
+		// Check if string_ids is true
+		if ($string_ids)
+		{
+			$data['stringify_ids'] = $string_ids;
+		}
+
+		// Build the request path.
+		$path = $this->getOption('api.url') . $base;
+
+		// Send the request.
+		$response = $oauth->oauthRequest($path, 'GET', $parameters, $data);
+		return json_decode($response->body);
+	}
+
+	/**
+	 * Method to get up to 100 of the first retweets of a given tweet
+	 * 
+	 * @param   JTwitterOAuth  $oauth      The JTwitterOAuth object.
+	 * @param   integer        $id         The numerical ID of the desired status.
+	 * @param   integer        $count      Specifies the number of tweets to try and retrieve, up to a maximum of 200.  Retweets are always included
+	 *                                     in the count, so it is always suggested to set $include_rts to true
+	 * @param   boolean        $entities   When set to true,  each tweet will include a node called "entities,". This node offers a variety of metadata
+	 *                                     about the tweet in a discreet structure, including: user_mentions, urls, and hashtags.
+	 * @param   boolean        $trim_user  When set to true, each tweet returned in a timeline will include a user object including only
+	 *                                     the status author's numerical ID.
+	 *
+	 * @return  array  The decoded JSON response
+	 *
+	 * @since   12.1
+	 */
+	public function getRetweets($oauth, $id, $count = 20, $entities = false, $trim_user = false)
+	{
+		// Check the rate limit for remaining hits
+		$this->checkRateLimit();
+
+		// Set the API base
+		$base = '/1/statuses/retweets/' . $id . '.json';
+
+		// Set parameters.
+		$parameters = array('oauth_token' => $oauth->getToken('key'));
+
+		// Set the count string
+		$data['count'] = $count;
+
+		// Check if trim_user is true
+		if ($trim_user)
+		{
+			$data['trim_user'] = $trim_user;
+		}
+
+		// Check if entities is true
+		if ($entities)
+		{
+			$data['include_entities'] = $entities;
+		}
+
+		// Build the request path.
+		$path = $this->getOption('api.url') . $base;
+
+		// Send the request.
+		$response = $oauth->oauthRequest($path, 'GET', $parameters, $data);
+		return json_decode($response->body);
 	}
 }

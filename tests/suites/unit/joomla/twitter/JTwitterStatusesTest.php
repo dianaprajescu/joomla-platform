@@ -457,4 +457,60 @@ class JTwitterStatusesTest extends TestCase
 
 		$this->object->getRetweetedBy($id);
 	}
+
+	/**
+	 * Tests the getRetweetedByIds method
+	 *
+	 * @return  void
+	 *
+	 * @since   12.1
+	 */
+	public function testGetRetweetedByIds()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete('This test is not implemented.');
+	}
+
+	/**
+	 * Tests the getRetweetedByIds method - failure
+	 *
+	 * @return  void
+	 *
+	 * @since   12.1
+	 * 
+	 * @expectedException  DomainException
+	 */
+	public function testGetRetweetedByIdsFailure()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete('This test is not implemented.');
+	}
+
+	/**
+	 * Tests the getRetweets method
+	 *
+	 * @return  void
+	 *
+	 * @since   12.1
+	 */
+	public function testGetRetweets()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete('This test is not implemented.');
+	}
+
+	/**
+	 * Tests the getRetweets method - failure
+	 *
+	 * @return  void
+	 *
+	 * @since   12.1
+	 * 
+	 * @expectedException  DomainException
+	 */
+	public function testGetRetweetsFailure()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete('This test is not implemented.');
+	}
 }
