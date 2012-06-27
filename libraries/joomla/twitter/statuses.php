@@ -408,4 +408,90 @@ class JTwitterStatuses extends JTwitterObject
 		$response = $oauth->oauthRequest($path, 'GET', $parameters, $data);
 		return json_decode($response->body);
 	}
+
+	/**
+	 * Method to get the most recent retweets posted by users the specified user follows. 
+	 *
+	 * @param   mixed    $user       Either an integer containing the user ID or a string containing the screen name.
+	 * @param   integer  $since_id   Returns results with an ID greater than (that is, more recent than) the specified ID.
+	 * @param   integer  $count      Specifies the number of tweets to try and retrieve, up to a maximum of 200.  Retweets are always included
+	 *                               in the count, so it is always suggested to set $include_rts to true
+	 * @param   boolean  $entities   When set to true,  each tweet will include a node called "entities,". This node offers a variety of metadata
+	 *                               about the tweet in a discreet structure, including: user_mentions, urls, and hashtags.
+	 * @param   integer  $max_id     Returns results with an ID less than (that is, older than) the specified ID.
+	 * @param   integer  $page       Specifies the page of results to retrieve.
+	 * @param   boolean  $trim_user  When set to true, each tweet returned in a timeline will include a user object including only
+	 *                               the status author's numerical ID.
+	 *
+	 * @return  array  The decoded JSON response
+	 *
+	 * @since   12.1
+	 */
+	public function getRetweetedToUser($user, $since_id = 0, $count = 20, $entities = false, $max_id = 0, $page = 0, $trim_user = false)
+	{
+		// Check the rate limit for remaining hits
+		$this->checkRateLimit();
+
+		// Determine which type of data was passed for $user
+		if (is_integer($user))
+		{
+			$username = '?user_id=' . $user;
+		}
+		elseif (is_string($user))
+		{
+			$username = '?screen_name=' . $user;
+		}
+		else
+		{
+			// We don't have a valid entry
+			throw new RuntimeException('The specified username is not in the correct format; must use integer or string');
+		}
+
+		// Set the API base
+		$base = '/1/statuses/retweeted_by_user.json';
+
+		// Check if a since_id is specified
+		$since = '';
+		if ($since_id > 0)
+		{
+			$since = '&since_id=' . (int) $since_id;
+		}
+
+		// Set the count string
+		$count_param = '&count=' . $count;
+
+		// Check if a max_id is specified
+		$max = '';
+		if ($max_id > 0)
+		{
+			$max = '&max_id=' . (int) $max_id;
+		}
+
+		// Check if a page is specified
+		$page_num = '';
+		if ($page > 0)
+		{
+			$page_num = '&page=' . (int) $page;
+		}
+
+		// Check if trim_user is true
+		$trim = '';
+		if ($trim_user)
+		{
+			$trim = '&trim_user=true';
+		}
+
+		// Check if entities is true
+		$inc_entities = '';
+		if ($entities)
+		{
+			$inc_entities = '&include_entities=true';
+		}
+
+		// Build the request path.
+		$path = $base . $username . $since . $count_param . $max . $page_num . $trim . $inc_entities;
+
+		// Send the request.
+		return $this->sendRequest($path);
+	}
 }

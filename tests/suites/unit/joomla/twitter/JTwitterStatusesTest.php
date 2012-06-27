@@ -291,7 +291,7 @@ class JTwitterStatusesTest extends TestCase
 	}
 
 	/**
-	 * Tests the tweet method
+	 * Tests the tweet method - failure
 	 *
 	 * @return  void
 	 *
@@ -317,5 +317,61 @@ class JTwitterStatusesTest extends TestCase
 			->will($this->returnValue($returnData));
 
 		$this->object->tweet($this->oauth, $status);
+	}
+
+	/**
+	 * Tests the getMentions method
+	 *
+	 * @return  void
+	 *
+	 * @since   12.1
+	 */
+	public function testGetMentions()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete('This test is not implemented.');
+	}
+
+	/**
+	 * Tests the getMentions method - failure
+	 *
+	 * @return  void
+	 *
+	 * @since   12.1
+	 * 
+	 * @expectedException  DomainException
+	 */
+	public function testGetMentionsFailure()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete('This test is not implemented.');
+	}
+
+	/**
+	 * Tests the getRetweetedToUser method
+	 *
+	 * @return  void
+	 *
+	 * @since   12.1
+	 */
+	public function testGetRetweetedToUser()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete('This test is not implemented.');
+	}
+
+	/**
+	 * Tests the getRetweetedToUser method - failure
+	 *
+	 * @return  void
+	 *
+	 * @since   12.1
+	 * 
+	 * @expectedException  DomainException
+	 */
+	public function testGetRetweetedToUserFailure()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete('This test is not implemented.');
 	}
 }
