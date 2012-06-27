@@ -577,4 +577,32 @@ class JTwitterStatusesTest extends TestCase
 
 		$this->object->deleteTweet($this->oauth, $id);
 	}
+
+	/**
+	 * Tests the retweet method
+	 *
+	 * @return  void
+	 *
+	 * @since   12.1
+	 */
+	public function testRetweet()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete('This test is not implemented.');
+	}
+
+	/**
+	 * Tests the retweets method - failure
+	 *
+	 * @return  void
+	 *
+	 * @since   12.1
+	 * 
+	 * @expectedException  DomainException
+	 */
+	public function testRetweetFailure()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete('This test is not implemented.');
+	}
 }

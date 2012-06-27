@@ -724,4 +724,51 @@ class JTwitterStatuses extends JTwitterObject
 		$response = $oauth->oauthRequest($path, 'POST', $parameters, $data);
 		return json_decode($response->body);
 	}
+
+	/**
+	 * Method to retweet a tweet.
+	 * 
+	 * @param   JTwitterOAuth  $oauth      The JTwitterOAuth object.
+	 * @param   integer        $id         The numerical ID of the desired status.
+	 * @param   boolean        $entities   When set to true,  each tweet will include a node called "entities,". This node offers a variety of metadata
+	 *                                     about the tweet in a discreet structure, including: user_mentions, urls, and hashtags.
+	 * @param   boolean        $trim_user  When set to true, each tweet returned in a timeline will include a user object including only
+	 *                                     the status author's numerical ID.
+	 *
+	 * @return  array  The decoded JSON response
+	 *
+	 * @since   12.1
+	 */
+	public function retweet($oauth, $id, $entities = false, $trim_user = false)
+	{
+		// Check the rate limit for remaining hits
+		$this->checkRateLimit();
+
+		// Set the API base
+		$base = '/1/statuses/retweet/' . $id . '.json';
+
+		// Set parameters.
+		$parameters = array('oauth_token' => $oauth->getToken('key'));
+
+		$data = null;
+
+		// Check if trim_user is true
+		if ($trim_user)
+		{
+			$data['trim_user'] = $trim_user;
+		}
+
+		// Check if entities is true
+		if ($entities)
+		{
+			$data['include_entities'] = $entities;
+		}
+
+		// Build the request path.
+		$path = $this->getOption('api.url') . $base;
+
+		// Send the request.
+		$response = $oauth->oauthRequest($path, 'POST', $parameters, $data);
+		return json_decode($response->body);
+	}
 }
