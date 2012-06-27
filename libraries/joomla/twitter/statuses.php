@@ -91,42 +91,51 @@ class JTwitterStatuses extends JTwitterObject
 	/**
 	 * Method to get a single tweet with the given ID.
 	 *
-	 * @param   integer  $id         The ID of the tweet to retrieve.
-	 * @param   boolean  $trim_user  When set to true, each tweet returned in a timeline will include a user object including only
-	 *                               the status author's numerical ID.
-	 * @param   boolean  $entities   When set to true,  each tweet will include a node called "entities,". This node offers a variety of metadata
-	 *                               about the tweet in a discreet structure, including: user_mentions, urls, and hashtags.
+	 * @param   integer  $id          The ID of the tweet to retrieve.
+	 * @param   boolean  $trim_user   When set to true, each tweet returned in a timeline will include a user object including only
+	 *                                the status author's numerical ID.
+	 * @param   boolean  $entities    When set to true,  each tweet will include a node called "entities,". This node offers a variety of metadata
+	 *                                about the tweet in a discreet structure, including: user_mentions, urls, and hashtags.
+	 * @param   boolean  $my_retweet  When set to either true, t or 1, any statuses returned that have been retweeted by the authenticating user will
+	 * 								  include an additional current_user_retweet node, containing the ID of the source status for the retweet.
 	 *
 	 * @return  array  The decoded JSON response
 	 *
 	 * @since   12.1
 	 */
-	public function getTweetById($id, $trim_user = false, $entities = false)
+	public function getTweetById($id, $trim_user = false, $entities = false, $my_retweet = false)
 	{
-		$id_string = '?id=' . (int) $id;
+		// Check the rate limit for remaining hits
+		$this->checkRateLimit();
 
 		// Set the API base
-		$base = '/1/statuses/show.json';
+		$base = '/1/statuses/show/' . $id . '.json';
+
+		$parameters = array();
 
 		// Check if trim_user is true
-		$trim = '';
 		if ($trim_user)
 		{
-			$trim = '&trim_user=true';
+			$parameters['trim_user'] = $trim_user;
 		}
 
 		// Check if entities is true
-		$inc_entities = '';
 		if ($entities)
 		{
-			$inc_entities = '&include_entities=true';
+			$parameters['include_entities'] = $entities;
+		}
+
+		// Check if my_retweet is true
+		if ($my_retweet)
+		{
+			$parameters['incluce_my_retweet'] = $my_retweet;
 		}
 
 		// Build the request path.
-		$path = $base . $id_string . $trim . $inc_entities;
+		$path = $base;
 
 		// Send the request.
-		return $this->sendRequest($path);
+		return $this->sendRequest($path, 'get', $parameters);
 	}
 
 	/**
