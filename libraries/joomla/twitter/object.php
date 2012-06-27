@@ -84,7 +84,7 @@ abstract class JTwitterObject
 		{
 			foreach ($parameters as $key => $value)
 			{
-				if (strpos($url, '?') === false)
+				if (strpos($path, '?') === false)
 				{
 					$path .= '?' . $key . '=' . $value;
 				}

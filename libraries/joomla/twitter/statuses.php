@@ -38,54 +38,46 @@ class JTwitterStatuses extends JTwitterObject
 	 */
 	public function getRetweetedByUser($user, $since_id = 0, $count = 20, $entities = false, $max_id = 0, $page = 0, $trim_user = false)
 	{
-		$username = '?screen_name=' . (string) $user;
+		$parameters['screen_name'] = (string) $user;
 
 		// Set the API base
 		$base = '/1/statuses/retweeted_by_user.json';
 
 		// Check if a since_id is specified
-		$since = '';
 		if ($since_id > 0)
 		{
-			$since = '&since_id=' . (int) $since_id;
+			$parameters['since_id'] = (int) $since_id;
 		}
 
 		// Set the count string
-		$count_param = '&count=' . $count;
+		$parameters['count'] = $count;
 
 		// Check if a max_id is specified
-		$max = '';
 		if ($max_id > 0)
 		{
-			$max = '&max_id=' . (int) $max_id;
+			$parameters['max_id'] = (int) $max_id;
 		}
 
 		// Check if a page is specified
-		$page_num = '';
 		if ($page > 0)
 		{
-			$page_num = '&page=' . (int) $page;
+			$parameters['page'] = (int) $page;
 		}
 
 		// Check if trim_user is true
-		$trim = '';
 		if ($trim_user)
 		{
-			$trim = '&trim_user=true';
+			$parameters['trim_user'] = $trim_user;
 		}
 
 		// Check if entities is true
-		$inc_entities = '';
 		if ($entities)
 		{
-			$inc_entities = '&include_entities=true';
+			$parameters['include_entities'] = $entities;
 		}
 
-		// Build the request path.
-		$path = $base . $username . $since . $count_param . $max . $page_num . $trim . $inc_entities;
-
 		// Send the request.
-		return $this->sendRequest($path);
+		return $this->sendRequest($base, 'get', $parameters);
 	}
 
 	/**
@@ -166,14 +158,16 @@ class JTwitterStatuses extends JTwitterObject
 		// Check the rate limit for remaining hits
 		$this->checkRateLimit();
 
+		$parameters = array();
+
 		// Determine which type of data was passed for $user
 		if (is_integer($user))
 		{
-			$username = '?user_id=' . $user;
+			$parameters['user_id'] = $user;
 		}
 		elseif (is_string($user))
 		{
-			$username = '?screen_name=' . $user;
+			$parameters['screen_name'] = $user;
 		}
 		else
 		{
@@ -185,62 +179,52 @@ class JTwitterStatuses extends JTwitterObject
 		$base = '/1/statuses/user_timeline.json';
 
 		// Check if a since_id is specified
-		$since = '';
 		if ($since_id > 0)
 		{
-			$since = '&since_id=' . (int) $since_id;
+			$parameters['since_id'] = (int) $since_id;
 		}
 
 		// Set the count string
-		$count_param = '&count=' . $count;
+		$parameters['count'] = $count;
 
 		// Check if a max_id is specified
-		$max = '';
 		if ($max_id > 0)
 		{
-			$max = '&max_id=' . (int) $max_id;
+			$parameters['max_id'] = (int) $max_id;
 		}
 
 		// Check if a page is specified
-		$page_num = '';
 		if ($page > 0)
 		{
-			$page_num = '&page=' . (int) $page;
+			$parameters['page'] = (int) $page;
 		}
 
 		// Check if trim_user is true
-		$trim = '';
 		if ($trim_user)
 		{
-			$trim = '&trim_user=true';
+			$parameters['trim_user'] = $trim_user;
 		}
 
 		// Check if include_rts is true
-		$rts = '';
 		if ($include_rts)
 		{
-			$rts = '&include_rts=true';
+			$parameters['include_rts'] = $include_rts;
 		}
 
 		// Check if entities is true
-		$inc_entities = '';
 		if ($entities)
 		{
-			$inc_entities = '&include_entities=true';
+			$parameters['include_entities'] = $entities;
 		}
 
 		// Check if no_replies is true
-		$ex_replies = '';
 		if ($no_replies)
 		{
-			$ex_replies = '&exclude_replies=true';
+			$parameters['exclude_replies'] = $no_replies;
 		}
 
-		// Build the request path.
-		$path = $base . $username . $since . $count_param . $max . $page_num . $trim . $rts . $inc_entities . $ex_replies;
-
 		// Send the request.
-		return $this->sendRequest($path);
+		return $this->sendRequest($base, 'get', $parameters);
 	}
 
 	/**
@@ -441,14 +425,16 @@ class JTwitterStatuses extends JTwitterObject
 		// Check the rate limit for remaining hits
 		$this->checkRateLimit();
 
+		$parameters = array();
+
 		// Determine which type of data was passed for $user
 		if (is_integer($user))
 		{
-			$username = '?user_id=' . $user;
+			$parameters['user_id'] = $user;
 		}
 		elseif (is_string($user))
 		{
-			$username = '?screen_name=' . $user;
+			$parameters['screen_name'] = $user;
 		}
 		else
 		{
@@ -460,48 +446,40 @@ class JTwitterStatuses extends JTwitterObject
 		$base = '/1/statuses/retweeted_by_user.json';
 
 		// Check if a since_id is specified
-		$since = '';
 		if ($since_id > 0)
 		{
-			$since = '&since_id=' . (int) $since_id;
+			$parameters['since_id'] = (int) $since_id;
 		}
 
 		// Set the count string
-		$count_param = '&count=' . $count;
+		$parameters['count'] = $count;
 
 		// Check if a max_id is specified
-		$max = '';
 		if ($max_id > 0)
 		{
-			$max = '&max_id=' . (int) $max_id;
+			$parameters['max_id'] = (int) $max_id;
 		}
 
 		// Check if a page is specified
-		$page_num = '';
 		if ($page > 0)
 		{
-			$page_num = '&page=' . (int) $page;
+			$parameters['page'] = (int) $page;
 		}
 
 		// Check if trim_user is true
-		$trim = '';
 		if ($trim_user)
 		{
-			$trim = '&trim_user=true';
+			$parameters['trim_user'] = $trim_user;
 		}
 
 		// Check if entities is true
-		$inc_entities = '';
 		if ($entities)
 		{
-			$inc_entities = '&include_entities=true';
+			$parameters['include_entities'] = $entities;
 		}
 
-		// Build the request path.
-		$path = $base . $username . $since . $count_param . $max . $page_num . $trim . $inc_entities;
-
 		// Send the request.
-		return $this->sendRequest($path);
+		return $this->sendRequest($base, 'get', $parameters);
 	}
 
 	/**
@@ -594,20 +572,16 @@ class JTwitterStatuses extends JTwitterObject
 		$base = '/1/statuses/' . $id . '/retweeted_by.json';
 
 		// Set the count string
-		$count_param = '?count=' . $count;
+		$parameters['count'] = $count;
 
 		// Check if a page is specified
-		$page_num = '';
 		if ($page > 0)
 		{
-			$page_num = '&page=' . (int) $page;
+			$parameters['page'] = (int) $page;
 		}
 
-		// Build the request path.
-		$path = $base . $count_param . $page_num;
-
 		// Send the request.
-		return $this->sendRequest($path);
+		return $this->sendRequest($base, 'get', $parameters);
 	}
 
 	/**
