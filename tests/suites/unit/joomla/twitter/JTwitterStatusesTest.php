@@ -519,4 +519,62 @@ class JTwitterStatusesTest extends TestCase
 		// Remove the following lines when you implement this test.
 		$this->markTestIncomplete('This test is not implemented.');
 	}
+
+	/**
+	 * Tests the deleteTweet method
+	 *
+	 * @return  void
+	 *
+	 * @since   12.1
+	 */
+	public function testDeleteTweet()
+	{
+		$id = '1234329764382109394';
+		$trim_user = true;
+		$entities = true;
+
+		$returnData = new stdClass;
+		$returnData->code = 200;
+		$returnData->body = $this->sampleString;
+
+		// Set POST request parameters.
+		$data = array();
+		$data['trim_user'] = $trim_user;
+		$data['include_entities'] = $entities;
+
+		$this->client->expects($this->once())
+			->method('post')
+			->with('/1/statuses/destroy/' . $id . '.json', $data)
+			->will($this->returnValue($returnData));
+
+		$this->assertThat(
+		$this->object->deleteTweet($this->oauth, $id, $trim_user, $entities),
+		$this->equalTo(json_decode($this->sampleString))
+		);
+	}
+
+	/**
+	 * Tests the deleteTweet method - failure
+	 *
+	 * @return  void
+	 *
+	 * @since   12.1
+	 *
+	 * @expectedException  DomainException
+	 */
+	public function testDeleteTweetFailure()
+	{
+		$id = '1234329764382109394';
+
+		$returnData = new stdClass;
+		$returnData->code = 500;
+		$returnData->body = $this->errorString;
+
+		$this->client->expects($this->once())
+			->method('post')
+			->with('/1/statuses/destroy/' . $id . '.json', null)
+			->will($this->returnValue($returnData));
+
+		$this->object->deleteTweet($this->oauth, $id);
+	}
 }
