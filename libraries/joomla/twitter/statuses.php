@@ -380,13 +380,13 @@ class JTwitterStatuses extends JTwitterObject
 		// Check if trim_user is true
 		if ($trim_user)
 		{
-			$data['trim_user'] = true;
+			$data['trim_user'] = $trim_user;
 		}
 
 		// Check if include_rts is true
 		if ($include_rts)
 		{
-			$data['include_rts'] = true;
+			$data['include_rts'] = $include_rts;
 		}
 
 		// Check if entities is true
@@ -493,5 +493,75 @@ class JTwitterStatuses extends JTwitterObject
 
 		// Send the request.
 		return $this->sendRequest($path);
+	}
+
+	/**
+	 * Method to get the most recent tweets of the authenticated user that have been retweeted by others.
+	 * 
+	 * @param   JTwitterOAuth  $oauth      The JTwitterOAuth object.
+	 * @param   integer        $since_id   Returns results with an ID greater than (that is, more recent than) the specified ID.
+	 * @param   integer        $count      Specifies the number of tweets to try and retrieve, up to a maximum of 200.  Retweets are always included
+	 *                                     in the count, so it is always suggested to set $include_rts to true
+	 * @param   boolean        $entities   When set to true,  each tweet will include a node called "entities,". This node offers a variety of metadata
+	 *                                     about the tweet in a discreet structure, including: user_mentions, urls, and hashtags.
+	 * @param   integer        $max_id     Returns results with an ID less than (that is, older than) the specified ID.
+	 * @param   integer        $page       Specifies the page of results to retrieve.
+	 * @param   boolean        $trim_user  When set to true, each tweet returned in a timeline will include a user object including only
+	 *                                     the status author's numerical ID.
+	 *
+	 * @return  array  The decoded JSON response
+	 *
+	 * @since   12.1
+	 */
+	public function getRetweetsOfMe($oauth, $since_id = 0, $count = 20, $entities = false, $max_id = 0, $page = 0, $trim_user = false)
+	{
+		// Check the rate limit for remaining hits
+		$this->checkRateLimit();
+
+		// Set the API base
+		$base = '/1/statuses/retweets_of_me.json';
+
+		// Set parameters.
+		$parameters = array('oauth_token' => $oauth->getToken('key'));
+
+		// Check if a since_id is specified
+		if ($since_id > 0)
+		{
+			$data['since_id'] = (int) $since_id;
+		}
+
+		// Set the count string
+		$data['count'] = $count;
+
+		// Check if a max_id is specified
+		if ($max_id > 0)
+		{
+			$data['max_id'] = (int) $max_id;
+		}
+
+		// Check if a page is specified
+		if ($page > 0)
+		{
+			$data['page'] = (int) $page;
+		}
+
+		// Check if trim_user is true
+		if ($trim_user)
+		{
+			$data['trim_user'] = $trim_user;
+		}
+
+		// Check if entities is true
+		if ($entities)
+		{
+			$data['include_entities'] = $entities;
+		}
+
+		// Build the request path.
+		$path = $this->getOption('api.url') . $base;
+
+		// Send the request.
+		$response = $oauth->oauthRequest($path, 'GET', $parameters, $data);
+		return json_decode($response->body);
 	}
 }
