@@ -771,4 +771,87 @@ class JTwitterStatuses extends JTwitterObject
 		$response = $oauth->oauthRequest($path, 'POST', $parameters, $data);
 		return json_decode($response->body);
 	}
+
+	/**
+	 * Method to post a tweet with media.
+	 * 
+	 * @param   JTwitterOAuth  $oauth                  The JTwitterOAuth object.
+	 * @param   string         $status                 The text of the tweet.
+	 * @param   array          $media                  Files to upload
+	 * @param   integer        $in_reply_to_status_id  The ID of an existing status that the update is in reply to.
+	 * @param   float          $lat                    The latitude of the location this tweet refers to.
+	 * @param   float          $long                   The longitude of the location this tweet refers to.
+	 * @param   string         $place_id               A place in the world.
+	 * @param   boolean        $display_coordinates    Whether or not to put a pin on the exact coordinates a tweet has been sent from.
+	 * @param   boolean        $sensitive              Set to true for content which may not be suitable for every audience.
+	 * 
+	 * @return  array  The decoded JSON response
+	 *
+	 * @since   12.1
+	 */
+	public function tweetWithMedia($oauth, $status, $media, $in_reply_to_status_id = null, $lat = null, $long = null, $place_id = null, $display_coordinates = false,
+		$sensitive = false)
+	{
+		// Set the API request path.
+		$path = 'https://upload.twitter.com/1/statuses/update_with_media.json';
+
+		// Set POST data.
+		$data = array(
+			'media[]' => "@{$media}",
+			'status' => utf8_encode($status)
+		);
+
+		// Set parameters.
+		$parameters = array(
+			'oauth_token' => $oauth->getToken('key')
+		);
+		
+		$header = array('Content-Type' => 'multipart/form-data', 'Expect' => '');
+
+		// Check if in_reply_to_status_id is specified.
+		if ($in_reply_to_status_id)
+		{
+			$data['in_reply_to_status_id'] = $in_reply_to_status_id;
+			$parameters['in_reply_to_status_id'] = $in_reply_to_status_id;
+		}
+
+		// Check if lat is specified.
+		if ($lat)
+		{
+			$data['lat'] = $lat;
+			$parameters['lat'] = $lat;
+		}
+
+		// Check if long is specified.
+		if ($long)
+		{
+			$data['long'] = $long;
+			$parameters['long'] = $long;
+		}
+
+		// Check if place_id is specified.
+		if ($place_id)
+		{
+			$data['place_id'] = $place_id;
+			$parameters['place_id'] = $place_id;
+		}
+
+		// Check if display_coordinates is true.
+		if ($display_coordinates)
+		{
+			$data['display_coordinates'] = $display_coordinates;
+			$parameters['display_coordinates'] = $display_coordinates;
+		}
+
+		// Check if sensitive is true.
+		if ($sensitive)
+		{
+			$data['possibly_sensitive'] = $sensitive;
+			$parameters['possibly_sensitive'] = $sensitive;
+		}
+
+		// Send the request.
+		$response = $oauth->oauthRequest($path, 'POST', $parameters, $data, $header);
+		return json_decode($response->body);
+	}
 }
