@@ -94,4 +94,66 @@ class JTwitterUsers extends JTwitterObject
 		// Send the request.
 		return $this->sendRequest($base, 'get', $parameters);
 	}
+
+	/**
+	 * Method used to search for users
+	 * 
+	 * @param   JTwitterOAuth  $oauth     The JTwitterOAuth object.
+	 * @param   string         $query     The search query to run against people search.
+	 * @param   integer        $page      Specifies the page of results to retrieve.
+	 * @param   integer        $per_page  The number of people to retrieve. Maxiumum of 20 allowed per page.
+	 * @param   boolean        $entities  When set to either true, t or 1, each tweet will include a node called "entities,". This node offers a variety of
+	 * 									  metadata about the tweet in a discreet structure, including: user_mentions, urls, and hashtags.
+	 */
+	public function searchUsers($oauth, $query, $page = 0, $per_page = 0, $entities = false)
+	{
+		// Check the rate limit for remaining hits
+		$this->checkRateLimit();
+
+		// Set parameters.
+		$parameters = array(
+			'oauth_token' => $oauth->getToken('key')
+		);
+
+		$data['q'] = rawurlencode($query);
+
+		// Check if page is specified.
+		if ($page > 0 )
+		{
+			$data['page'] = $page;
+		}
+
+		// Check if per_page is specified
+		if ($per_page > 0)
+		{
+			$data['per_page'] = $per_page;
+		}
+
+		// Check if entities is true.
+		if ($entities)
+		{
+			$data['include_entities'] = $entities;
+		}
+
+		// Set the API base
+		$base = '/1/users/search.json';
+
+		// Build the request path.
+		$path = $this->getOption('api.url') . $base;
+
+		// Send the request.
+		$response = $oauth->oauthRequest($path, 'GET', $parameters, $data);
+
+		// Check Feature Rate Limit.
+		$response_headers = $response->headers;
+		if ($response_headers['X-FeatureRateLimit-Remaining'] == 0)
+		{
+			// The IP has exceeded the Twitter API media rate limit
+			throw new RuntimeException('This server has exceed the Twitter API media rate limit for the given period.  The limit will reset in '
+						. $response_headers['X-FeatureRateLimit-Reset'] . 'seconds.'
+			);
+		}
+
+		return json_decode($response->body);
+	}
 }
