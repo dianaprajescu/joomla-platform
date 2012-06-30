@@ -789,9 +789,12 @@ class JTwitterStatuses extends JTwitterObject
 	 *
 	 * @since   12.1
 	 */
-	public function tweetWithMedia($oauth, $status, $media, $in_reply_to_status_id = null, $lat = null, $long = null, $place_id = null, $display_coordinates = false,
-		$sensitive = false)
+	public function tweetWithMedia($oauth, $status, $media, $in_reply_to_status_id = null, $lat = null, $long = null, $place_id = null,
+		$display_coordinates = false, $sensitive = false)
 	{
+		// Check the rate limit for remaining hits
+		$this->checkRateLimit();
+
 		// Set the API request path.
 		$path = 'https://upload.twitter.com/1/statuses/update_with_media.json';
 
@@ -805,7 +808,7 @@ class JTwitterStatuses extends JTwitterObject
 		$parameters = array(
 			'oauth_token' => $oauth->getToken('key')
 		);
-		
+
 		$header = array('Content-Type' => 'multipart/form-data', 'Expect' => '');
 
 		// Check if in_reply_to_status_id is specified.
@@ -852,6 +855,17 @@ class JTwitterStatuses extends JTwitterObject
 
 		// Send the request.
 		$response = $oauth->oauthRequest($path, 'POST', $parameters, $data, $header);
+
+		// Check Media Rate Limit.
+		$response_headers = $response->headers;
+		if ($response_headers['X-MediaRateLimit-Remaining'] == 0)
+		{
+			// The IP has exceeded the Twitter API media rate limit
+			throw new RuntimeException('This server has exceed the Twitter API media rate limit for the given period.  The limit will reset in '
+						. $response_headers['X-MediaRateLimit-Reset'] . 'seconds.'
+			);
+		}
+
 		return json_decode($response->body);
 	}
 }
