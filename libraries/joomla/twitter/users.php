@@ -97,14 +97,14 @@ class JTwitterUsers extends JTwitterObject
 
 	/**
 	 * Method used to search for users
-	 * 
+	 *
 	 * @param   JTwitterOAuth  $oauth     The JTwitterOAuth object.
 	 * @param   string         $query     The search query to run against people search.
 	 * @param   integer        $page      Specifies the page of results to retrieve.
 	 * @param   integer        $per_page  The number of people to retrieve. Maxiumum of 20 allowed per page.
 	 * @param   boolean        $entities  When set to either true, t or 1, each tweet will include a node called "entities,". This node offers a
 	 * 									  variety of metadata about the tweet in a discreet structure, including: user_mentions, urls, and hashtags.
-	 * 
+	 *
 	 * @return  array  The decoded JSON response
 	 *
 	 * @since   12.1
@@ -309,7 +309,7 @@ class JTwitterUsers extends JTwitterObject
 
 	/**
 	 * Method access to Twitter's suggested user list.
-	 * 
+	 *
 	 * @param   boolean  $lang  Restricts the suggested categories to the requested language.
 	 *
 	 * @return  array  The decoded JSON response
@@ -338,7 +338,7 @@ class JTwitterUsers extends JTwitterObject
 
 	/**
 	 * method to access the users in a given category of the Twitter suggested user list.
-	 * 
+	 *
 	 * @param   string   $slug  The short name of list or a category.
 	 * @param   boolean  $lang  Restricts the suggested categories to the requested language.
 	 *
@@ -367,9 +367,11 @@ class JTwitterUsers extends JTwitterObject
 	}
 
 	/**
-	 * Method to access the users in a given category of the Twitter suggested user list and return their most recent status if they are not a protected user.
-	 * 
-	 * @param   string   $slug  The short name of list or a category.
+	 * Method to access the users in a given category of the Twitter suggested user list and return
+	 * their most recent status if they are not a protected user.
+	 *
+	 * @param   string  $slug  The short name of list or a category.
+	 * @param   string  $lang  Restricts the suggested categories to the requested language.
 	 *
 	 * @return  array  The decoded JSON response
 	 *

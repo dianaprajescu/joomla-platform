@@ -90,21 +90,21 @@ class JTwitter
 					$this->friends = new JTwitterFriends($this->options, $this->client);
 				}
 				return $this->friends;
-				
+
 			case 'help':
 				if ($this->help == null)
 				{
 					$this->help = new JTwitterHelp($this->options, $this->client);
 				}
 				return $this->help;
-				
+
 			case 'statuses':
 				if ($this->statuses == null)
 				{
 					$this->statuses = new JTwitterStatuses($this->options, $this->client);
 				}
 				return $this->statuses;
-				
+
 			case 'users':
 				if ($this->users == null)
 				{
