@@ -398,4 +398,52 @@ class JTwitterFriends extends JTwitterObject
 		$response = $oauth->oauthRequest($path, 'POST', $parameters, $data);
 		return json_decode($response->body);
 	}
+
+	/**
+	 * Method to ge the relationship of the authenticating user to the comma separated list of up to 100 screen_names or user_ids provided.
+	 * 
+	 * @param   JTwitterOAuth  $oauth  The JTwitterOAuth object.
+	 * @param   mixed          $user   Either an integer containing the user ID or a string containing the screen name.
+	 *
+	 * @return  array  The decoded JSON response
+	 *
+	 * @since   12.1
+	 */
+	public function getFriendshipsLookup($oauth, $user)
+	{
+		// Check the rate limit for remaining hits
+		$this->checkRateLimit();
+
+		// Set parameters.
+		$parameters = array(
+			'oauth_token' => $oauth->getToken('key')
+		);
+
+		$data = array();
+
+		// Determine which type of data was passed for $user
+		if (is_integer($user))
+		{
+			$data['user_id'] = $user;
+		}
+		elseif (is_string($user))
+		{
+			$data['screen_name'] = $user;
+		}
+		else
+		{
+			// We don't have a valid entry
+			throw new RuntimeException('The specified username is not in the correct format; must use integer or string');
+		}
+
+		// Set the API base
+		$base = '/1/friendships/lookup.json';
+
+		// Build the request path.
+		$path = $this->getOption('api.url') . $base;
+
+		// Send the request.
+		$response = $oauth->oauthRequest($path, 'GET', $parameters, $data);
+		return json_decode($response->body);
+	}
 }

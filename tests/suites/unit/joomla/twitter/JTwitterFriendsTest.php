@@ -352,4 +352,19 @@ class JTwitterFriendsTest extends TestCase
 
 		$this->object->deleteFriendship($this->oauth, $user);
 	}
+
+	/**
+	 * Tests the getFriendshipsLookup method
+	 * 
+	 * @covers JTwitterFriends::getFriendshipsLookup
+	 * 
+	 * @todo   Implement testGetFriendshipsLookup().
+	 * 
+	 * @return  void
+	 */
+	public function testGetFriendshipsLookup()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete('This test has not been implemented yet.');
+	}
 }
