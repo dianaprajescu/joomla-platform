@@ -449,4 +449,19 @@ class JTwitterFriendsTest extends TestCase
 
 		$this->object->updateFriendship($this->oauth, $user);
 	}
+
+	/**
+	 * Tests the getFriendshipNoRetweetIds method
+	 * 
+	 * @covers JTwitterFriends::getFriendshipNoRetweetIds
+	 * 
+	 * @todo   Implement testGetFriendshipNoRetweetIds().
+	 * 
+	 * @return  void
+	 */
+	public function testGetFriendshipNoRetweetIds()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete('This test has not been implemented yet.');
+	}
 }

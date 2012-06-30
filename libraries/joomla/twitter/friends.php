@@ -400,10 +400,10 @@ class JTwitterFriends extends JTwitterObject
 	}
 
 	/**
-	 * Method to ge the relationship of the authenticating user to the comma separated list of up to 100 screen_names or user_ids provided.
+	 * Method to get the relationship of the authenticating user to the comma separated list of up to 100 screen_names or user_ids provided.
 	 * 
 	 * @param   JTwitterOAuth  $oauth  The JTwitterOAuth object.
-	 * @param   mixed          $user   Either an integer containing the user ID or a string containing the screen name.
+	 * @param   mixed          $user   Either an integer containing a list of the user IDs or strings containing the screen names.
 	 *
 	 * @return  array  The decoded JSON response
 	 *
@@ -505,6 +505,45 @@ class JTwitterFriends extends JTwitterObject
 
 		// Send the request.
 		$response = $oauth->oauthRequest($path, 'POST', $parameters, $data);
+		return json_decode($response->body);
+	}
+
+	/**
+	 * Method to get the user ids that currently authenticated user does not want to see retweets from.
+	 * 
+	 * @param   JTwitterOAuth  $oauth       The JTwitterOAuth object.
+	 * @param   boolean        $string_ids  Set to true to return IDs as strings, false to return as integers.
+	 *
+	 * @return  array  The decoded JSON response
+	 *
+	 * @since   12.1
+	 */
+	public function getFriendshipNoRetweetIds($oauth, $string_ids = true)
+	{
+		// Check the rate limit for remaining hits
+		$this->checkRateLimit();
+
+		// Set parameters.
+		$parameters = array(
+			'oauth_token' => $oauth->getToken('key')
+		);
+
+		$data = array();
+
+		// Check if string_ids is true
+		if ($string_ids)
+		{
+			$data['stringify_ids'] = $string_ids;
+		}
+
+		// Set the API base
+		$base = '/1/friendships/no_retweet_ids.json';
+
+		// Build the request path.
+		$path = $this->getOption('api.url') . $base;
+
+		// Send the request.
+		$response = $oauth->oauthRequest($path, 'GET', $parameters, $data);
 		return json_decode($response->body);
 	}
 }
