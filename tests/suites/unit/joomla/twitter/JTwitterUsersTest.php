@@ -101,4 +101,19 @@ class JTwitterUsersTest extends TestCase
 		// Remove the following lines when you implement this test.
 		$this->markTestIncomplete('This test has not been implemented yet.');
 	}
+
+	/**
+	 * Tests the getUserProfileImage method
+	 * 
+	 * @covers JTwitterUsers::getUserProfileImage
+	 * 
+	 * @todo   Implement testGetUserProfileImage().
+	 * 
+	 * @return  void
+	 */
+	public function testGetUserProfileImage()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete('This test has not been implemented yet.');
+	}
 }

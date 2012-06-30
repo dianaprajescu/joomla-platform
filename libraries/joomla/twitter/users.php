@@ -63,4 +63,35 @@ class JTwitterUsers extends JTwitterObject
 		// Send the request.
 		return $this->sendRequest($base, 'post', $parameters);
 	}
+
+	/**
+	 * Method to access the profile image in various sizes for the user with the indicated screen_name.
+	 *
+	 * @param   string  $screen_name  The screen name of the user for whom to return results for.
+	 * 								  Helpful for disambiguating when a valid screen name is also a user ID.
+	 * @param   string  $size         Specifies the size of image to fetch. Not specifying a size will give the default, normal size of 48px by 48px.
+	 *
+	 * @return  array  The decoded JSON response
+	 *
+	 * @since   12.1
+	 */
+	public function getUserProfileImage($screen_name, $size = null)
+	{
+		// Check the rate limit for remaining hits
+		$this->checkRateLimit();
+
+		// Set the API base
+		$base = '/1/users/lookup.json';
+
+		$parameters['screen_name'] = $screen_name;
+
+		// Check if string_ids is true
+		if ($size)
+		{
+			$parameters['size'] = $size;
+		}
+
+		// Send the request.
+		return $this->sendRequest($base, 'get', $parameters);
+	}
 }
