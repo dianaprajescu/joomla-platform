@@ -131,4 +131,19 @@ class JTwitterUsersTest extends TestCase
 		// Remove the following lines when you implement this test.
 		$this->markTestIncomplete('This test has not been implemented yet.');
 	}
+
+	/**
+	 * Tests the getUser method
+	 * 
+	 * @covers JTwitterUsers::getUser
+	 * 
+	 * @todo   Implement testGetUser().
+	 * 
+	 * @return  void
+	 */
+	public function testGetUser()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete('This test has not been implemented yet.');
+	}
 }

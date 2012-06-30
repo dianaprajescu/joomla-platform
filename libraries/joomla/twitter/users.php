@@ -102,8 +102,12 @@ class JTwitterUsers extends JTwitterObject
 	 * @param   string         $query     The search query to run against people search.
 	 * @param   integer        $page      Specifies the page of results to retrieve.
 	 * @param   integer        $per_page  The number of people to retrieve. Maxiumum of 20 allowed per page.
-	 * @param   boolean        $entities  When set to either true, t or 1, each tweet will include a node called "entities,". This node offers a variety of
-	 * 									  metadata about the tweet in a discreet structure, including: user_mentions, urls, and hashtags.
+	 * @param   boolean        $entities  When set to either true, t or 1, each tweet will include a node called "entities,". This node offers a
+	 * 									  variety of metadata about the tweet in a discreet structure, including: user_mentions, urls, and hashtags.
+	 * 
+	 * @return  array  The decoded JSON response
+	 *
+	 * @since   12.1
 	 */
 	public function searchUsers($oauth, $query, $page = 0, $per_page = 0, $entities = false)
 	{
@@ -155,5 +159,49 @@ class JTwitterUsers extends JTwitterObject
 		}
 
 		return json_decode($response->body);
+	}
+
+	/**
+	 * Method to get extended information of a given user, specified by ID or screen name as per the required id parameter.
+	 *
+	 * @param   mixed    $user      Either an integer containing the user ID or a string containing the screen name.
+	 * @param   boolean  $entities  Set to true to return IDs as strings, false to return as integers.
+	 *
+	 * @return  array  The decoded JSON response
+	 *
+	 * @since   12.1
+	 * @throws  RuntimeException
+	 */
+	public function getUser($user, $entities = true)
+	{
+		// Check the rate limit for remaining hits
+		$this->checkRateLimit();
+
+		// Determine which type of data was passed for $user
+		if (is_integer($user))
+		{
+			$parameters['user_id'] = $user;
+		}
+		elseif (is_string($user))
+		{
+			$parameters['screen_name'] = $user;
+		}
+		else
+		{
+			// We don't have a valid entry
+			throw new RuntimeException('The specified username is not in the correct format; must use integer or string');
+		}
+
+		// Set the API base
+		$base = '/1/users/show.json';
+
+		// Check if string_ids is true
+		if ($entities)
+		{
+			$parameters['include_entities'] = $entities;
+		}
+
+		// Send the request.
+		return $this->sendRequest($base, 'get', $parameters);
 	}
 }
