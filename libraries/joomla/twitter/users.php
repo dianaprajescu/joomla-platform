@@ -337,7 +337,7 @@ class JTwitterUsers extends JTwitterObject
 	}
 
 	/**
-	 * Access the users in a given category of the Twitter suggested user list.
+	 * method to access the users in a given category of the Twitter suggested user list.
 	 * 
 	 * @param   string   $slug  The short name of list or a category.
 	 * @param   boolean  $lang  Restricts the suggested categories to the requested language.
@@ -364,5 +364,26 @@ class JTwitterUsers extends JTwitterObject
 
 		// Send the request.
 		return $this->sendRequest($base, 'get', $parameters);
+	}
+
+	/**
+	 * Method to access the users in a given category of the Twitter suggested user list and return their most recent status if they are not a protected user.
+	 * 
+	 * @param   string   $slug  The short name of list or a category.
+	 *
+	 * @return  array  The decoded JSON response
+	 *
+	 * @since   12.1
+	 */
+	public function getSuggestionsSlugMembers($slug, $lang = null)
+	{
+		// Check the rate limit for remaining hits
+		$this->checkRateLimit();
+
+		// Set the API base
+		$base = '/1/users/suggestions/' . $slug . '/members.json';
+
+		// Send the request.
+		return $this->sendRequest($base, 'get', array());
 	}
 }
