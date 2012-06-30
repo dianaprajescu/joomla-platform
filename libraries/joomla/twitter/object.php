@@ -60,8 +60,8 @@ abstract class JTwitterObject
 		if ($rate_limit->remaining_hits == 0)
 		{
 			// The IP has exceeded the Twitter API rate limit
-			throw new RuntimeException('This server has exceed the Twitter API rate limit for the given period.  The limit will reset at '
-						. $rate_limit->reset_time
+			throw new RuntimeException('This server has exceed the Twitter API rate limit for the given period.  The limit will reset in '
+						. $rate_limit->reset_time . 'seconds.'
 			);
 		}
 	}
