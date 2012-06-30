@@ -892,6 +892,7 @@ class JTwitterStatuses extends JTwitterObject
 	 * @return  array  The decoded JSON response
 	 *
 	 * @since   12.1
+	 * @throws  RuntimeException
 	 */
 	public function getOembed($id = null, $url = null, $maxwidth = null, $hide_media = false, $hide_thread = false, $omit_script = false,
 		$align = null, $related = null, $lang = null)

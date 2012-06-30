@@ -37,11 +37,11 @@ class JTwitterFriends extends JTwitterObject
 		// Determine which type of data was passed for $user
 		if (is_integer($user))
 		{
-			$username = '?user_id=' . $user;
+			$parameters['user_id'] = $user;
 		}
 		elseif (is_string($user))
 		{
-			$username = '?screen_name=' . $user;
+			$parameters['screen_name'] = $user;
 		}
 		else
 		{
@@ -53,17 +53,13 @@ class JTwitterFriends extends JTwitterObject
 		$base = '/1/friends/ids.json';
 
 		// Check if string_ids is true
-		$stringify_ids = '';
 		if ($string_ids)
 		{
-			$stringify_ids = '&stringify_ids=true';
+			$parameters['stringify_ids'] = $string_ids;
 		}
 
-		// Build the request path.
-		$path = $base . $username . $stringify_ids;
-
 		// Send the request.
-		return $this->sendRequest($path, 200);
+		return $this->sendRequest($base, 'get', $parameters);
 	}
 
 	/**
@@ -85,11 +81,11 @@ class JTwitterFriends extends JTwitterObject
 		// Determine which type of data was passed for $user_a
 		if (is_integer($user_a))
 		{
-			$username_a = '?source_id=' . $user_a;
+			$parameters['source_id'] = $user_a;
 		}
 		elseif (is_string($user_a))
 		{
-			$username_a = '?source_screen_name=' . $user_a;
+			$parameters['source_screen_name'] = $user_a;
 		}
 		else
 		{
@@ -100,11 +96,11 @@ class JTwitterFriends extends JTwitterObject
 		// Determine which type of data was passed for $user_b
 		if (is_integer($user_b))
 		{
-			$username_b = '&target_id=' . $user_b;
+			$parameters['target_id'] = $user_b;
 		}
 		elseif (is_string($user_b))
 		{
-			$username_b = '&target_screen_name=' . $user_b;
+			$parameters['target_screen_name'] = $user_b;
 		}
 		else
 		{
@@ -115,11 +111,8 @@ class JTwitterFriends extends JTwitterObject
 		// Set the API base
 		$base = '/1/friendships/show.json';
 
-		// Build the request path.
-		$path = $base . $username_a . $username_b;
-
 		// Send the request.
-		return $this->sendRequest($path, 200);
+		return $this->sendRequest($base, 'get', $parameters);
 	}
 
 	/**
@@ -141,11 +134,11 @@ class JTwitterFriends extends JTwitterObject
 		// Determine which type of data was passed for $user_a
 		if (is_integer($user_a))
 		{
-			$username_a = '?user_id_a=' . $user_a;
+			$parameters['user_id_a'] = $user_a;
 		}
 		elseif (is_string($user_a))
 		{
-			$username_a = '?screen_name_a=' . $user_a;
+			$parameters['screen_name_a'] = $user_a;
 		}
 		else
 		{
@@ -156,11 +149,11 @@ class JTwitterFriends extends JTwitterObject
 		// Determine which type of data was passed for $user_b
 		if (is_integer($user_b))
 		{
-			$username_b = '&user_id_b=' . $user_b;
+			$parameters['user_id_b'] = $user_b;
 		}
 		elseif (is_string($user_b))
 		{
-			$username_b = '&screen_name_b=' . $user_b;
+			$parameters['screen_name_b'] = $user_b;
 		}
 		else
 		{
@@ -171,11 +164,8 @@ class JTwitterFriends extends JTwitterObject
 		// Set the API base
 		$base = '/1/friendships/exists.json';
 
-		// Build the request path.
-		$path = $base . $username_a . $username_b;
-
 		// Send the request.
-		return $this->sendRequest($path, 200);
+		return $this->sendRequest($base, 'get', $parameters);
 	}
 
 	/**
@@ -197,11 +187,11 @@ class JTwitterFriends extends JTwitterObject
 		// Determine which type of data was passed for $user
 		if (is_integer($user))
 		{
-			$username = '?user_id=' . $user;
+			$parameters['user_id'] = $user;
 		}
 		elseif (is_string($user))
 		{
-			$username = '?screen_name=' . $user;
+			$parameters['screen_name'] = $user;
 		}
 		else
 		{
@@ -213,16 +203,12 @@ class JTwitterFriends extends JTwitterObject
 		$base = '/1/followers/ids.json';
 
 		// Check if string_ids is true
-		$stringify_ids = '';
 		if ($string_ids)
 		{
-			$stringify_ids = '&stringify_ids=true';
+			$parameters['stringify_ids'] = $string_ids;
 		}
 
-		// Build the request path.
-		$path = $base . $username . $stringify_ids;
-
 		// Send the request.
-		return $this->sendRequest($path, 200);
+		return $this->sendRequest($base, 'get', $parameters);
 	}
 }
