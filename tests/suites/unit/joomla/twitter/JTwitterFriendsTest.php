@@ -184,7 +184,7 @@ class JTwitterFriendsTest extends TestCase
 	*
 	* @since 12.1
 	*/
-	public function seedCreateFriendship()
+	public function seedFriendship()
 	{
 		// User ID or screen name
 		return array(
@@ -192,6 +192,7 @@ class JTwitterFriendsTest extends TestCase
 			array('testUser')
 			);
 	}
+
 	/**
 	 * Tests the createFriendship method
 	 * 
@@ -199,7 +200,7 @@ class JTwitterFriendsTest extends TestCase
 	 *
 	 * @return  void
 	 * 
-	 * @dataProvider  seedCreateFriendship
+	 * @dataProvider  seedFriendship
 	 *
 	 * @since   12.1
 	 */
@@ -241,7 +242,7 @@ class JTwitterFriendsTest extends TestCase
 	 *
 	 * @return  void
 	 * 
-	 * @dataProvider  seedCreateFriendship
+	 * @dataProvider  seedFriendship
 	 *
 	 * @since   12.1
 	 *
@@ -270,5 +271,85 @@ class JTwitterFriendsTest extends TestCase
 			->will($this->returnValue($returnData));
 
 		$this->object->createFriendship($this->oauth, $user);
+	}
+
+	/**
+	 * Tests the deleteFriendship method
+	 * 
+	 * @param   mixed  $user  Either an integer containing the user ID or a string containing the screen name.
+	 *
+	 * @return  void
+	 * 
+	 * @dataProvider  seedFriendship
+	 *
+	 * @since   12.1
+	 */
+	public function testDeleteFriendship($user)
+	{
+		$entities = true;
+
+		$returnData = new stdClass;
+		$returnData->code = 200;
+		$returnData->body = $this->sampleString;
+
+		// Set POST request parameters.
+		$data = array();
+		if (is_integer($user))
+		{
+			$data['user_id'] = $user;
+		}
+		else
+		{
+			$data['screen_name'] = $user;
+		}
+		$data['include_entities'] = $entities;
+
+		$this->client->expects($this->once())
+			->method('post')
+			->with('/1/friendships/destroy.json', $data)
+			->will($this->returnValue($returnData));
+
+		$this->assertThat(
+			$this->object->deleteFriendship($this->oauth, $user, $entities),
+			$this->equalTo(json_decode($this->sampleString))
+		);
+	}
+
+	/**
+	 * Tests the deleteFriendship method - failure
+	 * 
+	 * @param   mixed  $user  Either an integer containing the user ID or a string containing the screen name.
+	 *
+	 * @return  void
+	 * 
+	 * @dataProvider  seedFriendship
+	 *
+	 * @since   12.1
+	 *
+	 * @expectedException  DomainException
+	 */
+	public function testDeleteFriendshipFailure($user)
+	{
+		$returnData = new stdClass;
+		$returnData->code = 500;
+		$returnData->body = $this->errorString;
+
+		// Set POST request parameters.
+		$data = array();
+		if (is_integer($user))
+		{
+			$data['user_id'] = $user;
+		}
+		else
+		{
+			$data['screen_name'] = $user;
+		}
+
+		$this->client->expects($this->once())
+			->method('post')
+			->with('/1/friendships/destroy.json', $data)
+			->will($this->returnValue($returnData));
+
+		$this->object->deleteFriendship($this->oauth, $user);
 	}
 }
