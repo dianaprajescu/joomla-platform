@@ -103,17 +103,36 @@ class JTwitterStatusesTest extends TestCase
 	 */
 	public function testGetRetweetedByUser()
 	{
+		$user = 'testUser';
+		$since_id = 1000;
+		$count = 10;
+		$entities = true;
+		$max_id = 345354;
+		$page = 1;
+		$trim_user = true;
+
 		$returnData = new stdClass;
 		$returnData->code = 200;
 		$returnData->body = $this->sampleString;
 
+		// Set request parameters.
+		$data['screen_name'] = $user;
+		$data['since_id'] = $since_id;
+		$data['count'] = $count;
+		$data['max_id'] = $max_id;
+		$data['page'] = $page;
+		$data['trim_user'] = $trim_user;
+		$data['include_entities'] = $entities;
+
+		$path = $this->object->fetchUrl('/1/statuses/retweeted_by_user.json', $data);
+
 		$this->client->expects($this->once())
 		->method('get')
-		->with('/1/statuses/retweeted_by_user.json?screen_name=joomla&count=20')
+		->with($path)
 		->will($this->returnValue($returnData));
 
 		$this->assertThat(
-			$this->object->getRetweetedByUser('joomla'),
+			$this->object->getRetweetedByUser($user, $since_id, $count, $entities, $max_id, $page, $trim_user),
 			$this->equalTo(json_decode($this->sampleString))
 		);
 	}
@@ -234,8 +253,9 @@ class JTwitterStatusesTest extends TestCase
 	{
 		// User ID or screen name
 		return array(
-			array('234654235457'),
-			array('testUser')
+			array(234654235457),
+			array('testUser'),
+			array(null)
 			);
 	}
 
@@ -275,15 +295,20 @@ class JTwitterStatusesTest extends TestCase
 		$returnData->body = $this->sampleString;
 
 		// Set request parameters.
-		$data = array();
-		if (is_integer($user))
+		if (is_numeric($user))
 		{
 			$data['user_id'] = $user;
 		}
-		else
+		elseif (is_string($user))
 		{
 			$data['screen_name'] = $user;
 		}
+		else
+		{
+			$this->setExpectedException('RuntimeException');
+			$this->object->getUserTimeline($user, $count, $include_rts, $entities, $no_replies, $since_id, $max_id, $page, $trim_user);
+		}
+
 		$data['count'] = $count;
 		$data['include_rts'] = $include_rts;
 		$data['include_entities'] = $entities;
@@ -336,15 +361,20 @@ class JTwitterStatusesTest extends TestCase
 		$returnData->body = $this->errorString;
 
 		// Set request parameters.
-		$data = array();
-		if (is_integer($user))
+		if (is_numeric($user))
 		{
 			$data['user_id'] = $user;
 		}
-		else
+		elseif (is_string($user))
 		{
 			$data['screen_name'] = $user;
 		}
+		else
+		{
+			$this->setExpectedException('RuntimeException');
+			$this->object->getUserTimeline($user, $count, $include_rts);
+		}
+
 		$data['count'] = $count;
 		$data['include_rts'] = $include_rts;
 
@@ -561,15 +591,20 @@ class JTwitterStatusesTest extends TestCase
 		$returnData->body = $this->sampleString;
 
 		// Set request parameters.
-		$data = array();
-		if (is_integer($user))
+		if (is_numeric($user))
 		{
 			$data['user_id'] = $user;
 		}
-		else
+		elseif (is_string($user))
 		{
 			$data['screen_name'] = $user;
 		}
+		else
+		{
+			$this->setExpectedException('RuntimeException');
+			$this->object->getRetweetedToUser($user, $count, $since_id, $entities, $max_id, $page, $trim_user);
+		}
+
 		$data['count'] = $count;
 		$data['since_id'] = $since_id;
 		$data['max_id'] = $max_id;
@@ -619,15 +654,20 @@ class JTwitterStatusesTest extends TestCase
 		$returnData->body = $this->errorString;
 
 		// Set request parameters.
-		$data = array();
-		if (is_integer($user))
+		if (is_numeric($user))
 		{
 			$data['user_id'] = $user;
 		}
-		else
+		elseif (is_string($user))
 		{
 			$data['screen_name'] = $user;
 		}
+		else
+		{
+			$this->setExpectedException('RuntimeException');
+			$this->object->getRetweetedToUser($user, $count);
+		}
+
 		$data['count'] = $count;
 
 		$path = $this->object->fetchUrl('/1/statuses/retweeted_to_user.json', $data);
