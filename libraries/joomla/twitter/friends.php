@@ -446,4 +446,65 @@ class JTwitterFriends extends JTwitterObject
 		$response = $oauth->oauthRequest($path, 'GET', $parameters, $data);
 		return json_decode($response->body);
 	}
+
+	/**
+	 * Allows one to enable or disable retweets and device notifications from the specified user.
+	 * 
+	 * @param   JTwitterOAuth  $oauth     The JTwitterOAuth object. 
+	 * @param   mixed          $user      Either an integer containing the user ID or a string containing the screen name.
+	 * @param   boolean        $device    Enable/disable device notifications from the target user.
+	 * @param   boolean        $retweets  Enable/disable retweets from the target user.
+	 * 
+	 * @return  array  The decoded JSON response
+	 *
+	 * @since   12.1
+	 * @throws  RuntimeException
+	 */
+	public function updateFriendship($oauth, $user, $device = false, $retweets = false)
+	{
+		// Set parameters.
+		$parameters = array(
+			'oauth_token' => $oauth->getToken('key')
+		);
+
+		// Set POST data.
+		$data = array();
+
+		// Determine which type of data was passed for $user
+		if (is_integer($user))
+		{
+			$data['user_id'] = $user;
+		}
+		elseif (is_string($user))
+		{
+			$data['screen_name'] = $user;
+		}
+		else
+		{
+			// We don't have a valid entry
+			throw new RuntimeException('The specified username is not in the correct format; must use integer or string');
+		}
+
+		// Check if device is true.
+		if ($device)
+		{
+			$data['device'] = $device;
+		}
+
+		// Check if retweets is true.
+		if ($retweets)
+		{
+			$data['retweets'] = $retweets;
+		}
+
+		// Set the API base
+		$base = '/1/friendships/update.json';
+
+		// Build the request path.
+		$path = $this->getOption('api.url') . $base;
+
+		// Send the request.
+		$response = $oauth->oauthRequest($path, 'POST', $parameters, $data);
+		return json_decode($response->body);
+	}
 }

@@ -367,4 +367,86 @@ class JTwitterFriendsTest extends TestCase
 		// Remove the following lines when you implement this test.
 		$this->markTestIncomplete('This test has not been implemented yet.');
 	}
+
+	/**
+	 * Tests the updateFriendship method
+	 * 
+	 * @param   mixed  $user  Either an integer containing the user ID or a string containing the screen name.
+	 *
+	 * @return  void
+	 * 
+	 * @dataProvider  seedFriendship
+	 *
+	 * @since   12.1
+	 */
+	public function testUpdateFriendship($user)
+	{
+		$device = true;
+		$retweets = true;
+
+		$returnData = new stdClass;
+		$returnData->code = 200;
+		$returnData->body = $this->sampleString;
+
+		// Set POST request parameters.
+		$data = array();
+		if (is_integer($user))
+		{
+			$data['user_id'] = $user;
+		}
+		else
+		{
+			$data['screen_name'] = $user;
+		}
+		$data['device'] = $device;
+		$data['retweets'] = $retweets;
+
+		$this->client->expects($this->once())
+			->method('post')
+			->with('/1/friendships/update.json', $data)
+			->will($this->returnValue($returnData));
+
+		$this->assertThat(
+			$this->object->updateFriendship($this->oauth, $user, $device, $retweets),
+			$this->equalTo(json_decode($this->sampleString))
+		);
+	}
+
+	/**
+	 * Tests the updateFriendship method - failure
+	 * 
+	 * @param   mixed  $user  Either an integer containing the user ID or a string containing the screen name.
+	 *
+	 * @return  void
+	 * 
+	 * @dataProvider  seedFriendship
+	 *
+	 * @since   12.1
+	 *
+	 * @expectedException  DomainException
+	 */
+	public function testUpdateFriendshipFailure($user)
+	{
+		$returnData = new stdClass;
+		$returnData->code = 500;
+		$returnData->body = $this->errorString;
+
+		// Set POST request parameters.
+		$data = array();
+		if (is_integer($user))
+		{
+			$data['user_id'] = $user;
+		}
+		else
+		{
+			$data['screen_name'] = $user;
+		}
+
+		$this->client->expects($this->once())
+			->method('post')
+			->with('/1/friendships/update.json', $data)
+			->will($this->returnValue($returnData));
+
+		$this->object->updateFriendship($this->oauth, $user);
+	}
 }
