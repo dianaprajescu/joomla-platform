@@ -868,4 +868,98 @@ class JTwitterStatuses extends JTwitterObject
 
 		return json_decode($response->body);
 	}
+
+	/**
+	 * Method to get information allowing the creation of an embedded representation of a Tweet on third party sites.
+	 * Note: either the id or url parameters must be specified in a request. It is not necessary to include both.
+	 * 
+	 * @param   integer  $id           The Tweet/status ID to return embed code for.
+	 * @param   string   $url          The URL of the Tweet/status to be embedded.
+	 * @param   integer  $maxwidth     The maximum width in pixels that the embed should be rendered at. This value is constrained to be
+	 * 									between 250 and 550 pixels.
+	 * @param   boolean  $hide_media   Specifies whether the embedded Tweet should automatically expand images which were uploaded via
+	 * 									POST statuses/update_with_media.
+	 * @param   boolean  $hide_thread  Specifies whether the embedded Tweet should automatically show the original message in the case that
+	 * 									the embedded Tweet is a reply.
+	 * @param   boolean  $omit_script  Specifies whether the embedded Tweet HTML should include a <script> element pointing to widgets.js. In cases where
+	 * 									a page already includes widgets.js, setting this value to true will prevent a redundant script element from being included.
+	 * @param   string   $align        Specifies whether the embedded Tweet should be left aligned, right aligned, or centered in the page.
+	 * 									Valid values are left, right, center, and none.
+	 * @param   string   $related      A value for the TWT related parameter, as described in Web Intents. This value will be forwarded to all
+	 * 									Web Intents calls.
+	 * @param   string   $lang         Language code for the rendered embed. This will affect the text and localization of the rendered HTML.
+	 * 
+	 * @return  array  The decoded JSON response
+	 *
+	 * @since   12.1
+	 */
+	public function getOembed($id = null, $url = null, $maxwidth = null, $hide_media = false, $hide_thread = false, $omit_script = false,
+		$align = null, $related = null, $lang = null)
+	{
+		// Check the rate limit for remaining hits.
+		$this->checkRateLimit();
+
+		// Set the API request path.
+		$base = '/1/statuses/oembed.json';
+
+		// Determine which of $id and $url is specified.
+		if ($id)
+		{
+			$parameters['id'] = $id;
+		}
+		elseif ($url)
+		{
+			$parameters['url'] = rawurlencode($url);
+		}
+		else
+		{
+			// We don't have a valid entry.
+			throw new RuntimeException('Either the id or url parameters must be specified in a request.');
+		}
+
+		// Check if maxwidth is specified.
+		if ($maxwidth)
+		{
+			$data['maxwidth'] = $maxwidth;
+		}
+
+		// Check if hide_media is true.
+		if ($hide_media)
+		{
+			$data['hide_media'] = $hide_media;
+		}
+
+		// Check if hide_thread is true.
+		if ($hide_thread)
+		{
+			$data['hide_thread'] = $hide_thread;
+		}
+
+		// Check if omit_script is true.
+		if ($omit_script)
+		{
+			$data['omit_script'] = $omit_script;
+		}
+
+		// Check if align is specified.
+		if ($align)
+		{
+			$data['align'] = $align;
+		}
+
+		// Check if related is specified.
+		if ($related)
+		{
+			$data['related'] = $related;
+		}
+
+		// Check if lang is specified.
+		if ($lang)
+		{
+			$data['lang'] = $lang;
+		}
+
+		// Send the request.
+		return $this->sendRequest($base, 'get', $parameters);
+	}
 }

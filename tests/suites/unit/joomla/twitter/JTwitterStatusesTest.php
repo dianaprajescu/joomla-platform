@@ -605,4 +605,60 @@ class JTwitterStatusesTest extends TestCase
 		// Remove the following lines when you implement this test.
 		$this->markTestIncomplete('This test is not implemented.');
 	}
+
+	/**
+	 * Tests the tweetWithMedia method
+	 *
+	 * @return  void
+	 *
+	 * @since   12.1
+	 */
+	public function testTweetWithMedia()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete('This test is not implemented.');
+	}
+
+	/**
+	 * Tests the tweetWithMedia method - failure
+	 *
+	 * @return  void
+	 *
+	 * @since   12.1
+	 * 
+	 * @expectedException  DomainException
+	 */
+	public function testTweetWithMediaFailure()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete('This test is not implemented.');
+	}
+
+	/**
+	 * Tests the getOembed method
+	 *
+	 * @return  void
+	 *
+	 * @since   12.1
+	 */
+	public function testGetOembed()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete('This test is not implemented.');
+	}
+
+	/**
+	 * Tests the getOembed method - failure
+	 *
+	 * @return  void
+	 *
+	 * @since   12.1
+	 * 
+	 * @expectedException  DomainException
+	 */
+	public function testGetOembedFailure()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete('This test is not implemented.');
+	}
 }
