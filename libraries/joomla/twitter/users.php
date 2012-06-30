@@ -306,4 +306,33 @@ class JTwitterUsers extends JTwitterObject
 		// Send the request.
 		return $this->sendRequest($base, 'get', $parameters);
 	}
+
+	/**
+	 * Method access to Twitter's suggested user list.
+	 * 
+	 * @param   boolean  $lang  Restricts the suggested categories to the requested language.
+	 *
+	 * @return  array  The decoded JSON response
+	 *
+	 * @since   12.1
+	 */
+	public function getSuggestions($lang = null)
+	{
+		// Check the rate limit for remaining hits
+		$this->checkRateLimit();
+
+		// Set the API base
+		$base = '/1/users/suggestions.json';
+
+		$parameters = array();
+
+		// Check if entities is true
+		if ($lang)
+		{
+			$parameters['lang'] = $lang;
+		}
+
+		// Send the request.
+		return $this->sendRequest($base, 'get', $parameters);
+	}
 }
