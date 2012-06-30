@@ -195,10 +195,61 @@ class JTwitterUsers extends JTwitterObject
 		// Set the API base
 		$base = '/1/users/show.json';
 
-		// Check if string_ids is true
+		// Check if entities is true
 		if ($entities)
 		{
 			$parameters['include_entities'] = $entities;
+		}
+
+		// Send the request.
+		return $this->sendRequest($base, 'get', $parameters);
+	}
+
+	/**
+	 * Method to get an array of users that the specified user can contribute to.
+	 *
+	 * @param   mixed    $user         Either an integer containing the user ID or a string containing the screen name.
+	 * @param   boolean  $entities     Set to true to return IDs as strings, false to return as integers.
+	 * @param   boolean  $skip_status  When set to either true, t or 1 statuses will not be included in the returned user objects.
+	 *
+	 * @return  array  The decoded JSON response
+	 *
+	 * @since   12.1
+	 * @throws  RuntimeException
+	 */
+	public function getContributees($user, $entities = true, $skip_status = false)
+	{
+		// Check the rate limit for remaining hits
+		$this->checkRateLimit();
+
+		// Determine which type of data was passed for $user
+		if (is_integer($user))
+		{
+			$parameters['user_id'] = $user;
+		}
+		elseif (is_string($user))
+		{
+			$parameters['screen_name'] = $user;
+		}
+		else
+		{
+			// We don't have a valid entry
+			throw new RuntimeException('The specified username is not in the correct format; must use integer or string');
+		}
+
+		// Set the API base
+		$base = '/1/users/contributees.json';
+
+		// Check if entities is true
+		if ($entities)
+		{
+			$parameters['include_entities'] = $entities;
+		}
+
+		// Check if skip_status is true
+		if ($skip_status)
+		{
+			$parameters['skip_status'] = $skip_status;
 		}
 
 		// Send the request.
