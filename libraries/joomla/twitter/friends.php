@@ -250,4 +250,43 @@ class JTwitterFriends extends JTwitterObject
 		$response = $oauth->oauthRequest($path, 'GET', $parameters, $data);
 		return json_decode($response->body);
 	}
+
+	/**
+	 * Method to determine every protected user for whom the authenticating user has a pending follow request.
+	 * 
+	 * @param   JTwitterOAuth  $oauth       The JTwitterOAuth object.
+	 * @param   boolean        $string_ids  Set to true to return IDs as strings, false to return as integers.
+	 *
+	 * @return  array  The decoded JSON response
+	 *
+	 * @since   12.1
+	 */
+	public function getFriendshipsOutgoing($oauth, $string_ids = true)
+	{
+		// Check the rate limit for remaining hits
+		$this->checkRateLimit();
+
+		// Set parameters.
+		$parameters = array(
+			'oauth_token' => $oauth->getToken('key')
+		);
+
+		$data = array();
+
+		// Check if string_ids is true
+		if ($string_ids)
+		{
+			$data['stringify_ids'] = $string_ids;
+		}
+
+		// Set the API base
+		$base = '/1/friendships/outgoing.json';
+
+		// Build the request path.
+		$path = $this->getOption('api.url') . $base;
+
+		// Send the request.
+		$response = $oauth->oauthRequest($path, 'GET', $parameters, $data);
+		return json_decode($response->body);
+	}
 }
