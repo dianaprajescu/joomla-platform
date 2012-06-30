@@ -107,4 +107,14 @@ class JTwitterFriendsTest extends TestCase
 		// Remove the following lines when you implement this test.
 		$this->markTestIncomplete('This test has not been implemented yet.');
 	}
+
+	/**
+	 * @covers JTwitterFriends::getFriendshipsIncoming
+	 * @todo   Implement testGetFriendshipsIncoming().
+	 */
+	public function testGetFriendshipsIncoming()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete('This test has not been implemented yet.');
+	}
 }
