@@ -90,4 +90,39 @@ class JTwitterFavorites extends JTwitterObject
 		$response = $oauth->oauthRequest($path, 'GET', $parameters, $data);
 		return json_decode($response->body);
 	}
+
+	/**
+	 * Method to favorite the status specified in the ID parameter as the authenticating user
+	 *
+	 * @param   JTwitterOAuth  $oauth    The JTwitterOAuth object.
+	 * @param   integer        $id       The numerical ID of the desired status.
+	 * @param   boolean        $entities  When set to true,  each tweet will include a node called "entities,". This node offers a variety
+	 * 									  of metadata about the tweet in a discreet structure, including: user_mentions, urls, and hashtags.
+	 *
+	 * @return  array  The decoded JSON response
+	 *
+	 * @since   12.1
+	 */
+	public function createFavorites($oauth, $id, $entities = false)
+	{
+		// Set the API base.
+		$base = '/1/favorites/create/' . $id . '.json';
+
+		// Set parameters.
+		$parameters = array('oauth_token' => $oauth->getToken('key'));
+
+		// Check if entities is true.
+		$data = array();
+		if ($entities)
+		{
+			$data['include_entities'] = $entities;
+		}
+
+		// Build the request path.
+		$path = $this->getOption('api.url') . $base;
+
+		// Send the request.
+		$response = $oauth->oauthRequest($path, 'POST', $parameters, $data);
+		return json_decode($response->body);
+	}
 }

@@ -218,4 +218,66 @@ class JTwitterFavoritesTest extends TestCase
 
 		$this->object->getFavorites($this->oauth, $user, $count);
 	}
+
+	/**
+	 * Tests the createFavorites method
+	 *
+	 * @return  void
+	 *
+	 * @since   12.1
+	 */
+	public function testCreateFavorites()
+	{
+		$id = 12345;
+		$entities = true;
+
+		$returnData = new stdClass;
+		$returnData->code = 200;
+		$returnData->body = $this->sampleString;
+
+		// Set request parameters.
+		$data['include_entities'] = $entities;
+
+		$path = $this->object->fetchUrl('/1/favorites/create/' . $id . '.json');
+
+		$this->client->expects($this->once())
+		->method('post')
+		->with($path, $data)
+		->will($this->returnValue($returnData));
+
+		$this->assertThat(
+			$this->object->createFavorites($this->oauth, $id, $entities),
+			$this->equalTo(json_decode($this->sampleString))
+		);
+	}
+
+	/**
+	 * Tests the createFavorites method - failure
+	 *
+	 * @return  void
+	 *
+	 * @expectedException DomainException
+	 * @since   12.1
+	 */
+	public function testCreateFavoritesFailure()
+	{
+		$id = 12345;
+		$entities = true;
+
+		$returnData = new stdClass;
+		$returnData->code = 500;
+		$returnData->body = $this->errorString;
+
+		// Set request parameters.
+		$data['include_entities'] = $entities;
+
+		$path = $this->object->fetchUrl('/1/favorites/create/' . $id . '.json');
+
+		$this->client->expects($this->once())
+		->method('post')
+		->with($path, $data)
+		->will($this->returnValue($returnData));
+
+		$this->object->createFavorites($this->oauth, $id, $entities);
+	}
 }
