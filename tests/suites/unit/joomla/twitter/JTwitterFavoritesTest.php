@@ -280,4 +280,58 @@ class JTwitterFavoritesTest extends TestCase
 
 		$this->object->createFavorites($this->oauth, $id, $entities);
 	}
+
+	/**
+	 * Tests the deleteFavorites method
+	 *
+	 * @return  void
+	 *
+	 * @since   12.1
+	 */
+	public function testDeleteFavorites()
+	{
+		$id = 12345;
+
+		$returnData = new stdClass;
+		$returnData->code = 200;
+		$returnData->body = $this->sampleString;
+
+		$path = $this->object->fetchUrl('/1/favorites/destroy/' . $id . '.json');
+
+		$this->client->expects($this->once())
+		->method('post')
+		->with($path)
+		->will($this->returnValue($returnData));
+
+		$this->assertThat(
+			$this->object->deleteFavorites($this->oauth, $id),
+			$this->equalTo(json_decode($this->sampleString))
+		);
+	}
+
+	/**
+	 * Tests the deleteFavorites method - failure
+	 *
+	 * @return  void
+	 *
+	 * @expectedException DomainException
+	 * @since   12.1
+	 */
+	public function testDeleteFavoritesFailure()
+	{
+		$id = 12345;
+
+		$returnData = new stdClass;
+		$returnData->code = 500;
+		$returnData->body = $this->errorString;
+
+		$path = $this->object->fetchUrl('/1/favorites/destroy/' . $id . '.json');
+
+		$this->client->expects($this->once())
+		->method('post')
+		->with($path)
+		->will($this->returnValue($returnData));
+
+		$this->object->deleteFavorites($this->oauth, $id);
+	}
 }
