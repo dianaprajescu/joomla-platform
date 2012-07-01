@@ -394,4 +394,58 @@ class JTwitterSearchTest extends TestCase
 
 		$this->object->createSavedSearch($this->oauth, $query);
 	}
+
+	/**
+	 * Tests the deleteSavedSearch method
+	 *
+	 * @return  void
+	 *
+	 * @since   12.1
+	 */
+	public function testDeleteSavedSearch()
+	{
+		$id = 12345;
+
+		$returnData = new stdClass;
+		$returnData->code = 200;
+		$returnData->body = $this->sampleString;
+
+		$path = $this->object->fetchUrl('/1/saved_searches/destroy/' . $id . '.json');
+
+		$this->client->expects($this->once())
+		->method('post')
+		->with($path)
+		->will($this->returnValue($returnData));
+
+		$this->assertThat(
+			$this->object->deleteSavedSearch($this->oauth, $id),
+			$this->equalTo(json_decode($this->sampleString))
+		);
+	}
+
+	/**
+	 * Tests the deleteSavedSearch method - failure
+	 *
+	 * @return  void
+	 *
+	 * @since   12.1
+	 * @expectedException DomainException
+	 */
+	public function testDeleteSavedSearchFailure()
+	{
+		$id = 12345;
+
+		$returnData = new stdClass;
+		$returnData->code = 500;
+		$returnData->body = $this->errorString;
+
+		$path = $this->object->fetchUrl('/1/saved_searches/destroy/' . $id . '.json');
+
+		$this->client->expects($this->once())
+		->method('post')
+		->with($path)
+		->will($this->returnValue($returnData));
+
+		$this->object->deleteSavedSearch($this->oauth, $id);
+	}
 }

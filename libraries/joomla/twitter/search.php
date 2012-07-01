@@ -222,4 +222,32 @@ class JTwittersearch extends JTwitterObject
 		$response = $oauth->oauthRequest($path, 'POST', $parameters, $data);
 		return json_decode($response->body);
 	}
+
+	/**
+	 * Method to delete a saved search for the authenticating user.
+	 *
+	 * @param   JTwitterOAuth  $oauth  The JTwitterOAuth object.
+	 * @param   integer        $id     The ID of the saved search.
+	 *
+	 * @return  array  The decoded JSON response
+	 *
+	 * @since   12.1
+	 */
+	public function deleteSavedSearch($oauth, $id)
+	{
+		// Set the API base
+		$base = '/1/saved_searches/destroy/' . $id . '.json';
+
+		// Set parameters.
+		$parameters = array(
+			'oauth_token' => $oauth->getToken('key')
+		);
+
+		// Build the request path.
+		$path = $this->getOption('api.url') . $base;
+
+		// Send the request.
+		$response = $oauth->oauthRequest($path, 'POST', $parameters);
+		return json_decode($response->body);
+	}
 }
