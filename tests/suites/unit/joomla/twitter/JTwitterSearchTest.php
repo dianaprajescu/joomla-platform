@@ -194,4 +194,72 @@ class JTwitterSearchTest extends TestCase
 
 		$this->object->search($query);
 	}
+
+	/**
+	 * Tests the getSavedSearches method
+	 *
+	 * @return  void
+	 *
+	 * @since   12.1
+	 */
+	public function testGetSavedSearches()
+	{
+		$returnData = new stdClass;
+		$returnData->code = 200;
+		$returnData->body = $this->rateLimit;
+
+		$this->client->expects($this->at(0))
+		->method('get')
+		->with('/1/account/rate_limit_status.json')
+		->will($this->returnValue($returnData));
+
+		$returnData = new stdClass;
+		$returnData->code = 200;
+		$returnData->body = $this->sampleString;
+
+		$path = $this->object->fetchUrl('/1/saved_searches.json');
+
+		$this->client->expects($this->at(1))
+		->method('get')
+		->with($path)
+		->will($this->returnValue($returnData));
+
+		$this->assertThat(
+			$this->object->getSavedSearches($this->oauth),
+			$this->equalTo(json_decode($this->sampleString))
+		);
+	}
+
+	/**
+	 * Tests the getSavedSearches method - failure
+	 *
+	 * @return  void
+	 *
+	 * @since   12.1
+	 * @expectedException DomainException
+	 */
+	public function testGetSavedSearchesFailure()
+	{
+		$returnData = new stdClass;
+		$returnData->code = 200;
+		$returnData->body = $this->rateLimit;
+
+		$this->client->expects($this->at(0))
+		->method('get')
+		->with('/1/account/rate_limit_status.json')
+		->will($this->returnValue($returnData));
+
+		$returnData = new stdClass;
+		$returnData->code = 500;
+		$returnData->body = $this->errorString;
+
+		$path = $this->object->fetchUrl('/1/saved_searches.json');
+
+		$this->client->expects($this->at(1))
+		->method('get')
+		->with($path)
+		->will($this->returnValue($returnData));
+
+		$this->object->getSavedSearches($this->oauth);
+	}
 }

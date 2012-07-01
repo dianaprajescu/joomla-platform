@@ -20,20 +20,24 @@ class JTwittersearch extends JTwitterObject
 {
 	/**
 	 * Method to get tweets that match a specified query.
+	 *
 	 * @param   string   $query        Search query. Should be URL encoded. Queries will be limited by complexity.
 	 * @param   string   $callback     If supplied, the response will use the JSONP format with a callback of the given name
 	 * @param   string   $geocode      Returns tweets by users located within a given radius of the given latitude/longitude. The parameter value is
 	 * 								   specified by "latitude,longitude,radius", where radius units must be specified as either "mi" (miles) or "km" (kilometers).
 	 * @param   string   $lang         Restricts tweets to the given language, given by an ISO 639-1 code.
-	 * @param   string   $locale       Specify the language of the query you are sending (only ja is currently effective). This is intended for language-specific clients and the default should work in the majority of cases.
+	 * @param   string   $locale       Specify the language of the query you are sending (only ja is currently effective). This is intended for
+	 * 								   language-specific clients and the default should work in the majority of cases.
 	 * @param   integer  $page         The page number (starting at 1) to return, up to a max of roughly 1500 results (based on rpp * page).
 	 * @param   string   $result_type  Specifies what type of search results you would prefer to receive. The current default is "mixed."
 	 * @param   integer  $rpp          The number of tweets to return per page, up to a max of 100.
-	 * @param   boolean  $show_user    When true, prepends ":" to the beginning of the tweet. This is useful for readers that do not display Atom's author field.
+	 * @param   boolean  $show_user    When true, prepends ":" to the beginning of the tweet. This is useful for readers that do not display Atom's
+	 * 								   author field.
 	 * @param   string   $until        Returns tweets generated before the given date. Date should be formatted as YYYY-MM-DD.
 	 * @param   integer  $since_id     Returns results with an ID greater than (that is, more recent than) the specified ID.
 	 * @param   integer  $max_id       Returns results with an ID less than (that is, older than) or equal to the specified ID.
-	 * @param   boolean  $entities     When set to either true, t or 1, each tweet will include a node called "entities,". This node offers a variety of metadata about the tweet in a discrete structure, including: urls, media and hashtags.
+	 * @param   boolean  $entities     When set to either true, t or 1, each tweet will include a node called "entities,". This node offers a
+	 * 								   variety of metadata about the tweet in a discrete structure, including: urls, media and hashtags.
 	 *
 	 * @return  array  The decoded JSON response
 	 *
@@ -125,5 +129,35 @@ class JTwittersearch extends JTwitterObject
 
 		// Send the request.
 		return $this->sendRequest($base, 'get', $parameters);
+	}
+
+	/**
+	 * Method to get the authenticated user's saved search queries.
+	 *
+	 * @param   JTwitterOAuth  $oauth  The JTwitterOAuth object.
+	 *
+	 * @return  array  The decoded JSON response
+	 *
+	 * @since   12.1
+	 */
+	public function getSavedSearches($oauth)
+	{
+		// Check the rate limit for remaining hits
+		$this->checkRateLimit();
+
+		// Set the API base
+		$base = '/1/saved_searches.json';
+
+		// Set parameters.
+		$parameters = array(
+			'oauth_token' => $oauth->getToken('key')
+		);
+
+		// Build the request path.
+		$path = $this->getOption('api.url') . $base;
+
+		// Send the request.
+		$response = $oauth->oauthRequest($path, 'GET', $parameters);
+		return json_decode($response->body);
 	}
 }
