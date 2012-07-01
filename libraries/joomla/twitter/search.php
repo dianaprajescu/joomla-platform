@@ -160,4 +160,35 @@ class JTwittersearch extends JTwitterObject
 		$response = $oauth->oauthRequest($path, 'GET', $parameters);
 		return json_decode($response->body);
 	}
+
+	/**
+	 * Method to get the information for the saved search represented by the given id.
+	 *
+	 * @param   JTwitterOAuth  $oauth  The JTwitterOAuth object.
+	 * @param   integer        $id     The ID of the saved search.
+	 *
+	 * @return  array  The decoded JSON response
+	 *
+	 * @since   12.1
+	 */
+	public function getSavedSearchesById($oauth, $id)
+	{
+		// Check the rate limit for remaining hits
+		$this->checkRateLimit();
+
+		// Set the API base
+		$base = '/1/saved_searches/' . $id . '.json';
+
+		// Set parameters.
+		$parameters = array(
+			'oauth_token' => $oauth->getToken('key')
+		);
+
+		// Build the request path.
+		$path = $this->getOption('api.url') . $base;
+
+		// Send the request.
+		$response = $oauth->oauthRequest($path, 'GET', $parameters);
+		return json_decode($response->body);
+	}
 }

@@ -165,8 +165,9 @@ abstract class JTwitterObject
 		if ($response->code != self::SUCCESS_CODE)
 		{
 			$error = json_decode($response->body);
+			$error = $error->errors;
 
-			throw new DomainException($error->error, $response->code);
+			throw new DomainException($error[0]->message, $error[0]->code);
 		}
 
 		return json_decode($response->body);
