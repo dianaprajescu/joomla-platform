@@ -191,4 +191,35 @@ class JTwittersearch extends JTwitterObject
 		$response = $oauth->oauthRequest($path, 'GET', $parameters);
 		return json_decode($response->body);
 	}
+
+	/**
+	 * Method to create a new saved search for the authenticated user.
+	 *
+	 * @param   JTwitterOAuth  $oauth  The JTwitterOAuth object.
+	 * @param   string         $query  The query of the search the user would like to save.
+	 *
+	 * @return  array  The decoded JSON response
+	 *
+	 * @since   12.1
+	 */
+	public function createSavedSearch($oauth, $query)
+	{
+		// Set the API base
+		$base = '/1/saved_searches/create.json';
+
+		// Set parameters.
+		$parameters = array(
+			'oauth_token' => $oauth->getToken('key')
+		);
+
+		// Set POST request data
+		$data['query'] = rawurlencode($query);
+
+		// Build the request path.
+		$path = $this->getOption('api.url') . $base;
+
+		// Send the request.
+		$response = $oauth->oauthRequest($path, 'POST', $parameters, $data);
+		return json_decode($response->body);
+	}
 }

@@ -334,4 +334,64 @@ class JTwitterSearchTest extends TestCase
 
 		$this->object->getSavedSearchesById($this->oauth, $id);
 	}
+
+	/**
+	 * Tests the createSavedSearch method
+	 *
+	 * @return  void
+	 *
+	 * @since   12.1
+	 */
+	public function testCreateSavedSearch()
+	{
+		$query = 'test';
+
+		$returnData = new stdClass;
+		$returnData->code = 200;
+		$returnData->body = $this->sampleString;
+
+		// Set POST request data
+		$data['query'] = $query;
+
+		$path = $this->object->fetchUrl('/1/saved_searches/create.json');
+
+		$this->client->expects($this->once())
+		->method('post')
+		->with($path, $data)
+		->will($this->returnValue($returnData));
+
+		$this->assertThat(
+			$this->object->createSavedSearch($this->oauth, $query),
+			$this->equalTo(json_decode($this->sampleString))
+		);
+	}
+
+	/**
+	 * Tests the createSavedSearch method - failure
+	 *
+	 * @return  void
+	 *
+	 * @since   12.1
+	 * @expectedException DomainException
+	 */
+	public function testCreateSavedSearchFailure()
+	{
+		$query = 'test';
+
+		$returnData = new stdClass;
+		$returnData->code = 500;
+		$returnData->body = $this->errorString;
+
+		// Set POST request data
+		$data['query'] = $query;
+
+		$path = $this->object->fetchUrl('/1/saved_searches/create.json');
+
+		$this->client->expects($this->once())
+		->method('post')
+		->with($path, $data)
+		->will($this->returnValue($returnData));
+
+		$this->object->createSavedSearch($this->oauth, $query);
+	}
 }
