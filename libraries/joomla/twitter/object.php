@@ -102,7 +102,14 @@ abstract class JTwitterObject
 		}
 
 		// Get a new JUri object fousing the api url and given path.
-		$uri = new JUri($this->options->get('api.url') . $path);
+		if (strpos($path, 'http://search.twitter.com/search.json') === false)
+		{
+			$uri = new JUri($this->options->get('api.url') . $path);
+		}
+		else
+		{
+			$uri = new JUri($path);
+		}
 
 		return (string) $uri;
 	}

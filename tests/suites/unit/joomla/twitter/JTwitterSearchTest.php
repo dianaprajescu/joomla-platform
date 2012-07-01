@@ -92,4 +92,106 @@ class JTwitterSearchTest extends TestCase
 		$method->setAccessible(true);
 		return $method;
 	}
+
+	/**
+	 * Tests the search method
+	 *
+	 * @return  void
+	 *
+	 * @since   12.1
+	 */
+	public function testSearch()
+	{
+		$query = '@noradio';
+		$callback = 'callback';
+		$geocode = '37.781157,-122.398720,1mi';
+		$lang = 'fr';
+		$locale = 'ja';
+		$page = 1;
+		$result_type = 'recent';
+		$rpp = 100;
+		$show_user = true;
+		$until = '2010-03-28';
+		$since_id = 12345;
+		$max_id = 54321;
+		$entities = true;
+
+		$returnData = new stdClass;
+		$returnData->code = 200;
+		$returnData->body = $this->rateLimit;
+
+		$this->client->expects($this->at(0))
+		->method('get')
+		->with('/1/account/rate_limit_status.json')
+		->will($this->returnValue($returnData));
+
+		$returnData = new stdClass;
+		$returnData->code = 200;
+		$returnData->body = $this->sampleString;
+
+		// Set request parameters.
+		$data['q'] = rawurlencode($query);
+		$data['callback'] = $callback;
+		$data['geocode'] = $geocode;
+		$data['lang'] = $lang;
+		$data['locale'] = $locale;
+		$data['page'] = $page;
+		$data['result_type'] = $result_type;
+		$data['rpp'] = $rpp;
+		$data['show_user'] = $show_user;
+		$data['until'] = $until;
+		$data['since_id'] = $since_id;
+		$data['max_id'] = $max_id;
+		$data['include_entities'] = $entities;
+
+		$path = $this->object->fetchUrl('http://search.twitter.com/search.json', $data);
+
+		$this->client->expects($this->at(1))
+		->method('get')
+		->with($path)
+		->will($this->returnValue($returnData));
+
+		$this->assertThat(
+			$this->object->search($query, $callback, $geocode, $lang, $locale, $page, $result_type, $rpp, $show_user, $until, $since_id, $max_id, $entities),
+			$this->equalTo(json_decode($this->sampleString))
+		);
+	}
+
+	/**
+	 * Tests the search method - failure
+	 *
+	 * @return  void
+	 *
+	 * @since   12.1
+	 * @expectedException DomainException
+	 */
+	public function testSearchFailure()
+	{
+		$query = '@noradio';
+
+		$returnData = new stdClass;
+		$returnData->code = 200;
+		$returnData->body = $this->rateLimit;
+
+		$this->client->expects($this->at(0))
+		->method('get')
+		->with('/1/account/rate_limit_status.json')
+		->will($this->returnValue($returnData));
+
+		$returnData = new stdClass;
+		$returnData->code = 500;
+		$returnData->body = $this->errorString;
+
+		// Set request parameters.
+		$data['q'] = rawurlencode($query);
+
+		$path = $this->object->fetchUrl('http://search.twitter.com/search.json', $data);
+
+		$this->client->expects($this->at(1))
+		->method('get')
+		->with($path)
+		->will($this->returnValue($returnData));
+
+		$this->object->search($query);
+	}
 }
