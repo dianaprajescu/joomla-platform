@@ -422,7 +422,7 @@ class JTwitterListsTest extends TestCase
 		else
 		{
 			$this->setExpectedException('RuntimeException');
-			$this->object->getLists($user);
+			$this->object->getListMemberships($user);
 		}
 		$data['filter_to_owned_lists'] = $filter;
 
@@ -479,7 +479,7 @@ class JTwitterListsTest extends TestCase
 		else
 		{
 			$this->setExpectedException('RuntimeException');
-			$this->object->getLists($user);
+			$this->object->getListMemberships($user);
 		}
 		$data['filter_to_owned_lists'] = $filter;
 
@@ -543,13 +543,13 @@ class JTwitterListsTest extends TestCase
 			{
 				// We don't have a valid entry
 				$this->setExpectedException('RuntimeException');
-				$this->object->getListStatuses($list, $owner);
+				$this->object->getListSubscribers($list, $owner);
 			}
 		}
 		else
 		{
 			$this->setExpectedException('RuntimeException');
-			$this->object->getListStatuses($list, $owner);
+			$this->object->getListSubscribers($list, $owner);
 		}
 
 		$data['include_entities'] = $entities;
@@ -619,13 +619,13 @@ class JTwitterListsTest extends TestCase
 			{
 				// We don't have a valid entry
 				$this->setExpectedException('RuntimeException');
-				$this->object->getListStatuses($list, $owner);
+				$this->object->getListSubscribers($list, $owner);
 			}
 		}
 		else
 		{
 			$this->setExpectedException('RuntimeException');
-			$this->object->getListStatuses($list, $owner);
+			$this->object->getListSubscribers($list, $owner);
 		}
 
 		$data['include_entities'] = $entities;
@@ -654,6 +654,7 @@ class JTwitterListsTest extends TestCase
 		return array(
 			array(234654235457, 12345, null),
 			array('test-list', 'userTest', 'testUser'),
+			array('test-list', 'userTest', 12345),
 			array('test-list', 12345, null),
 			array('test-list', null, 'testUser'),
 			array(null, null, null)
@@ -674,15 +675,6 @@ class JTwitterListsTest extends TestCase
 	 */
 	public function testDeleteListMember($list, $user, $owner)
 	{
-		$returnData = new stdClass;
-		$returnData->code = 200;
-		$returnData->body = $this->rateLimit;
-
-		$this->client->expects($this->at(0))
-		->method('get')
-		->with('/1/account/rate_limit_status.json')
-		->will($this->returnValue($returnData));
-
 		$returnData = new stdClass;
 		$returnData->code = 200;
 		$returnData->body = $this->sampleString;
@@ -734,7 +726,7 @@ class JTwitterListsTest extends TestCase
 
 		$path = $this->object->fetchUrl('/1/lists/members/destroy.json');
 
-		$this->client->expects($this->at(1))
+		$this->client->expects($this->once())
 		->method('post')
 		->with($path, $data)
 		->will($this->returnValue($returnData));
@@ -760,15 +752,6 @@ class JTwitterListsTest extends TestCase
 	 */
 	public function testDeleteListMemberFailure($list, $user, $owner)
 	{
-		$returnData = new stdClass;
-		$returnData->code = 200;
-		$returnData->body = $this->rateLimit;
-
-		$this->client->expects($this->at(0))
-		->method('get')
-		->with('/1/account/rate_limit_status.json')
-		->will($this->returnValue($returnData));
-
 		$returnData = new stdClass;
 		$returnData->code = 500;
 		$returnData->body = $this->errorString;
@@ -820,11 +803,147 @@ class JTwitterListsTest extends TestCase
 
 		$path = $this->object->fetchUrl('/1/lists/members/destroy.json');
 
-		$this->client->expects($this->at(1))
+		$this->client->expects($this->once())
 		->method('post')
 		->with($path, $data)
 		->will($this->returnValue($returnData));
 
 		$this->object->deleteListMember($this->oauth, $list, $user, $owner);
+	}
+
+	/**
+	 * Tests the subscribe method
+	 *
+	 * @param   mixed  $list   Either an integer containing the list ID or a string containing the list slug.
+	 * @param   mixed  $owner  Either an integer containing the user ID or a string containing the screen name.
+	 *
+	 * @return  void
+	 *
+	 * @since 12.1
+	 * @dataProvider seedListStatuses
+	 */
+	public function testSubscribe($list, $owner)
+	{
+		$returnData = new stdClass;
+		$returnData->code = 200;
+		$returnData->body = $this->rateLimit;
+
+		$this->client->expects($this->at(0))
+		->method('get')
+		->with('/1/account/rate_limit_status.json')
+		->will($this->returnValue($returnData));
+
+		$returnData = new stdClass;
+		$returnData->code = 200;
+		$returnData->body = $this->sampleString;
+
+		// Set request parameters.
+		if (is_numeric($list))
+		{
+			$data['list_id'] = $list;
+		}
+		elseif (is_string($list))
+		{
+			$data['slug'] = $list;
+
+			if (is_numeric($owner))
+			{
+				$data['owner_id'] = $owner;
+			}
+			elseif (is_string($owner))
+			{
+				$data['owner_screen_name'] = $owner;
+			}
+			else
+			{
+				// We don't have a valid entry
+				$this->setExpectedException('RuntimeException');
+				$this->object->subscribe($this->oauth, $list, $owner);
+			}
+		}
+		else
+		{
+			$this->setExpectedException('RuntimeException');
+			$this->object->subscribe($this->oauth, $list, $owner);
+		}
+
+		$path = $this->object->fetchUrl('/1/lists/subscribers/create.json');
+
+		$this->client->expects($this->at(1))
+		->method('post')
+		->with($path, $data)
+		->will($this->returnValue($returnData));
+
+		$this->assertThat(
+			$this->object->subscribe($this->oauth, $list, $owner),
+			$this->equalTo(json_decode($this->sampleString))
+		);
+	}
+
+	/**
+	 * Tests the subscribe method - failure
+	 *
+	 * @param   mixed  $list   Either an integer containing the list ID or a string containing the list slug.
+	 * @param   mixed  $owner  Either an integer containing the user ID or a string containing the screen name.
+	 *
+	 * @return  void
+	 *
+	 * @since 12.1
+	 * @dataProvider seedListStatuses
+	 * @expectedException DomainException
+	 */
+	public function testSubscribeFailure($list, $owner)
+	{
+		$returnData = new stdClass;
+		$returnData->code = 200;
+		$returnData->body = $this->rateLimit;
+
+		$this->client->expects($this->at(0))
+		->method('get')
+		->with('/1/account/rate_limit_status.json')
+		->will($this->returnValue($returnData));
+
+		$returnData = new stdClass;
+		$returnData->code = 500;
+		$returnData->body = $this->errorString;
+
+		// Set request parameters.
+		if (is_numeric($list))
+		{
+			$data['list_id'] = $list;
+		}
+		elseif (is_string($list))
+		{
+			$data['slug'] = $list;
+
+			if (is_numeric($owner))
+			{
+				$data['owner_id'] = $owner;
+			}
+			elseif (is_string($owner))
+			{
+				$data['owner_screen_name'] = $owner;
+			}
+			else
+			{
+				// We don't have a valid entry
+				$this->setExpectedException('RuntimeException');
+				$this->object->subscribe($this->oauth, $list, $owner);
+			}
+		}
+		else
+		{
+			$this->setExpectedException('RuntimeException');
+			$this->object->subscribe($this->oauth, $list, $owner);
+		}
+
+		$path = $this->object->fetchUrl('/1/lists/subscribers/create.json');
+
+		$this->client->expects($this->at(1))
+		->method('post')
+		->with($path, $data)
+		->will($this->returnValue($returnData));
+
+		$this->object->subscribe($this->oauth, $list, $owner);
 	}
 }

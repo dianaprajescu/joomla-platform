@@ -282,9 +282,6 @@ class JTwitterLists extends JTwitterObject
 	 */
 	public function deleteListMember($oauth, $list, $user, $owner = null)
 	{
-		// Check the rate limit for remaining hits
-		$this->checkRateLimit();
-
 		// Set parameters.
 		$parameters = array('oauth_token' => $oauth->getToken('key'));
 
@@ -334,6 +331,68 @@ class JTwitterLists extends JTwitterObject
 
 		// Set the API base
 		$base = '/1/lists/members/destroy.json';
+
+		// Build the request path.
+		$path = $this->getOption('api.url') . $base;
+
+		// Send the request.
+		$response = $oauth->oauthRequest($path, 'POST', $parameters, $data);
+		return json_decode($response->body);
+	}
+
+	/**
+	 * Method to subscribe the authenticated user to the specified list.
+	 *
+	 * @param   JTwitterOAuth  $oauth  The JTwitterOAuth object.
+	 * @param   mixed          $list   Either an integer containing the list ID or a string containing the list slug.
+	 * @param   mixed          $user   Either an integer containing the user ID or a string containing the screen name of the user to remove.
+	 * @param   mixed          $owner  Either an integer containing the user ID or a string containing the screen name of the owner.
+	 *
+	 * @return  array  The decoded JSON response
+	 *
+	 * @since   12.1
+	 * @throws  RuntimeException
+	 */
+	public function subscribe($oauth, $list, $owner = null)
+	{
+		// Check the rate limit for remaining hits
+		$this->checkRateLimit();
+
+		// Set parameters.
+		$parameters = array('oauth_token' => $oauth->getToken('key'));
+
+		// Determine which type of data was passed for $list
+		if (is_numeric($list))
+		{
+			$data['list_id'] = $list;
+		}
+		elseif (is_string($list))
+		{
+			$data['slug'] = $list;
+
+			// In this case the owner is required.
+			if (is_numeric($owner))
+			{
+				$data['owner_id'] = $owner;
+			}
+			elseif (is_string($owner))
+			{
+				$data['owner_screen_name'] = $owner;
+			}
+			else
+			{
+				// We don't have a valid entry
+				throw new RuntimeException('The specified username for owner is not in the correct format; must use integer or string');
+			}
+		}
+		else
+		{
+			// We don't have a valid entry
+			throw new RuntimeException('The specified list is not in the correct format; must use integer or string');
+		}
+
+		// Set the API base
+		$base = '/1/lists/subscribers/create.json';
 
 		// Build the request path.
 		$path = $this->getOption('api.url') . $base;
