@@ -152,4 +152,49 @@ class JTwitterLists extends JTwitterObject
 		return $this->sendRequest($base, 'get', $data);
 
 	}
+
+	/**
+	 * Method to get the lists the specified user has been added to.
+	 *
+	 * @param   mixed    $user    Either an integer containing the user ID or a string containing the screen name.
+	 * @param   boolean  $filter  When set to true, t or 1, will return just lists the authenticating user owns, and the user represented by user_id or screen_name is a member of.
+	 *
+	 * @return  array  The decoded JSON response
+	 *
+	 * @since   12.1
+	 */
+	public function getListMemberships($user, $filter = false)
+	{
+		// Check the rate limit for remaining hits
+		$this->checkRateLimit();
+
+		$data = array();
+
+		// Determine which type of data was passed for $user
+		if (is_numeric($user))
+		{
+			$data['user_id'] = $user;
+		}
+		elseif (is_string($user))
+		{
+			$data['screen_name'] = $user;
+		}
+		else
+		{
+			// We don't have a valid entry
+			throw new RuntimeException('The specified username is not in the correct format; must use integer or string');
+		}
+
+		// Check if filter is true.
+		if ($filter)
+		{
+			$data['filter_to_owned_lists'] = $filter;
+		}
+
+		// Set the API base
+		$base = '/1/lists/memberships.json';
+
+		// Send the request.
+		return $this->sendRequest($base, 'get', $data);
+	}
 }
