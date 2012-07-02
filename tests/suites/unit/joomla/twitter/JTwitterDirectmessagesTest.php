@@ -190,13 +190,13 @@ class JTwitterDirectmessagesTest extends TestCase
 	}
 
 	/**
-	 * Tests the getSentDirectMessages method
+	 * Tests the getGetSentDirectMessages method
 	 *
 	 * @return  void
 	 *
 	 * @since   12.1
 	 */
-	public function testSentDirectMessages()
+	public function testGetSentDirectMessages()
 	{
 		$since_id = 12345;
 		$max_id = 54321;
@@ -238,14 +238,14 @@ class JTwitterDirectmessagesTest extends TestCase
 	}
 
 	/**
-	 * Tests the getSentDirectMessages method - failure
+	 * Tests the getGetSentDirectMessages method - failure
 	 *
 	 * @return  void
 	 *
 	 * @expectedException DomainException
 	 * @since   12.1
 	 */
-	public function testSentDirectMessagesFailure()
+	public function testGetSentDirectMessagesFailure()
 	{
 		$since_id = 12345;
 		$max_id = 54321;
@@ -281,5 +281,114 @@ class JTwitterDirectmessagesTest extends TestCase
 		->will($this->returnValue($returnData));
 
 		$this->object->getSentDirectMessages($this->oauth, $since_id, $max_id, $count, $page, $entities);
+	}
+
+	/**
+	* Provides test data for request format detection.
+	*
+	* @return array
+	*
+	* @since 12.1
+	*/
+	public function seedUser()
+	{
+		// User ID or screen name
+		return array(
+			array(234654235457),
+			array('testUser'),
+			array(null)
+			);
+	}
+
+	/**
+	 * Tests the sendDirectMessages method
+	 *
+	 * @param   mixed  $user  Either an integer containing the user ID or a string containing the screen name.
+	 *
+	 * @return  void
+	 *
+	 * @dataProvider  seedUser
+	 * @since   12.1
+	 */
+	public function testSendDirectMessages($user)
+	{
+		$text = 'This is a test.';
+
+		$returnData = new stdClass;
+		$returnData->code = 200;
+		$returnData->body = $this->sampleString;
+
+		// Set request parameters.
+		if (is_numeric($user))
+		{
+			$data['user_id'] = $user;
+		}
+		elseif (is_string($user))
+		{
+			$data['screen_name'] = $user;
+		}
+		else
+		{
+			$this->setExpectedException('RuntimeException');
+			$this->object->sendDirectMessages($this->oauth, $user, $text);
+		}
+		$data['text'] = $text;
+
+		$path = $this->object->fetchUrl('/1/direct_messages/new.json');
+
+		$this->client->expects($this->once())
+		->method('post')
+		->with($path, $data)
+		->will($this->returnValue($returnData));
+
+		$this->assertThat(
+			$this->object->sendDirectMessages($this->oauth, $user, $text),
+			$this->equalTo(json_decode($this->sampleString))
+		);
+	}
+
+	/**
+	 * Tests the sendDirectMessages method - failure
+	 *
+	 * @param   mixed  $user  Either an integer containing the user ID or a string containing the screen name.
+	 *
+	 * @return  void
+	 *
+	 * @dataProvider  seedUser
+	 * @expectedException DomainException
+	 * @since   12.1
+	 */
+	public function testSendDirectMessagesFailure($user)
+	{
+		$text = 'This is a test.';
+
+		$returnData = new stdClass;
+		$returnData->code = 500;
+		$returnData->body = $this->errorString;
+
+		// Set request parameters.
+		if (is_numeric($user))
+		{
+			$data['user_id'] = $user;
+		}
+		elseif (is_string($user))
+		{
+			$data['screen_name'] = $user;
+		}
+		else
+		{
+			$this->setExpectedException('RuntimeException');
+			$this->object->sendDirectMessages($this->oauth, $user, $text);
+		}
+		$data['text'] = $text;
+
+		$path = $this->object->fetchUrl('/1/direct_messages/new.json');
+
+		$this->client->expects($this->once())
+		->method('post')
+		->with($path, $data)
+		->will($this->returnValue($returnData));
+
+		$this->object->sendDirectMessages($this->oauth, $user, $text);
 	}
 }

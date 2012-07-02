@@ -152,4 +152,48 @@ class JTwitterDirectMessages extends JTwitterObject
 		$response = $oauth->oauthRequest($path, 'GET', $parameters, $data);
 		return json_decode($response->body);
 	}
+
+	/**
+	 * Method to send a new direct message to the specified user from the authenticating user.
+	 *
+	 * @param   JTwitterOAuth  $oauth  The JTwitterOAuth object.
+	 * @param   mixed          $user   Either an integer containing the user ID or a string containing the screen name.
+	 * @param   string         $text   The text of your direct message. Be sure to keep the message under 140 characters.
+	 *
+	 * @return  array  The decoded JSON response
+	 *
+	 * @since   12.1
+	 */
+	public function sendDirectMessages($oauth, $user, $text)
+	{
+		// Set the API base
+		$base = '/1/direct_messages/new.json';
+
+		// Set parameters.
+		$parameters = array('oauth_token' => $oauth->getToken('key'));
+
+		// Determine which type of data was passed for $user
+		if (is_numeric($user))
+		{
+			$data['user_id'] = $user;
+		}
+		elseif (is_string($user))
+		{
+			$data['screen_name'] = $user;
+		}
+		else
+		{
+			// We don't have a valid entry
+			throw new RuntimeException('The specified username is not in the correct format; must use integer or string');
+		}
+
+		$data['text'] = $text;
+
+		// Build the request path.
+		$path = $this->getOption('api.url') . $base;
+
+		// Send the request.
+		$response = $oauth->oauthRequest($path, 'POST', $parameters, $data);
+		return json_decode($response->body);
+	}
 }
