@@ -197,4 +197,149 @@ class JTwitterLists extends JTwitterObject
 		// Send the request.
 		return $this->sendRequest($base, 'get', $data);
 	}
+
+	/**
+	 * Method to get the subscribers of the specified list.
+	 *
+	 * @param   mixed    $list         Either an integer containing the list ID or a string containing the list slug.
+	 * @param   mixed    $owner        Either an integer containing the user ID or a string containing the screen name.
+	 * @param   boolean  $entities     When set to either true, t or 1, each tweet will include a node called "entities". This node offers a variety
+	 * 								   of metadata about the tweet in a discreet structure, including: user_mentions, urls, and hashtags.
+	 * @param   boolean  $skip_status  When set to either true, t or 1 statuses will not be included in the returned user objects.
+	 *
+	 * @return  array  The decoded JSON response
+	 *
+	 * @since   12.1
+	 * @throws  RuntimeException
+	 */
+	public function getListSubscribers($list, $owner = null, $entities = false, $skip_status = false)
+	{
+		// Check the rate limit for remaining hits
+		$this->checkRateLimit();
+
+		// Determine which type of data was passed for $list
+		if (is_numeric($list))
+		{
+			$data['list_id'] = $list;
+		}
+		elseif (is_string($list))
+		{
+			$data['slug'] = $list;
+
+			// In this case the owner is required.
+			if (is_numeric($owner))
+			{
+				$data['owner_id'] = $owner;
+			}
+			elseif (is_string($owner))
+			{
+				$data['owner_screen_name'] = $owner;
+			}
+			else
+			{
+				// We don't have a valid entry
+				throw new RuntimeException('The specified username is not in the correct format; must use integer or string');
+			}
+		}
+		else
+		{
+			// We don't have a valid entry
+			throw new RuntimeException('The specified list is not in the correct format; must use integer or string');
+		}
+
+		// Set the API base
+		$base = '/1/lists/subscribers.json';
+
+		// Check if entities is true
+		if ($entities > 0)
+		{
+			$data['include_entities'] = $entities;
+		}
+
+		// Check if skip_status is true
+		if ($skip_status > 0)
+		{
+			$data['skip_status'] = $skip_status;
+		}
+
+		// Send the request.
+		return $this->sendRequest($base, 'get', $data);
+
+	}
+
+	/**
+	 * Method to remove the specified member from the list. The authenticated user must be the list's owner to remove members from the list..
+	 *
+	 * @param   JTwitterOAuth  $oauth  The JTwitterOAuth object.
+	 * @param   mixed          $list   Either an integer containing the list ID or a string containing the list slug.
+	 * @param   mixed          $user   Either an integer containing the user ID or a string containing the screen name of the user to remove.
+	 * @param   mixed          $owner  Either an integer containing the user ID or a string containing the screen name of the owner.
+	 *
+	 * @return  array  The decoded JSON response
+	 *
+	 * @since   12.1
+	 * @throws  RuntimeException
+	 */
+	public function deleteListMember($oauth, $list, $user, $owner = null)
+	{
+		// Check the rate limit for remaining hits
+		$this->checkRateLimit();
+
+		// Set parameters.
+		$parameters = array('oauth_token' => $oauth->getToken('key'));
+
+		// Determine which type of data was passed for $list
+		if (is_numeric($list))
+		{
+			$data['list_id'] = $list;
+		}
+		elseif (is_string($list))
+		{
+			$data['slug'] = $list;
+
+			// In this case the owner is required.
+			if (is_numeric($owner))
+			{
+				$data['owner_id'] = $owner;
+			}
+			elseif (is_string($owner))
+			{
+				$data['owner_screen_name'] = $owner;
+			}
+			else
+			{
+				// We don't have a valid entry
+				throw new RuntimeException('The specified username for owner is not in the correct format; must use integer or string');
+			}
+		}
+		else
+		{
+			// We don't have a valid entry
+			throw new RuntimeException('The specified list is not in the correct format; must use integer or string');
+		}
+
+		if (is_numeric($user))
+		{
+			$data['user_id'] = $user;
+		}
+		elseif (is_string($user))
+		{
+			$data['screen_name'] = $user;
+		}
+		else
+		{
+			// We don't have a valid entry
+			throw new RuntimeException('The specified username is not in the correct format; must use integer or string');
+		}
+
+		// Set the API base
+		$base = '/1/lists/members/destroy.json';
+
+		// Build the request path.
+		$path = $this->getOption('api.url') . $base;
+
+		// Send the request.
+		$response = $oauth->oauthRequest($path, 'POST', $parameters, $data);
+		return json_decode($response->body);
+	}
 }
