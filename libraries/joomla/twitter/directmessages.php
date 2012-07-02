@@ -225,4 +225,40 @@ class JTwitterDirectMessages extends JTwitterObject
 		$response = $oauth->oauthRequest($path, 'GET', $parameters);
 		return json_decode($response->body);
 	}
+
+	/**
+	 * Method to delete the direct message specified in the required ID parameter.
+	 *
+	 * @param   JTwitterOAuth  $oauth     The JTwitterOAuth object.
+	 * @param   integer        $id        The ID of the direct message.
+	 * @param   boolean        $entities  When set to true,  each tweet will include a node called "entities,". This node offers a variety of metadata
+	 *                                    about the tweet in a discreet structure, including: user_mentions, urls, and hashtags.
+	 *
+	 * @return  array  The decoded JSON response
+	 *
+	 * @since   12.1
+	 */
+	public function deleteDirectMessages($oauth, $id, $entities = false)
+	{
+		// Set the API base
+		$base = '/1/direct_messages/destroy/' . $id . '.json';
+
+		// Set parameters.
+		$parameters = array('oauth_token' => $oauth->getToken('key'));
+
+		$data = array();
+
+		// Check if entities is true.
+		if ($entities)
+		{
+			$data['include_entities'] = $entities;
+		}
+
+		// Build the request path.
+		$path = $this->getOption('api.url') . $base;
+
+		// Send the request.
+		$response = $oauth->oauthRequest($path, 'POST', $parameters, $data);
+		return json_decode($response->body);
+	}
 }

@@ -463,4 +463,66 @@ class JTwitterDirectmessagesTest extends TestCase
 
 		$this->object->getDirectMessagesById($this->oauth, $id);
 	}
+
+	/**
+	 * Tests the deleteDirectMessages method
+	 *
+	 * @return  void
+	 *
+	 * @since   12.1
+	 */
+	public function testDeleteDirectMessages()
+	{
+		$id = 12345;
+		$entities = true;
+
+		$returnData = new stdClass;
+		$returnData->code = 200;
+		$returnData->body = $this->sampleString;
+
+		// Set request parameters.
+		$data['include_entities'] = $entities;
+
+		$path = $this->object->fetchUrl('/1/direct_messages/destroy/' . $id . '.json');
+
+		$this->client->expects($this->once())
+		->method('post')
+		->with($path, $data)
+		->will($this->returnValue($returnData));
+
+		$this->assertThat(
+			$this->object->deleteDirectMessages($this->oauth, $id, $entities),
+			$this->equalTo(json_decode($this->sampleString))
+		);
+	}
+
+	/**
+	 * Tests the deleteDirectMessages method - failure
+	 *
+	 * @return  void
+	 *
+	 * @expectedException DomainException
+	 * @since   12.1
+	 */
+	public function testDeleteDirectMessagesFailure()
+	{
+		$id = 12345;
+		$entities = true;
+
+		$returnData = new stdClass;
+		$returnData->code = 500;
+		$returnData->body = $this->errorString;
+
+		// Set request parameters.
+		$data['include_entities'] = $entities;
+
+		$path = $this->object->fetchUrl('/1/direct_messages/destroy/' . $id . '.json');
+
+		$this->client->expects($this->once())
+		->method('post')
+		->with($path, $data)
+		->will($this->returnValue($returnData));
+
+		$this->object->deleteDirectMessages($this->oauth, $id, $entities);
+	}
 }
