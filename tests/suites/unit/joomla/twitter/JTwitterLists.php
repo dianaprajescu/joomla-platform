@@ -213,4 +213,173 @@ class JTwitterListsTest extends TestCase
 
 		$this->object->getLists($user);
 	}
+
+	/**
+	* Provides test data for request format detection.
+	*
+	* @return array
+	*
+	* @since 12.1
+	*/
+	public function seedListStatuses()
+	{
+		// List ID or slug and owner
+		return array(
+			array(234654235457, null),
+			array('test-list', 'testUser'),
+			array('test-list', 12345),
+			array('test-list', null),
+			array(null, null)
+			);
+	}
+
+	/**
+	 * Tests the getListStatuses method
+	 *
+	 * @param   mixed  $list   Either an integer containing the list ID or a string containing the list slug.
+	 * @param   mixed  $owner  Either an integer containing the user ID or a string containing the screen name.
+	 *
+	 * @return  void
+	 *
+	 * @since 12.1
+	 * @dataProvider seedListStatuses
+	 */
+	public function testGetListStatuses($list, $owner)
+	{
+		$since_id = 12345;
+		$max_id = 54321;
+		$per_page = 10;
+		$page = 1;
+		$entities = true;
+		$include_rts = true;
+
+		$returnData = new stdClass;
+		$returnData->code = 200;
+		$returnData->body = $this->rateLimit;
+
+		$this->client->expects($this->at(0))
+		->method('get')
+		->with('/1/account/rate_limit_status.json')
+		->will($this->returnValue($returnData));
+
+		$returnData = new stdClass;
+		$returnData->code = 200;
+		$returnData->body = $this->sampleString;
+
+		// Set request parameters.
+		if (is_numeric($list))
+		{
+			$data['list_id'] = $list;
+		}
+		elseif (is_string($list))
+		{
+			$data['slug'] = $list;
+
+			if (is_numeric($owner))
+			{
+				$data['owner_id'] = $owner;
+			}
+			elseif (is_string($owner))
+			{
+				$data['owner_screen_name'] = $owner;
+			}
+			else
+			{
+				// We don't have a valid entry
+				$this->setExpectedException('RuntimeException');
+				$this->object->getListStatuses($list, $owner);
+			}
+		}
+		else
+		{
+			$this->setExpectedException('RuntimeException');
+			$this->object->getListStatuses($list, $owner);
+		}
+
+		$data['since_id'] = $since_id;
+		$data['max_id'] = $max_id;
+		$data['per_page'] = $per_page;
+		$data['page'] = $page;
+		$data['include_entities'] = $entities;
+		$data['include_rts'] = $include_rts;
+
+		$path = $this->object->fetchUrl('/1/lists/statuses.json', $data);
+
+		$this->client->expects($this->at(1))
+		->method('get')
+		->with($path)
+		->will($this->returnValue($returnData));
+
+		$this->assertThat(
+			$this->object->getListStatuses($list, $owner, $since_id, $max_id, $per_page, $page, $entities, $include_rts),
+			$this->equalTo(json_decode($this->sampleString))
+		);
+	}
+
+	/**
+	 * Tests the getListStatuses method - failure
+	 *
+	 * @param   mixed  $list   Either an integer containing the list ID or a string containing the list slug.
+	 * @param   mixed  $owner  Either an integer containing the user ID or a string containing the screen name.
+	 *
+	 * @return  void
+	 *
+	 * @since 12.1
+	 * @dataProvider seedListStatuses
+	 * @expectedException DomainException
+	 */
+	public function testGetListStatusesFailure($list, $owner)
+	{
+		$returnData = new stdClass;
+		$returnData->code = 200;
+		$returnData->body = $this->rateLimit;
+
+		$this->client->expects($this->at(0))
+		->method('get')
+		->with('/1/account/rate_limit_status.json')
+		->will($this->returnValue($returnData));
+
+		$returnData = new stdClass;
+		$returnData->code = 500;
+		$returnData->body = $this->errorString;
+
+		// Set request parameters.
+		if (is_numeric($list))
+		{
+			$data['list_id'] = $list;
+		}
+		elseif (is_string($list))
+		{
+			$data['slug'] = $list;
+
+			if (is_numeric($owner))
+			{
+				$data['owner_id'] = $owner;
+			}
+			elseif (is_string($owner))
+			{
+				$data['owner_screen_name'] = $owner;
+			}
+			else
+			{
+				// We don't have a valid entry
+				$this->setExpectedException('RuntimeException');
+				$this->object->getListStatuses($list, $owner);
+			}
+		}
+		else
+		{
+			$this->setExpectedException('RuntimeException');
+			$this->object->getListStatuses($list, $owner);
+		}
+
+		$path = $this->object->fetchUrl('/1/lists/statuses.json', $data);
+
+		$this->client->expects($this->at(1))
+		->method('get')
+		->with($path)
+		->will($this->returnValue($returnData));
+
+		$this->object->getListStatuses($list, $owner);
+	}
 }
