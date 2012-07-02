@@ -322,8 +322,8 @@ class JTwitterUsersTest extends TestCase
 	{
 		// User ID or screen name
 		return array(
-			array('{"X-FeatureRateLimit-Remaining":10}'),
-			array('{"X-FeatureRateLimit-Remaining":0,"X-FeatureRateLimit-Reset":1243245654}')
+			array(array("X-FeatureRateLimit-Remaining" => 10)),
+			array(array("X-FeatureRateLimit-Remaining" => 0, "X-FeatureRateLimit-Reset" => 1243245654))
 			);
 	}
 
@@ -373,7 +373,7 @@ class JTwitterUsersTest extends TestCase
 		->with($path)
 		->will($this->returnValue($returnData));
 
-		$headers_array = json_decode($returnData->headers, true);
+		$headers_array = $returnData->headers;
 		if ($headers_array['X-FeatureRateLimit-Remaining'] == 0)
 		{
 			$this->setExpectedException('RuntimeException');

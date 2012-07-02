@@ -1185,8 +1185,8 @@ class JTwitterStatusesTest extends TestCase
 	{
 		// User ID or screen name
 		return array(
-			array('{"X-MediaRateLimit-Remaining":10}'),
-			array('{"X-MediaRateLimit-Remaining":0,"X-MediaRateLimit-Reset":1243245654}')
+			array(array("X-MediaRateLimit-Remaining" => 10)),
+			array(array("X-MediaRateLimit-Remaining" => 0, "X-MediaRateLimit-Reset" => 1243245654))
 			);
 	}
 
@@ -1241,7 +1241,7 @@ class JTwitterStatusesTest extends TestCase
 			->with('https://upload.twitter.com/1/statuses/update_with_media.json', $data)
 			->will($this->returnValue($returnData));
 
-		$headers_array = json_decode($returnData->headers, true);
+		$headers_array = $returnData->headers;
 		if ($headers_array['X-MediaRateLimit-Remaining'] == 0)
 		{
 			$this->setExpectedException('RuntimeException');
