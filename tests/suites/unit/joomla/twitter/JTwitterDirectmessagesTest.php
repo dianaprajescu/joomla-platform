@@ -100,7 +100,7 @@ class JTwitterDirectmessagesTest extends TestCase
 	 *
 	 * @since   12.1
 	 */
-	public function testDirectMessages()
+	public function testGetDirectMessages()
 	{
 		$since_id = 12345;
 		$max_id = 54321;
@@ -151,7 +151,7 @@ class JTwitterDirectmessagesTest extends TestCase
 	 * @expectedException DomainException
 	 * @since   12.1
 	 */
-	public function testDirectMessagesFailure()
+	public function testGetDirectMessagesFailure()
 	{
 		$since_id = 12345;
 		$max_id = 54321;
@@ -390,5 +390,77 @@ class JTwitterDirectmessagesTest extends TestCase
 		->will($this->returnValue($returnData));
 
 		$this->object->sendDirectMessages($this->oauth, $user, $text);
+	}
+
+	/**
+	 * Tests the getDirectMessagesById method
+	 *
+	 * @return  void
+	 *
+	 * @since   12.1
+	 */
+	public function testGetDirectMessagesById()
+	{
+		$id = 12345;
+
+		$returnData = new stdClass;
+		$returnData->code = 200;
+		$returnData->body = $this->rateLimit;
+
+		$this->client->expects($this->at(0))
+		->method('get')
+		->with('/1/account/rate_limit_status.json')
+		->will($this->returnValue($returnData));
+
+		$returnData = new stdClass;
+		$returnData->code = 200;
+		$returnData->body = $this->sampleString;
+
+		$path = $this->object->fetchUrl('/1/direct_messages/show/' . $id . '.json');
+
+		$this->client->expects($this->at(1))
+		->method('get')
+		->with($path)
+		->will($this->returnValue($returnData));
+
+		$this->assertThat(
+			$this->object->getDirectMessagesById($this->oauth, $id),
+			$this->equalTo(json_decode($this->sampleString))
+		);
+	}
+
+	/**
+	 * Tests the getDirectMessagesById method - failure
+	 *
+	 * @return  void
+	 *
+	 * @expectedException DomainException
+	 * @since   12.1
+	 */
+	public function testGetDirectMessagesByIdFailure()
+	{
+		$id = 12345;
+
+		$returnData = new stdClass;
+		$returnData->code = 200;
+		$returnData->body = $this->rateLimit;
+
+		$this->client->expects($this->at(0))
+		->method('get')
+		->with('/1/account/rate_limit_status.json')
+		->will($this->returnValue($returnData));
+
+		$returnData = new stdClass;
+		$returnData->code = 500;
+		$returnData->body = $this->errorString;
+
+		$path = $this->object->fetchUrl('/1/direct_messages/show/' . $id . '.json');
+
+		$this->client->expects($this->at(1))
+		->method('get')
+		->with($path)
+		->will($this->returnValue($returnData));
+
+		$this->object->getDirectMessagesById($this->oauth, $id);
 	}
 }

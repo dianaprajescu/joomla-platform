@@ -196,4 +196,33 @@ class JTwitterDirectMessages extends JTwitterObject
 		$response = $oauth->oauthRequest($path, 'POST', $parameters, $data);
 		return json_decode($response->body);
 	}
+
+	/**
+	 * Method to get a single direct message, specified by an id parameter.
+	 *
+	 * @param   JTwitterOAuth  $oauth  The JTwitterOAuth object.
+	 * @param   integer        $id     The ID of the direct message.
+	 *
+	 * @return  array  The decoded JSON response
+	 *
+	 * @since   12.1
+	 */
+	public function getDirectMessagesById($oauth, $id)
+	{
+		// Check the rate limit for remaining hits
+		$this->checkRateLimit();
+
+		// Set the API base
+		$base = '/1/direct_messages/show/' . $id . '.json';
+
+		// Set parameters.
+		$parameters = array('oauth_token' => $oauth->getToken('key'));
+
+		// Build the request path.
+		$path = $this->getOption('api.url') . $base;
+
+		// Send the request.
+		$response = $oauth->oauthRequest($path, 'GET', $parameters);
+		return json_decode($response->body);
+	}
 }
