@@ -1599,4 +1599,152 @@ class JTwitterListsTest extends TestCase
 
 		$this->object->addListMembers($this->oauth, $list, $user_id, $screen_name, $owner);
 	}
+
+	/**
+	 * Tests the getListMembers method
+	 *
+	 * @param   mixed  $list   Either an integer containing the list ID or a string containing the list slug.
+	 * @param   mixed  $owner  Either an integer containing the user ID or a string containing the screen name.
+	 *
+	 * @return  void
+	 *
+	 * @since 12.1
+	 * @dataProvider seedListStatuses
+	 */
+	public function testGetListMembers($list, $owner)
+	{
+		$entities = true;
+		$skip_status = true;
+
+		$returnData = new stdClass;
+		$returnData->code = 200;
+		$returnData->body = $this->rateLimit;
+
+		$this->client->expects($this->at(0))
+		->method('get')
+		->with('/1/account/rate_limit_status.json')
+		->will($this->returnValue($returnData));
+
+		$returnData = new stdClass;
+		$returnData->code = 200;
+		$returnData->body = $this->sampleString;
+
+		// Set request parameters.
+		if (is_numeric($list))
+		{
+			$data['list_id'] = $list;
+		}
+		elseif (is_string($list))
+		{
+			$data['slug'] = $list;
+
+			if (is_numeric($owner))
+			{
+				$data['owner_id'] = $owner;
+			}
+			elseif (is_string($owner))
+			{
+				$data['owner_screen_name'] = $owner;
+			}
+			else
+			{
+				// We don't have a valid entry
+				$this->setExpectedException('RuntimeException');
+				$this->object->getListMembers($list, $owner);
+			}
+		}
+		else
+		{
+			$this->setExpectedException('RuntimeException');
+			$this->object->getListMembers($list, $owner);
+		}
+
+		$data['include_entities'] = $entities;
+		$data['skip_status'] = $skip_status;
+
+		$path = $this->object->fetchUrl('/1/lists/members.json', $data);
+
+		$this->client->expects($this->at(1))
+		->method('get')
+		->with($path)
+		->will($this->returnValue($returnData));
+
+		$this->assertThat(
+			$this->object->getListMembers($list, $owner, $entities, $skip_status),
+			$this->equalTo(json_decode($this->sampleString))
+		);
+	}
+
+	/**
+	 * Tests the getListMembers method - failure
+	 *
+	 * @param   mixed  $list   Either an integer containing the list ID or a string containing the list slug.
+	 * @param   mixed  $owner  Either an integer containing the user ID or a string containing the screen name.
+	 *
+	 * @return  void
+	 *
+	 * @since 12.1
+	 * @dataProvider seedListStatuses
+	 * @expectedException DomainException
+	 */
+	public function testGetListMembersFailure($list, $owner)
+	{
+		$entities = true;
+		$skip_status = true;
+
+		$returnData = new stdClass;
+		$returnData->code = 200;
+		$returnData->body = $this->rateLimit;
+
+		$this->client->expects($this->at(0))
+		->method('get')
+		->with('/1/account/rate_limit_status.json')
+		->will($this->returnValue($returnData));
+
+		$returnData = new stdClass;
+		$returnData->code = 500;
+		$returnData->body = $this->errorString;
+
+		// Set request parameters.
+		if (is_numeric($list))
+		{
+			$data['list_id'] = $list;
+		}
+		elseif (is_string($list))
+		{
+			$data['slug'] = $list;
+
+			if (is_numeric($owner))
+			{
+				$data['owner_id'] = $owner;
+			}
+			elseif (is_string($owner))
+			{
+				$data['owner_screen_name'] = $owner;
+			}
+			else
+			{
+				// We don't have a valid entry
+				$this->setExpectedException('RuntimeException');
+				$this->object->getListMembers($list, $owner);
+			}
+		}
+		else
+		{
+			$this->setExpectedException('RuntimeException');
+			$this->object->getListMembers($list, $owner);
+		}
+
+		$data['include_entities'] = $entities;
+		$data['skip_status'] = $skip_status;
+
+		$path = $this->object->fetchUrl('/1/lists/members.json', $data);
+
+		$this->client->expects($this->at(1))
+		->method('get')
+		->with($path)
+		->will($this->returnValue($returnData));
+
+		$this->object->getListMembers($list, $owner, $entities, $skip_status);
+	}
 }
