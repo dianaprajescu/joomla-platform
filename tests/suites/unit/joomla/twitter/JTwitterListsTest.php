@@ -1430,4 +1430,173 @@ class JTwitterListsTest extends TestCase
 
 		$this->object->unsubscribe($this->oauth, $list, $owner);
 	}
+
+	/**
+	* Provides test data for request format detection.
+	*
+	* @return array
+	*
+	* @since 12.1
+	*/
+	public function seedAddListMembers()
+	{
+		// List, User ID, screen name and owner.
+		return array(
+			array(234654235457, null, '234654235457', null),
+			array('test-list', null, '234654235457,245864573437', 'testUser'),
+			array('test-list', 'testUser', null, null),
+			array('test-list', 'testUser', '234654235457', 'userTest'),
+			array(null, null, null, null)
+			);
+	}
+
+	/**
+	 * Tests the addListMembers method
+	 *
+	 * @param   mixed   $list         Either an integer containing the list ID or a string containing the list slug.
+	 * @param   string  $user_id      A comma separated list of user IDs, up to 100 are allowed in a single request.
+	 * @param   string  $screen_name  A comma separated list of screen names, up to 100 are allowed in a single request.
+	 * @param   mixed   $owner        Either an integer containing the user ID or a string containing the screen name.
+	 *
+	 * @return  void
+	 *
+	 * @since 12.1
+	 * @dataProvider seedAddListMembers
+	 */
+	public function testAddListMembers($list, $user_id, $screen_name, $owner)
+	{
+		$returnData = new stdClass;
+		$returnData->code = 200;
+		$returnData->body = $this->sampleString;
+
+		// Set request parameters.
+		if (is_numeric($list))
+		{
+			$data['list_id'] = $list;
+		}
+		elseif (is_string($list))
+		{
+			$data['slug'] = $list;
+
+			if (is_numeric($owner))
+			{
+				$data['owner_id'] = $owner;
+			}
+			elseif (is_string($owner))
+			{
+				$data['owner_screen_name'] = $owner;
+			}
+			else
+			{
+				// We don't have a valid entry
+				$this->setExpectedException('RuntimeException');
+				$this->object->addListMembers($this->oauth, $list, $user_id, $screen_name, $owner);
+			}
+		}
+		else
+		{
+			$this->setExpectedException('RuntimeException');
+			$this->object->addListMembers($this->oauth, $list, $user_id, $screen_name, $owner);
+		}
+
+		if ($user_id)
+		{
+			$data['user_id'] = $user_id;
+		}
+		if ($screen_name)
+		{
+			$data['screen_name'] = $screen_name;
+		}
+		if($user_id == null && $screen_name == null)
+		{
+			$this->setExpectedException('RuntimeException');
+			$this->object->addListMembers($this->oauth, $list, $user_id, $screen_name, $owner);
+		}
+
+		$path = $this->object->fetchUrl('/1/lists/members/create_all.json');
+
+		$this->client->expects($this->once())
+		->method('post')
+		->with($path, $data)
+		->will($this->returnValue($returnData));
+
+		$this->assertThat(
+			$this->object->addListMembers($this->oauth, $list, $user_id, $screen_name, $owner),
+			$this->equalTo(json_decode($this->sampleString))
+		);
+	}
+
+	/**
+	 * Tests the addListMembers method - failure
+	 *
+	 * @param   mixed   $list         Either an integer containing the list ID or a string containing the list slug.
+	 * @param   string  $user_id      A comma separated list of user IDs, up to 100 are allowed in a single request.
+	 * @param   string  $screen_name  A comma separated list of screen names, up to 100 are allowed in a single request.
+	 * @param   mixed   $owner        Either an integer containing the user ID or a string containing the screen name.
+	 *
+	 * @return  void
+	 *
+	 * @since 12.1
+	 * @dataProvider seedAddListMembers
+	 * @expectedException DomainException
+	 */
+	public function testAddListMembersFailure($list, $user_id, $screen_name, $owner)
+	{
+		$returnData = new stdClass;
+		$returnData->code = 500;
+		$returnData->body = $this->errorString;
+
+		// Set request parameters.
+		if (is_numeric($list))
+		{
+			$data['list_id'] = $list;
+		}
+		elseif (is_string($list))
+		{
+			$data['slug'] = $list;
+
+			if (is_numeric($owner))
+			{
+				$data['owner_id'] = $owner;
+			}
+			elseif (is_string($owner))
+			{
+				$data['owner_screen_name'] = $owner;
+			}
+			else
+			{
+				// We don't have a valid entry
+				$this->setExpectedException('RuntimeException');
+				$this->object->addListMembers($this->oauth, $list, $user_id, $screen_name, $owner);
+			}
+		}
+		else
+		{
+			$this->setExpectedException('RuntimeException');
+			$this->object->addListMembers($this->oauth, $list, $user_id, $screen_name, $owner);
+		}
+
+		if ($user_id)
+		{
+			$data['user_id'] = $user_id;
+		}
+		if ($screen_name)
+		{
+			$data['screen_name'] = $screen_name;
+		}
+		if($user_id == null && $screen_name == null)
+		{
+			$this->setExpectedException('RuntimeException');
+			$this->object->addListMembers($this->oauth, $list, $user_id, $screen_name, $owner);
+		}
+
+		$path = $this->object->fetchUrl('/1/lists/members/create_all.json');
+
+		$this->client->expects($this->once())
+		->method('post')
+		->with($path, $data)
+		->will($this->returnValue($returnData));
+
+		$this->object->addListMembers($this->oauth, $list, $user_id, $screen_name, $owner);
+	}
 }

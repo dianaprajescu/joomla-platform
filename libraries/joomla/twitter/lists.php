@@ -490,11 +490,7 @@ class JTwitterLists extends JTwitterObject
 
 		// Send the request.
 		$response = $oauth->oauthRequest($path, 'GET', $parameters, $data);
-		if (property_exists($response, 'body'))
-		{
-			return json_decode($response->body);
-		}
-		return $response;
+		return json_decode($response->body);
 	}
 
 	/**
@@ -585,11 +581,7 @@ class JTwitterLists extends JTwitterObject
 
 		// Send the request.
 		$response = $oauth->oauthRequest($path, 'GET', $parameters, $data);
-		if (property_exists($response, 'body'))
-		{
-			return json_decode($response->body);
-		}
-		return $response;
+		return json_decode($response->body);
 	}
 
 	/**
@@ -647,10 +639,80 @@ class JTwitterLists extends JTwitterObject
 
 		// Send the request.
 		$response = $oauth->oauthRequest($path, 'POST', $parameters, $data);
-		if (property_exists($response, 'body'))
+		return json_decode($response->body);
+	}
+
+	/**
+	 * Method to add multiple members to a list, by specifying a comma-separated list of member ids or screen names.
+	 *
+	 * @param   JTwitterOAuth  $oauth        The JTwitterOAuth object.
+	 * @param   mixed          $list         Either an integer containing the list ID or a string containing the list slug.
+	 * @param   string         $user_id      A comma separated list of user IDs, up to 100 are allowed in a single request.
+	 * @param   string         $screen_name  A comma separated list of screen names, up to 100 are allowed in a single request.
+	 * @param   mixed          $owner        Either an integer containing the user ID or a string containing the screen name of the owner.
+	 *
+	 * @return  array  The decoded JSON response
+	 *
+	 * @since   12.1
+	 * @throws  RuntimeException
+	 */
+	public function addListMembers($oauth, $list, $user_id = null, $screen_name = null, $owner = null)
+	{
+		// Set parameters.
+		$parameters = array('oauth_token' => $oauth->getToken('key'));
+
+		// Determine which type of data was passed for $list
+		if (is_numeric($list))
 		{
-			return json_decode($response->body);
+			$data['list_id'] = $list;
 		}
-		return $response;
+		elseif (is_string($list))
+		{
+			$data['slug'] = $list;
+
+			// In this case the owner is required.
+			if (is_numeric($owner))
+			{
+				$data['owner_id'] = $owner;
+			}
+			elseif (is_string($owner))
+			{
+				$data['owner_screen_name'] = $owner;
+			}
+			else
+			{
+				// We don't have a valid entry
+				throw new RuntimeException('The specified username is not in the correct format; must use integer or string');
+			}
+		}
+		else
+		{
+			// We don't have a valid entry
+			throw new RuntimeException('The specified list is not in the correct format; must use integer or string');
+		}
+
+		if ($user_id)
+		{
+			$data['user_id'] = $user_id;
+		}
+		if ($screen_name)
+		{
+			$data['screen_name'] = $screen_name;
+		}
+		if($user_id == null && $screen_name == null)
+		{
+			// We don't have a valid entry
+			throw new RuntimeException('You must specify either a comma separated list of screen names, user IDs, or a combination of the two');
+		}
+
+		// Set the API base
+		$base = '/1/lists/members/create_all.json';
+
+		// Build the request path.
+		$path = $this->getOption('api.url') . $base;
+
+		// Send the request.
+		$response = $oauth->oauthRequest($path, 'POST', $parameters, $data);
+		return json_decode($response->body);
 	}
 }
