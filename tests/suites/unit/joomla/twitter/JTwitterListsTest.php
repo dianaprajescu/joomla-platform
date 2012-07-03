@@ -1132,4 +1132,184 @@ class JTwitterListsTest extends TestCase
 
 		$this->object->isListMember($this->oauth, $list, $user, $owner, $entities, $skip_status);
 	}
+
+	/**
+	 * Tests the isListSubscriber method
+	 *
+	 * @param   mixed  $list   Either an integer containing the list ID or a string containing the list slug.
+	 * @param   mixed  $user   Either an integer containing the user ID or a string containing the screen name of the user to remove.
+	 * @param   mixed  $owner  Either an integer containing the user ID or a string containing the screen name of the owner.
+	 *
+	 * @return  void
+	 *
+	 * @since 12.1
+	 * @dataProvider seedDeleteListMember
+	 */
+	public function testIsListSubscriber($list, $user, $owner)
+	{
+		$entities = true;
+		$skip_status = true;
+
+		$returnData = new stdClass;
+		$returnData->code = 200;
+		$returnData->body = $this->rateLimit;
+
+		$this->client->expects($this->at(0))
+		->method('get')
+		->with('/1/account/rate_limit_status.json')
+		->will($this->returnValue($returnData));
+
+		$returnData = new stdClass;
+		$returnData->code = 200;
+		$returnData->body = $this->sampleString;
+
+		// Set request parameters.
+		if (is_numeric($list))
+		{
+			$data['list_id'] = $list;
+		}
+		elseif (is_string($list))
+		{
+			$data['slug'] = $list;
+
+			if (is_numeric($owner))
+			{
+				$data['owner_id'] = $owner;
+			}
+			elseif (is_string($owner))
+			{
+				$data['owner_screen_name'] = $owner;
+			}
+			else
+			{
+				// We don't have a valid entry
+				$this->setExpectedException('RuntimeException');
+				$this->object->isListSubscriber($this->oauth, $list, $user, $owner);
+			}
+		}
+		else
+		{
+			$this->setExpectedException('RuntimeException');
+			$this->object->isListSubscriber($this->oauth, $list, $user, $owner);
+		}
+
+		if (is_numeric($user))
+		{
+			$data['user_id'] = $user;
+		}
+		elseif (is_string($user))
+		{
+			$data['screen_name'] = $user;
+		}
+		else
+		{
+			// We don't have a valid entry
+			$this->setExpectedException('RuntimeException');
+			$this->object->isListSubscriber($this->oauth, $list, $user, $owner);
+		}
+
+		$data['include_entities'] = $entities;
+		$data['skip_status'] = $skip_status;
+
+		$path = $this->object->fetchUrl('/1/lists/subscribers/show.json', $data);
+
+		$this->client->expects($this->at(1))
+		->method('get')
+		->with($path)
+		->will($this->returnValue($returnData));
+
+		$this->assertThat(
+			$this->object->isListSubscriber($this->oauth, $list, $user, $owner, $entities, $skip_status),
+			$this->equalTo(json_decode($this->sampleString))
+		);
+	}
+
+	/**
+	 * Tests the isListSubscriber method - failure
+	 *
+	 * @param   mixed  $list   Either an integer containing the list ID or a string containing the list slug.
+	 * @param   mixed  $user   Either an integer containing the user ID or a string containing the screen name of the user to remove.
+	 * @param   mixed  $owner  Either an integer containing the user ID or a string containing the screen name of the owner.
+	 *
+	 * @return  void
+	 *
+	 * @since 12.1
+	 * @dataProvider seedDeleteListMember
+	 * @expectedException DomainException
+	 */
+	public function testIsListSubscriberFailure($list, $user, $owner)
+	{
+		$entities = true;
+		$skip_status = true;
+
+		$returnData = new stdClass;
+		$returnData->code = 200;
+		$returnData->body = $this->rateLimit;
+
+		$this->client->expects($this->at(0))
+		->method('get')
+		->with('/1/account/rate_limit_status.json')
+		->will($this->returnValue($returnData));
+
+		$returnData = new stdClass;
+		$returnData->code = 500;
+		$returnData->body = $this->errorString;
+
+		// Set request parameters.
+		if (is_numeric($list))
+		{
+			$data['list_id'] = $list;
+		}
+		elseif (is_string($list))
+		{
+			$data['slug'] = $list;
+
+			if (is_numeric($owner))
+			{
+				$data['owner_id'] = $owner;
+			}
+			elseif (is_string($owner))
+			{
+				$data['owner_screen_name'] = $owner;
+			}
+			else
+			{
+				// We don't have a valid entry
+				$this->setExpectedException('RuntimeException');
+				$this->object->isListSubscriber($this->oauth, $list, $user, $owner);
+			}
+		}
+		else
+		{
+			$this->setExpectedException('RuntimeException');
+			$this->object->isListSubscriber($this->oauth, $list, $user, $owner);
+		}
+
+		if (is_numeric($user))
+		{
+			$data['user_id'] = $user;
+		}
+		elseif (is_string($user))
+		{
+			$data['screen_name'] = $user;
+		}
+		else
+		{
+			// We don't have a valid entry
+			$this->setExpectedException('RuntimeException');
+			$this->object->isListSubscriber($this->oauth, $list, $user, $owner);
+		}
+
+		$data['include_entities'] = $entities;
+		$data['skip_status'] = $skip_status;
+
+		$path = $this->object->fetchUrl('/1/lists/subscribers/show.json', $data);
+
+		$this->client->expects($this->at(1))
+		->method('get')
+		->with($path)
+		->will($this->returnValue($returnData));
+
+		$this->object->isListSubscriber($this->oauth, $list, $user, $owner, $entities, $skip_status);
+	}
 }
