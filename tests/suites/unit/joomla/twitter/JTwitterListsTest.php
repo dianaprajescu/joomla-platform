@@ -1747,4 +1747,140 @@ class JTwitterListsTest extends TestCase
 
 		$this->object->getListMembers($list, $owner, $entities, $skip_status);
 	}
+
+	/**
+	 * Tests the getListById method
+	 *
+	 * @param   mixed  $list   Either an integer containing the list ID or a string containing the list slug.
+	 * @param   mixed  $owner  Either an integer containing the user ID or a string containing the screen name.
+	 *
+	 * @return  void
+	 *
+	 * @since 12.1
+	 * @dataProvider seedListStatuses
+	 */
+	public function testGetListByIdtMembers($list, $owner)
+	{
+		$returnData = new stdClass;
+		$returnData->code = 200;
+		$returnData->body = $this->rateLimit;
+
+		$this->client->expects($this->at(0))
+		->method('get')
+		->with('/1/account/rate_limit_status.json')
+		->will($this->returnValue($returnData));
+
+		$returnData = new stdClass;
+		$returnData->code = 200;
+		$returnData->body = $this->sampleString;
+
+		// Set request parameters.
+		if (is_numeric($list))
+		{
+			$data['list_id'] = $list;
+		}
+		elseif (is_string($list))
+		{
+			$data['slug'] = $list;
+
+			if (is_numeric($owner))
+			{
+				$data['owner_id'] = $owner;
+			}
+			elseif (is_string($owner))
+			{
+				$data['owner_screen_name'] = $owner;
+			}
+			else
+			{
+				// We don't have a valid entry
+				$this->setExpectedException('RuntimeException');
+				$this->object->getListById($list, $owner);
+			}
+		}
+		else
+		{
+			$this->setExpectedException('RuntimeException');
+			$this->object->getListById($list, $owner);
+		}
+
+		$path = $this->object->fetchUrl('/1/lists/show.json', $data);
+
+		$this->client->expects($this->at(1))
+		->method('get')
+		->with($path)
+		->will($this->returnValue($returnData));
+
+		$this->assertThat(
+			$this->object->getListById($list, $owner),
+			$this->equalTo(json_decode($this->sampleString))
+		);
+	}
+
+	/**
+	 * Tests the getListById method - failure
+	 *
+	 * @param   mixed  $list   Either an integer containing the list ID or a string containing the list slug.
+	 * @param   mixed  $owner  Either an integer containing the user ID or a string containing the screen name.
+	 *
+	 * @return  void
+	 *
+	 * @since 12.1
+	 * @dataProvider seedListStatuses
+	 * @expectedException DomainException
+	 */
+	public function testGetListByIdtMembersFailure($list, $owner)
+	{
+		$returnData = new stdClass;
+		$returnData->code = 200;
+		$returnData->body = $this->rateLimit;
+
+		$this->client->expects($this->at(0))
+		->method('get')
+		->with('/1/account/rate_limit_status.json')
+		->will($this->returnValue($returnData));
+
+		$returnData = new stdClass;
+		$returnData->code = 500;
+		$returnData->body = $this->errorString;
+
+		// Set request parameters.
+		if (is_numeric($list))
+		{
+			$data['list_id'] = $list;
+		}
+		elseif (is_string($list))
+		{
+			$data['slug'] = $list;
+
+			if (is_numeric($owner))
+			{
+				$data['owner_id'] = $owner;
+			}
+			elseif (is_string($owner))
+			{
+				$data['owner_screen_name'] = $owner;
+			}
+			else
+			{
+				// We don't have a valid entry
+				$this->setExpectedException('RuntimeException');
+				$this->object->getListById($list, $owner);
+			}
+		}
+		else
+		{
+			$this->setExpectedException('RuntimeException');
+			$this->object->getListById($list, $owner);
+		}
+
+		$path = $this->object->fetchUrl('/1/lists/show.json', $data);
+
+		$this->client->expects($this->at(1))
+		->method('get')
+		->with($path)
+		->will($this->returnValue($returnData));
+
+		$this->object->getListById($list, $owner);
+	}
 }
