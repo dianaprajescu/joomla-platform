@@ -2277,4 +2277,122 @@ class JTwitterListsTest extends TestCase
 
 		$this->object->createList($this->oauth, $name, $mode, $description);
 	}
+
+	/**
+	 * Tests the deleteList method
+	 *
+	 * @param   mixed  $list   Either an integer containing the list ID or a string containing the list slug.
+	 * @param   mixed  $owner  Either an integer containing the user ID or a string containing the screen name.
+	 *
+	 * @return  void
+	 *
+	 * @since 12.1
+	 * @dataProvider seedListStatuses
+	 */
+	public function testDeleteList($list, $owner)
+	{
+		$returnData = new stdClass;
+		$returnData->code = 200;
+		$returnData->body = $this->sampleString;
+
+		// Set request parameters.
+		if (is_numeric($list))
+		{
+			$data['list_id'] = $list;
+		}
+		elseif (is_string($list))
+		{
+			$data['slug'] = $list;
+
+			if (is_numeric($owner))
+			{
+				$data['owner_id'] = $owner;
+			}
+			elseif (is_string($owner))
+			{
+				$data['owner_screen_name'] = $owner;
+			}
+			else
+			{
+				// We don't have a valid entry
+				$this->setExpectedException('RuntimeException');
+				$this->object->deleteList($this->oauth, $list, $owner);
+			}
+		}
+		else
+		{
+			$this->setExpectedException('RuntimeException');
+			$this->object->deleteList($this->oauth, $list, $owner);
+		}
+
+		$path = $this->object->fetchUrl('/1/lists/destroy.json');
+
+		$this->client->expects($this->once())
+		->method('post')
+		->with($path, $data)
+		->will($this->returnValue($returnData));
+
+		$this->assertThat(
+			$this->object->deleteList($this->oauth, $list, $owner),
+			$this->equalTo(json_decode($this->sampleString))
+		);
+	}
+
+	/**
+	 * Tests the deleteList method - failure
+	 *
+	 * @param   mixed  $list   Either an integer containing the list ID or a string containing the list slug.
+	 * @param   mixed  $owner  Either an integer containing the user ID or a string containing the screen name.
+	 *
+	 * @return  void
+	 *
+	 * @since 12.1
+	 * @dataProvider seedListStatuses
+	 * @expectedException DomainException
+	 */
+	public function testDeleteListFailure($list, $owner)
+	{
+		$returnData = new stdClass;
+		$returnData->code = 500;
+		$returnData->body = $this->errorString;
+
+		// Set request parameters.
+		if (is_numeric($list))
+		{
+			$data['list_id'] = $list;
+		}
+		elseif (is_string($list))
+		{
+			$data['slug'] = $list;
+
+			if (is_numeric($owner))
+			{
+				$data['owner_id'] = $owner;
+			}
+			elseif (is_string($owner))
+			{
+				$data['owner_screen_name'] = $owner;
+			}
+			else
+			{
+				// We don't have a valid entry
+				$this->setExpectedException('RuntimeException');
+				$this->object->deleteList($this->oauth, $list, $owner);
+			}
+		}
+		else
+		{
+			$this->setExpectedException('RuntimeException');
+			$this->object->deleteList($this->oauth, $list, $owner);
+		}
+
+		$path = $this->object->fetchUrl('/1/lists/destroy.json');
+
+		$this->client->expects($this->once())
+		->method('post')
+		->with($path, $data)
+		->will($this->returnValue($returnData));
+
+		$this->object->deleteList($this->oauth, $list, $owner);
+	}
 }
