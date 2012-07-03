@@ -836,6 +836,42 @@ class JTwitterLists extends JTwitterObject
 
 		// Send the request.
 		return $this->sendRequest($base, 'get', $data);
+	}
 
+	/**
+	 * Method to get lists of the specified (or authenticated) user.
+	 *
+	 * @param   mixed  $user  Either an integer containing the user ID or a string containing the screen name.
+	 *
+	 * @return  array  The decoded JSON response
+	 *
+	 * @since   12.1
+	 * @throws  RuntimeException
+	 */
+	public function getLists($user)
+	{
+		// Check the rate limit for remaining hits
+		$this->checkRateLimit();
+
+		// Determine which type of data was passed for $user
+		if (is_numeric($user))
+		{
+			$parameters['user_id'] = $user;
+		}
+		elseif (is_string($user))
+		{
+			$parameters['screen_name'] = $user;
+		}
+		else
+		{
+			// We don't have a valid entry
+			throw new RuntimeException('The specified username is not in the correct format; must use integer or string');
+		}
+
+		// Set the API base
+		$base = '/1/lists.json';
+
+		// Send the request.
+		return $this->sendRequest($base, 'get', $parameters);
 	}
 }
