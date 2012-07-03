@@ -300,8 +300,9 @@ class JTwitterOAuth
 			}
 			else
 			{
+				// Twitter returns error if the requested resource does not exist, for example a user is not member of a list.
 				$error = $error->errors;
-				throw new DomainException($error[0]->message, $error[0]->code);
+				return $error[0];
 			}
 		}
 

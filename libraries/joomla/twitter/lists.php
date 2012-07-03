@@ -490,6 +490,10 @@ class JTwitterLists extends JTwitterObject
 
 		// Send the request.
 		$response = $oauth->oauthRequest($path, 'GET', $parameters, $data);
-		return json_decode($response->body);
+		if (property_exists($response, 'body'))
+		{
+			return json_decode($response->body);
+		}
+		return $response;
 	}
 }
