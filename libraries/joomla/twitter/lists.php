@@ -998,4 +998,51 @@ class JTwitterLists extends JTwitterObject
 		$response = $oauth->oauthRequest($path, 'POST', $parameters, $data);
 		return json_decode($response->body);
 	}
+
+	/**
+	 * Method to create a new list for the authenticated user.
+	 *
+	 * @param   JTwitterOAuth  $oauth        The JTwitterOAuth object.
+	 * @param   string         $name         The name of the list.
+	 * @param   string         $mode         Whether your list is public or private. Values can be public or private. If no mode is
+	 * 										 specified the list will be public.
+	 * @param   string         $description  The description to give the list.
+	 *
+	 * @return  array  The decoded JSON response
+	 *
+	 * @since   12.1
+	 */
+	public function createList($oauth, $name, $mode = null, $description = null)
+	{
+		// Set parameters.
+		$parameters = array('oauth_token' => $oauth->getToken('key'));
+
+		// Check if name is specified.
+		if ($name)
+		{
+			$data['name'] = $name;
+		}
+
+		// Check if mode is specified.
+		if ($mode)
+		{
+			$data['mode'] = $mode;
+		}
+
+		// Check if description is specified.
+		if ($description)
+		{
+			$data['description'] = $description;
+		}
+
+		// Set the API base
+		$base = '/1/lists/create.json';
+
+		// Build the request path.
+		$path = $this->getOption('api.url') . $base;
+
+		// Send the request.
+		$response = $oauth->oauthRequest($path, 'POST', $parameters, $data);
+		return json_decode($response->body);
+	}
 }

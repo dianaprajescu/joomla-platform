@@ -2231,4 +2231,70 @@ class JTwitterListsTest extends TestCase
 
 		$this->object->updateList($this->oauth, $list, $owner, $name, $mode, $description);
 	}
+
+	/**
+	 * Tests the createList method
+	 *
+	 * @return  void
+	 *
+	 * @since 12.1
+	 */
+	public function testCreateList()
+	{
+		$name = 'test list';
+		$mode = 'private';
+		$description = 'this is a description';
+
+		$returnData = new stdClass;
+		$returnData->code = 200;
+		$returnData->body = $this->sampleString;
+
+		$data['name'] = $name;
+		$data['mode'] = $mode;
+		$data['description'] = $description;
+
+		$path = $this->object->fetchUrl('/1/lists/create.json');
+
+		$this->client->expects($this->once())
+		->method('post')
+		->with($path, $data)
+		->will($this->returnValue($returnData));
+
+		$this->assertThat(
+			$this->object->createList($this->oauth, $name, $mode, $description),
+			$this->equalTo(json_decode($this->sampleString))
+		);
+	}
+
+	/**
+	 * Tests the createList method - failure
+	 *
+	 * @return  void
+	 *
+	 * @since 12.1
+	 * @expectedException DomainException
+	 */
+	public function testCreateListFailure()
+	{
+		$name = 'test list';
+		$mode = 'private';
+		$description = 'this is a description';
+
+		$returnData = new stdClass;
+		$returnData->code = 500;
+		$returnData->body = $this->errorString;
+
+		$data['name'] = $name;
+		$data['mode'] = $mode;
+		$data['description'] = $description;
+
+		$path = $this->object->fetchUrl('/1/lists/create.json');
+
+		$this->client->expects($this->once())
+		->method('post')
+		->with($path, $data)
+		->will($this->returnValue($returnData));
+
+		$this->object->createList($this->oauth, $name, $mode, $description);
+	}
 }
