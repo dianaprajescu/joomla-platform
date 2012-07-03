@@ -591,4 +591,66 @@ class JTwitterLists extends JTwitterObject
 		}
 		return $response;
 	}
+
+	/**
+	 * Method to unsubscribe the authenticated user from the specified list.
+	 *
+	 * @param   JTwitterOAuth  $oauth        The JTwitterOAuth object.
+	 * @param   mixed          $list         Either an integer containing the list ID or a string containing the list slug.
+	 * @param   mixed          $owner        Either an integer containing the user ID or a string containing the screen name of the owner.
+	 *
+	 * @return  array  The decoded JSON response
+	 *
+	 * @since   12.1
+	 * @throws  RuntimeException
+	 */
+	public function unsubscribe($oauth, $list, $owner = null)
+	{
+		// Set parameters.
+		$parameters = array('oauth_token' => $oauth->getToken('key'));
+
+		// Determine which type of data was passed for $list
+		if (is_numeric($list))
+		{
+			$data['list_id'] = $list;
+		}
+		elseif (is_string($list))
+		{
+			$data['slug'] = $list;
+
+			// In this case the owner is required.
+			if (is_numeric($owner))
+			{
+				$data['owner_id'] = $owner;
+			}
+			elseif (is_string($owner))
+			{
+				$data['owner_screen_name'] = $owner;
+			}
+			else
+			{
+				// We don't have a valid entry
+				throw new RuntimeException('The specified username is not in the correct format; must use integer or string');
+			}
+		}
+		else
+		{
+			// We don't have a valid entry
+			throw new RuntimeException('The specified list is not in the correct format; must use integer or string');
+		}
+
+		// Set the API base
+		$base = '/1/lists/subscribers/destroy.json';
+
+		// Build the request path.
+		$path = $this->getOption('api.url') . $base;
+
+		// Send the request.
+		$response = $oauth->oauthRequest($path, 'POST', $parameters, $data);
+		if (property_exists($response, 'body'))
+		{
+			return json_decode($response->body);
+		}
+		return $response;
+	}
 }
