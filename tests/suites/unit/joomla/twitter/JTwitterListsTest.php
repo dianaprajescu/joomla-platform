@@ -654,32 +654,32 @@ class JTwitterListsTest extends TestCase
 	*
 	* @since 12.1
 	*/
-	public function seedDeleteListMember()
+	public function seedListMembers()
 	{
-		// List ID or slug, user and owner
+		// List, User ID, screen name and owner.
 		return array(
-			array(234654235457, 12345, null),
-			array('test-list', 'userTest', 'testUser'),
-			array('test-list', 'userTest', 12345),
-			array('test-list', 12345, null),
-			array('test-list', null, 'testUser'),
-			array(null, null, null)
+			array(234654235457, null, '234654235457', null),
+			array('test-list', null, '234654235457,245864573437', 'testUser'),
+			array('test-list', 'testUser', null, null),
+			array('test-list', 'testUser', '234654235457', 'userTest'),
+			array(null, null, null, null)
 			);
 	}
 
 	/**
-	 * Tests the deleteListMember method
+	 * Tests the deleteListMembers method
 	 *
-	 * @param   mixed  $list   Either an integer containing the list ID or a string containing the list slug.
-	 * @param   mixed  $user   Either an integer containing the user ID or a string containing the screen name of the user to remove.
-	 * @param   mixed  $owner  Either an integer containing the user ID or a string containing the screen name of the owner.
+	 * @param   mixed   $list         Either an integer containing the list ID or a string containing the list slug.
+	 * @param   string  $user_id      A comma separated list of user IDs, up to 100 are allowed in a single request.
+	 * @param   string  $screen_name  A comma separated list of screen names, up to 100 are allowed in a single request.
+	 * @param   mixed   $owner        Either an integer containing the user ID or a string containing the screen name of the owner.
 	 *
 	 * @return  void
 	 *
 	 * @since 12.1
-	 * @dataProvider seedDeleteListMember
+	 * @dataProvider seedListMembers
 	 */
-	public function testDeleteListMember($list, $user, $owner)
+	public function testDeleteListMembers($list, $user_id, $screen_name, $owner)
 	{
 		$returnData = new stdClass;
 		$returnData->code = 200;
@@ -706,31 +706,30 @@ class JTwitterListsTest extends TestCase
 			{
 				// We don't have a valid entry
 				$this->setExpectedException('RuntimeException');
-				$this->object->deleteListMember($this->oauth, $list, $user, $owner);
+				$this->object->deleteListMembers($this->oauth, $list, $user_id, $screen_name, $owner);
 			}
 		}
 		else
 		{
 			$this->setExpectedException('RuntimeException');
-			$this->object->deleteListMember($this->oauth, $list, $user, $owner);
+			$this->object->deleteListMembers($this->oauth, $list, $user_id, $screen_name, $owner);
 		}
 
-		if (is_numeric($user))
+		if ($user_id)
 		{
-			$data['user_id'] = $user;
+			$data['user_id'] = $user_id;
 		}
-		elseif (is_string($user))
+		if ($screen_name)
 		{
-			$data['screen_name'] = $user;
+			$data['screen_name'] = $screen_name;
 		}
-		else
+		if($user_id == null && $screen_name == null)
 		{
-			// We don't have a valid entry
 			$this->setExpectedException('RuntimeException');
-			$this->object->deleteListMember($this->oauth, $list, $user, $owner);
+			$this->object->deleteListMembers($this->oauth, $list, $user_id, $screen_name, $owner);
 		}
 
-		$path = $this->object->fetchUrl('/1/lists/members/destroy.json');
+		$path = $this->object->fetchUrl('/1/lists/members/destroy_all.json');
 
 		$this->client->expects($this->once())
 		->method('post')
@@ -738,25 +737,26 @@ class JTwitterListsTest extends TestCase
 		->will($this->returnValue($returnData));
 
 		$this->assertThat(
-			$this->object->deleteListMember($this->oauth, $list, $user, $owner),
+			$this->object->deleteListMembers($this->oauth, $list, $user_id, $screen_name, $owner),
 			$this->equalTo(json_decode($this->sampleString))
 		);
 	}
 
 	/**
-	 * Tests the deleteListMember method - failure
+	 * Tests the deleteListMembers method - failure
 	 *
-	 * @param   mixed  $list   Either an integer containing the list ID or a string containing the list slug.
-	 * @param   mixed  $user   Either an integer containing the user ID or a string containing the screen name of the user to remove.
-	 * @param   mixed  $owner  Either an integer containing the user ID or a string containing the screen name of the owner.
+	 * @param   mixed   $list         Either an integer containing the list ID or a string containing the list slug.
+	 * @param   string  $user_id      A comma separated list of user IDs, up to 100 are allowed in a single request.
+	 * @param   string  $screen_name  A comma separated list of screen names, up to 100 are allowed in a single request.
+	 * @param   mixed   $owner        Either an integer containing the user ID or a string containing the screen name of the owner.
 	 *
 	 * @return  void
 	 *
 	 * @since 12.1
-	 * @dataProvider seedDeleteListMember
+	 * @dataProvider seedListMembers
 	 * @expectedException DomainException
 	 */
-	public function testDeleteListMemberFailure($list, $user, $owner)
+	public function testDeleteListMembersFailure($list, $user_id, $screen_name, $owner)
 	{
 		$returnData = new stdClass;
 		$returnData->code = 500;
@@ -783,38 +783,37 @@ class JTwitterListsTest extends TestCase
 			{
 				// We don't have a valid entry
 				$this->setExpectedException('RuntimeException');
-				$this->object->deleteListMember($this->oauth, $list, $user, $owner);
+				$this->object->deleteListMembers($this->oauth, $list, $user_id, $screen_name, $owner);
 			}
 		}
 		else
 		{
 			$this->setExpectedException('RuntimeException');
-			$this->object->deleteListMember($this->oauth, $list, $user, $owner);
+			$this->object->deleteListMembers($this->oauth, $list, $user_id, $screen_name, $owner);
 		}
 
-		if (is_numeric($user))
+		if ($user_id)
 		{
-			$data['user_id'] = $user;
+			$data['user_id'] = $user_id;
 		}
-		elseif (is_string($user))
+		if ($screen_name)
 		{
-			$data['screen_name'] = $user;
+			$data['screen_name'] = $screen_name;
 		}
-		else
+		if($user_id == null && $screen_name == null)
 		{
-			// We don't have a valid entry
 			$this->setExpectedException('RuntimeException');
-			$this->object->deleteListMember($this->oauth, $list, $user, $owner);
+			$this->object->deleteListMembers($this->oauth, $list, $user_id, $screen_name, $owner);
 		}
 
-		$path = $this->object->fetchUrl('/1/lists/members/destroy.json');
+		$path = $this->object->fetchUrl('/1/lists/members/destroy_all.json');
 
 		$this->client->expects($this->once())
 		->method('post')
 		->with($path, $data)
 		->will($this->returnValue($returnData));
 
-		$this->object->deleteListMember($this->oauth, $list, $user, $owner);
+		$this->object->deleteListMembers($this->oauth, $list, $user_id, $screen_name, $owner);
 	}
 
 	/**
@@ -963,7 +962,7 @@ class JTwitterListsTest extends TestCase
 	 * @return  void
 	 *
 	 * @since 12.1
-	 * @dataProvider seedDeleteListMember
+	 * @dataProvider seedListMembers
 	 */
 	public function testIsListMember($list, $user, $owner)
 	{
@@ -1054,7 +1053,7 @@ class JTwitterListsTest extends TestCase
 	 * @return  void
 	 *
 	 * @since 12.1
-	 * @dataProvider seedDeleteListMember
+	 * @dataProvider seedListMembers
 	 * @expectedException DomainException
 	 */
 	public function testIsListMemberFailure($list, $user, $owner)
@@ -1143,7 +1142,7 @@ class JTwitterListsTest extends TestCase
 	 * @return  void
 	 *
 	 * @since 12.1
-	 * @dataProvider seedDeleteListMember
+	 * @dataProvider seedListMembers
 	 */
 	public function testIsListSubscriber($list, $user, $owner)
 	{
@@ -1234,7 +1233,7 @@ class JTwitterListsTest extends TestCase
 	 * @return  void
 	 *
 	 * @since 12.1
-	 * @dataProvider seedDeleteListMember
+	 * @dataProvider seedListMembers
 	 * @expectedException DomainException
 	 */
 	public function testIsListSubscriberFailure($list, $user, $owner)
@@ -1432,25 +1431,6 @@ class JTwitterListsTest extends TestCase
 	}
 
 	/**
-	* Provides test data for request format detection.
-	*
-	* @return array
-	*
-	* @since 12.1
-	*/
-	public function seedAddListMembers()
-	{
-		// List, User ID, screen name and owner.
-		return array(
-			array(234654235457, null, '234654235457', null),
-			array('test-list', null, '234654235457,245864573437', 'testUser'),
-			array('test-list', 'testUser', null, null),
-			array('test-list', 'testUser', '234654235457', 'userTest'),
-			array(null, null, null, null)
-			);
-	}
-
-	/**
 	 * Tests the addListMembers method
 	 *
 	 * @param   mixed   $list         Either an integer containing the list ID or a string containing the list slug.
@@ -1461,7 +1441,7 @@ class JTwitterListsTest extends TestCase
 	 * @return  void
 	 *
 	 * @since 12.1
-	 * @dataProvider seedAddListMembers
+	 * @dataProvider seedListMembers
 	 */
 	public function testAddListMembers($list, $user_id, $screen_name, $owner)
 	{
@@ -1537,7 +1517,7 @@ class JTwitterListsTest extends TestCase
 	 * @return  void
 	 *
 	 * @since 12.1
-	 * @dataProvider seedAddListMembers
+	 * @dataProvider seedListMembers
 	 * @expectedException DomainException
 	 */
 	public function testAddListMembersFailure($list, $user_id, $screen_name, $owner)

@@ -269,19 +269,20 @@ class JTwitterLists extends JTwitterObject
 	}
 
 	/**
-	 * Method to remove the specified member from the list. The authenticated user must be the list's owner to remove members from the list..
+	 * Method to remove multiple members from a list, by specifying a comma-separated list of member ids or screen names.
 	 *
-	 * @param   JTwitterOAuth  $oauth  The JTwitterOAuth object.
-	 * @param   mixed          $list   Either an integer containing the list ID or a string containing the list slug.
-	 * @param   mixed          $user   Either an integer containing the user ID or a string containing the screen name of the user to remove.
-	 * @param   mixed          $owner  Either an integer containing the user ID or a string containing the screen name of the owner.
+	 * @param   JTwitterOAuth  $oauth        The JTwitterOAuth object.
+	 * @param   mixed          $list         Either an integer containing the list ID or a string containing the list slug.
+	 * @param   string         $user_id      A comma separated list of user IDs, up to 100 are allowed in a single request.
+	 * @param   string         $screen_name  A comma separated list of screen names, up to 100 are allowed in a single request.
+	 * @param   mixed          $owner        Either an integer containing the user ID or a string containing the screen name of the owner.
 	 *
 	 * @return  array  The decoded JSON response
 	 *
 	 * @since   12.1
 	 * @throws  RuntimeException
 	 */
-	public function deleteListMember($oauth, $list, $user, $owner = null)
+	public function deleteListMembers($oauth, $list, $user_id = null, $screen_name = null, $owner = null)
 	{
 		// Set parameters.
 		$parameters = array('oauth_token' => $oauth->getToken('key'));
@@ -316,22 +317,22 @@ class JTwitterLists extends JTwitterObject
 			throw new RuntimeException('The specified list is not in the correct format; must use integer or string');
 		}
 
-		if (is_numeric($user))
+		if ($user_id)
 		{
-			$data['user_id'] = $user;
+			$data['user_id'] = $user_id;
 		}
-		elseif (is_string($user))
+		if ($screen_name)
 		{
-			$data['screen_name'] = $user;
+			$data['screen_name'] = $screen_name;
 		}
-		else
+		if ($user_id == null && $screen_name == null)
 		{
 			// We don't have a valid entry
-			throw new RuntimeException('The specified username is not in the correct format; must use integer or string');
+			throw new RuntimeException('You must specify either a comma separated list of screen names, user IDs, or a combination of the two');
 		}
 
 		// Set the API base
-		$base = '/1/lists/members/destroy.json';
+		$base = '/1/lists/members/destroy_all.json';
 
 		// Build the request path.
 		$path = $this->getOption('api.url') . $base;
