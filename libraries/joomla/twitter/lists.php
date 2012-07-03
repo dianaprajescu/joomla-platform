@@ -157,7 +157,8 @@ class JTwitterLists extends JTwitterObject
 	 * Method to get the lists the specified user has been added to.
 	 *
 	 * @param   mixed    $user    Either an integer containing the user ID or a string containing the screen name.
-	 * @param   boolean  $filter  When set to true, t or 1, will return just lists the authenticating user owns, and the user represented by user_id or screen_name is a member of.
+	 * @param   boolean  $filter  When set to true, t or 1, will return just lists the authenticating user owns, and the user represented
+	 * 							  by user_id or screen_name is a member of.
 	 *
 	 * @return  array  The decoded JSON response
 	 *
@@ -345,7 +346,6 @@ class JTwitterLists extends JTwitterObject
 	 *
 	 * @param   JTwitterOAuth  $oauth  The JTwitterOAuth object.
 	 * @param   mixed          $list   Either an integer containing the list ID or a string containing the list slug.
-	 * @param   mixed          $user   Either an integer containing the user ID or a string containing the screen name of the user to remove.
 	 * @param   mixed          $owner  Either an integer containing the user ID or a string containing the screen name of the owner.
 	 *
 	 * @return  array  The decoded JSON response
@@ -409,8 +409,8 @@ class JTwitterLists extends JTwitterObject
 	 * @param   mixed          $list         Either an integer containing the list ID or a string containing the list slug.
 	 * @param   mixed          $user         Either an integer containing the user ID or a string containing the screen name of the user to remove.
 	 * @param   mixed          $owner        Either an integer containing the user ID or a string containing the screen name of the owner.
-	 * @param   boolean        $entities     When set to either true, t or 1, each tweet will include a node called "entities". This node offers a variety
-	 * 								         of metadata about the tweet in a discreet structure, including: user_mentions, urls, and hashtags.
+	 * @param   boolean        $entities     When set to either true, t or 1, each tweet will include a node called "entities". This node offers a
+	 * 										 variety of metadata about the tweet in a discreet structure, including: user_mentions, urls, and hashtags.
 	 * @param   boolean        $skip_status  When set to either true, t or 1 statuses will not be included in the returned user objects.
 	 *
 	 * @return  array  The decoded JSON response
