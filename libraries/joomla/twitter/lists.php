@@ -28,7 +28,7 @@ class JTwitterLists extends JTwitterObject
 	 * @since   12.1
 	 * @throws  RuntimeException
 	 */
-	public function getLists($user)
+	public function getAllLists($user)
 	{
 		// Check the rate limit for remaining hits
 		$this->checkRateLimit();

@@ -117,7 +117,7 @@ class JTwitterListsTest extends TestCase
 	}
 
 	/**
-	 * Tests the getLists method
+	 * Tests the getAllLists method
 	 *
 	 * @param   mixed  $user  Either an integer containing the user ID or a string containing the screen name.
 	 *
@@ -126,7 +126,7 @@ class JTwitterListsTest extends TestCase
 	 * @since 12.1
 	 * @dataProvider seedUser
 	 */
-	public function testGetLists($user)
+	public function testGetAllLists($user)
 	{
 		$returnData = new stdClass;
 		$returnData->code = 200;
@@ -153,7 +153,7 @@ class JTwitterListsTest extends TestCase
 		else
 		{
 			$this->setExpectedException('RuntimeException');
-			$this->object->getLists($user);
+			$this->object->getAllLists($user);
 		}
 
 		$path = $this->object->fetchUrl('/1/lists/all.json', $data);
@@ -164,13 +164,13 @@ class JTwitterListsTest extends TestCase
 		->will($this->returnValue($returnData));
 
 		$this->assertThat(
-			$this->object->getLists($user),
+			$this->object->getAllLists($user),
 			$this->equalTo(json_decode($this->sampleString))
 		);
 	}
 
 	/**
-	 * Tests the getLists method - failure
+	 * Tests the getAllLists method - failure
 	 *
 	 * @param   mixed  $user  Either an integer containing the user ID or a string containing the screen name.
 	 *
@@ -180,7 +180,7 @@ class JTwitterListsTest extends TestCase
 	 * @dataProvider seedUser
 	 * @expectedException DomainException
 	 */
-	public function testGetListsFailure($user)
+	public function testGetAllListsFailure($user)
 	{
 		$returnData = new stdClass;
 		$returnData->code = 200;
@@ -207,7 +207,7 @@ class JTwitterListsTest extends TestCase
 		else
 		{
 			$this->setExpectedException('RuntimeException');
-			$this->object->getLists($user);
+			$this->object->getAllLists($user);
 		}
 
 		$path = $this->object->fetchUrl('/1/lists/all.json', $data);
@@ -217,7 +217,7 @@ class JTwitterListsTest extends TestCase
 		->with($path)
 		->will($this->returnValue($returnData));
 
-		$this->object->getLists($user);
+		$this->object->getAllLists($user);
 	}
 
 	/**
