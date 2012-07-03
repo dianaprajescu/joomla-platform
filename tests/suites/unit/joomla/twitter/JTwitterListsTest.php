@@ -1987,4 +1987,114 @@ class JTwitterListsTest extends TestCase
 
 		$this->object->getLists($user);
 	}
+
+	/**
+	 * Tests the getSubscriptions method
+	 *
+	 * @param   mixed  $user  Either an integer containing the user ID or a string containing the screen name.
+	 *
+	 * @return  void
+	 *
+	 * @since 12.1
+	 * @dataProvider seedUser
+	 */
+	public function testGetSubscriptions($user)
+	{
+		$count = 10;
+
+		$returnData = new stdClass;
+		$returnData->code = 200;
+		$returnData->body = $this->rateLimit;
+
+		$this->client->expects($this->at(0))
+		->method('get')
+		->with('/1/account/rate_limit_status.json')
+		->will($this->returnValue($returnData));
+
+		$returnData = new stdClass;
+		$returnData->code = 200;
+		$returnData->body = $this->sampleString;
+
+		// Set request parameters.
+		if (is_numeric($user))
+		{
+			$data['user_id'] = $user;
+		}
+		elseif (is_string($user))
+		{
+			$data['screen_name'] = $user;
+		}
+		else
+		{
+			$this->setExpectedException('RuntimeException');
+			$this->object->getSubscriptions($user);
+		}
+		$data['count'] = $count;
+
+		$path = $this->object->fetchUrl('/1/lists/subscriptions.json', $data);
+
+		$this->client->expects($this->at(1))
+		->method('get')
+		->with($path)
+		->will($this->returnValue($returnData));
+
+		$this->assertThat(
+			$this->object->getSubscriptions($user, $count),
+			$this->equalTo(json_decode($this->sampleString))
+		);
+	}
+
+	/**
+	 * Tests the getSubscriptions method - failure
+	 *
+	 * @param   mixed  $user  Either an integer containing the user ID or a string containing the screen name.
+	 *
+	 * @return  void
+	 *
+	 * @since 12.1
+	 * @dataProvider seedUser
+	 * @expectedException DomainException
+	 */
+	public function testGetSubscriptionsFailure($user)
+	{
+		$count = 10;
+
+		$returnData = new stdClass;
+		$returnData->code = 200;
+		$returnData->body = $this->rateLimit;
+
+		$this->client->expects($this->at(0))
+		->method('get')
+		->with('/1/account/rate_limit_status.json')
+		->will($this->returnValue($returnData));
+
+		$returnData = new stdClass;
+		$returnData->code = 500;
+		$returnData->body = $this->errorString;
+
+		// Set request parameters.
+		if (is_numeric($user))
+		{
+			$data['user_id'] = $user;
+		}
+		elseif (is_string($user))
+		{
+			$data['screen_name'] = $user;
+		}
+		else
+		{
+			$this->setExpectedException('RuntimeException');
+			$this->object->getSubscriptions($user);
+		}
+		$data['count'] = $count;
+
+		$path = $this->object->fetchUrl('/1/lists/subscriptions.json', $data);
+
+		$this->client->expects($this->at(1))
+		->method('get')
+		->with($path)
+		->will($this->returnValue($returnData));
+
+		$this->object->getSubscriptions($user, $count);
+	}
 }

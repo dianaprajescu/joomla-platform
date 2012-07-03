@@ -874,4 +874,48 @@ class JTwitterLists extends JTwitterObject
 		// Send the request.
 		return $this->sendRequest($base, 'get', $parameters);
 	}
+
+	/**
+	 * Method to get a collection of the lists the specified user is subscribed to, 20 lists per page by default. Does not include the user's own lists.
+	 *
+	 * @param   mixed    $user   Either an integer containing the user ID or a string containing the screen name.
+	 * @param   integer  $count  The amount of results to return per page. Defaults to 20. Maximum of 1,000 when using cursors.
+	 *
+	 * @return  array  The decoded JSON response
+	 *
+	 * @since   12.1
+	 * @throws  RuntimeException
+	 */
+	public function getSubscriptions($user, $count = 0)
+	{
+		// Check the rate limit for remaining hits
+		$this->checkRateLimit();
+
+		// Determine which type of data was passed for $user
+		if (is_numeric($user))
+		{
+			$parameters['user_id'] = $user;
+		}
+		elseif (is_string($user))
+		{
+			$parameters['screen_name'] = $user;
+		}
+		else
+		{
+			// We don't have a valid entry
+			throw new RuntimeException('The specified username is not in the correct format; must use integer or string');
+		}
+
+		// Check if count is specified.
+		if ($count > 0)
+		{
+			$parameters['count'] = $count;
+		}
+
+		// Set the API base
+		$base = '/1/lists/subscriptions.json';
+
+		// Send the request.
+		return $this->sendRequest($base, 'get', $parameters);
+	}
 }
