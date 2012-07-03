@@ -587,9 +587,9 @@ class JTwitterLists extends JTwitterObject
 	/**
 	 * Method to unsubscribe the authenticated user from the specified list.
 	 *
-	 * @param   JTwitterOAuth  $oauth        The JTwitterOAuth object.
-	 * @param   mixed          $list         Either an integer containing the list ID or a string containing the list slug.
-	 * @param   mixed          $owner        Either an integer containing the user ID or a string containing the screen name of the owner.
+	 * @param   JTwitterOAuth  $oauth  The JTwitterOAuth object.
+	 * @param   mixed          $list   Either an integer containing the list ID or a string containing the list slug.
+	 * @param   mixed          $owner  Either an integer containing the user ID or a string containing the screen name of the owner.
 	 *
 	 * @return  array  The decoded JSON response
 	 *
@@ -699,7 +699,7 @@ class JTwitterLists extends JTwitterObject
 		{
 			$data['screen_name'] = $screen_name;
 		}
-		if($user_id == null && $screen_name == null)
+		if ($user_id == null && $screen_name == null)
 		{
 			// We don't have a valid entry
 			throw new RuntimeException('You must specify either a comma separated list of screen names, user IDs, or a combination of the two');
@@ -788,8 +788,8 @@ class JTwitterLists extends JTwitterObject
 	/**
 	 * Method to get the specified list.
 	 *
-	 * @param   mixed    $list         Either an integer containing the list ID or a string containing the list slug.
-	 * @param   mixed    $owner        Either an integer containing the user ID or a string containing the screen name.
+	 * @param   mixed  $list   Either an integer containing the list ID or a string containing the list slug.
+	 * @param   mixed  $owner  Either an integer containing the user ID or a string containing the screen name.
 	 *
 	 * @return  array  The decoded JSON response
 	 *
@@ -917,5 +917,85 @@ class JTwitterLists extends JTwitterObject
 
 		// Send the request.
 		return $this->sendRequest($base, 'get', $parameters);
+	}
+
+	/**
+	 * Method to update the specified list
+	 *
+	 * @param   JTwitterOAuth  $oauth        The JTwitterOAuth object.
+	 * @param   mixed          $list         Either an integer containing the list ID or a string containing the list slug.
+	 * @param   mixed          $owner        Either an integer containing the user ID or a string containing the screen name of the owner.
+	 * @param   string         $name         The name of the list.
+	 * @param   string         $mode         Whether your list is public or private. Values can be public or private. If no mode is
+	 * 										 specified the list will be public.
+	 * @param   string         $description  The description to give the list.
+	 *
+	 * @return  array  The decoded JSON response
+	 *
+	 * @since   12.1
+	 * @throws  RuntimeException
+	 */
+	public function updateList($oauth, $list, $owner = null, $name = null, $mode = null, $description = null)
+	{
+		// Set parameters.
+		$parameters = array('oauth_token' => $oauth->getToken('key'));
+
+		// Determine which type of data was passed for $list
+		if (is_numeric($list))
+		{
+			$data['list_id'] = $list;
+		}
+		elseif (is_string($list))
+		{
+			$data['slug'] = $list;
+
+			// In this case the owner is required.
+			if (is_numeric($owner))
+			{
+				$data['owner_id'] = $owner;
+			}
+			elseif (is_string($owner))
+			{
+				$data['owner_screen_name'] = $owner;
+			}
+			else
+			{
+				// We don't have a valid entry
+				throw new RuntimeException('The specified username is not in the correct format; must use integer or string');
+			}
+		}
+		else
+		{
+			// We don't have a valid entry
+			throw new RuntimeException('The specified list is not in the correct format; must use integer or string');
+		}
+
+		// Check if name is specified.
+		if ($name)
+		{
+			$data['name'] = $name;
+		}
+
+		// Check if mode is specified.
+		if ($mode)
+		{
+			$data['mode'] = $mode;
+		}
+
+		// Check if description is specified.
+		if ($description)
+		{
+			$data['description'] = $description;
+		}
+
+		// Set the API base
+		$base = '/1/lists/update.json';
+
+		// Build the request path.
+		$path = $this->getOption('api.url') . $base;
+
+		// Send the request.
+		$response = $oauth->oauthRequest($path, 'POST', $parameters, $data);
+		return json_decode($response->body);
 	}
 }
