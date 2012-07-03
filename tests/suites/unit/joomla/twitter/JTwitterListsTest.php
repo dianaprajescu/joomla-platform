@@ -12,7 +12,7 @@ require_once JPATH_PLATFORM . '/joomla/twitter/http.php';
 require_once JPATH_PLATFORM . '/joomla/twitter/lists.php';
 
 /**
- * Test class for JTwitterFriends.
+ * Test class for JTwitterLists.
  *
  * @package     Joomla.UnitTest
  * @subpackage  Twitter
@@ -89,14 +89,6 @@ class JTwitterListsTest extends TestCase
 		$this->object = new JTwitterLists($this->options, $this->client);
 		$this->oauth = new JTwitterOAuth($key, $secret, $my_url, $this->client);
 		$this->oauth->setToken($key, $secret);
-	}
-
-	protected function getMethod($name)
-	{
-		$class = new ReflectionClass('JTwitterFriends');
-		$method = $class->getMethod($name);
-		$method->setAccessible(true);
-		return $method;
 	}
 
 	/**
@@ -659,8 +651,10 @@ class JTwitterListsTest extends TestCase
 		// List, User ID, screen name and owner.
 		return array(
 			array(234654235457, null, '234654235457', null),
-			array('test-list', null, '234654235457,245864573437', 'testUser'),
+			array('test-list', null, 'userTest', 'testUser'),
+			array('test-list', '234654235457', null, '56165105642'),
 			array('test-list', 'testUser', null, null),
+			array('test-list', null, null, 'testUser'),
 			array('test-list', 'testUser', '234654235457', 'userTest'),
 			array(null, null, null, null)
 			);
@@ -723,7 +717,7 @@ class JTwitterListsTest extends TestCase
 		{
 			$data['screen_name'] = $screen_name;
 		}
-		if($user_id == null && $screen_name == null)
+		if ($user_id == null && $screen_name == null)
 		{
 			$this->setExpectedException('RuntimeException');
 			$this->object->deleteListMembers($this->oauth, $list, $user_id, $screen_name, $owner);
@@ -800,7 +794,7 @@ class JTwitterListsTest extends TestCase
 		{
 			$data['screen_name'] = $screen_name;
 		}
-		if($user_id == null && $screen_name == null)
+		if ($user_id == null && $screen_name == null)
 		{
 			$this->setExpectedException('RuntimeException');
 			$this->object->deleteListMembers($this->oauth, $list, $user_id, $screen_name, $owner);
@@ -953,6 +947,26 @@ class JTwitterListsTest extends TestCase
 	}
 
 	/**
+	* Provides test data for request format detection.
+	*
+	* @return array
+	*
+	* @since 12.1
+	*/
+	public function seedListUserOwner()
+	{
+		// List, User and Owner.
+		return array(
+			array(234654235457, '234654235457', null),
+			array('test-list', 'userTest', 'testUser'),
+			array('test-list', '234654235457', '56165105642'),
+			array('test-list', 'testUser', null),
+			array('test-list', null, 'testUser'),
+			array(null, null, null)
+			);
+	}
+
+	/**
 	 * Tests the isListMember method
 	 *
 	 * @param   mixed  $list   Either an integer containing the list ID or a string containing the list slug.
@@ -962,7 +976,7 @@ class JTwitterListsTest extends TestCase
 	 * @return  void
 	 *
 	 * @since 12.1
-	 * @dataProvider seedListMembers
+	 * @dataProvider seedListUserOwner
 	 */
 	public function testIsListMember($list, $user, $owner)
 	{
@@ -1053,7 +1067,7 @@ class JTwitterListsTest extends TestCase
 	 * @return  void
 	 *
 	 * @since 12.1
-	 * @dataProvider seedListMembers
+	 * @dataProvider seedListUserOwner
 	 * @expectedException DomainException
 	 */
 	public function testIsListMemberFailure($list, $user, $owner)
@@ -1142,7 +1156,7 @@ class JTwitterListsTest extends TestCase
 	 * @return  void
 	 *
 	 * @since 12.1
-	 * @dataProvider seedListMembers
+	 * @dataProvider seedListUserOwner
 	 */
 	public function testIsListSubscriber($list, $user, $owner)
 	{
@@ -1233,7 +1247,7 @@ class JTwitterListsTest extends TestCase
 	 * @return  void
 	 *
 	 * @since 12.1
-	 * @dataProvider seedListMembers
+	 * @dataProvider seedListUserOwner
 	 * @expectedException DomainException
 	 */
 	public function testIsListSubscriberFailure($list, $user, $owner)
@@ -1487,7 +1501,7 @@ class JTwitterListsTest extends TestCase
 		{
 			$data['screen_name'] = $screen_name;
 		}
-		if($user_id == null && $screen_name == null)
+		if ($user_id == null && $screen_name == null)
 		{
 			$this->setExpectedException('RuntimeException');
 			$this->object->addListMembers($this->oauth, $list, $user_id, $screen_name, $owner);
@@ -1564,7 +1578,7 @@ class JTwitterListsTest extends TestCase
 		{
 			$data['screen_name'] = $screen_name;
 		}
-		if($user_id == null && $screen_name == null)
+		if ($user_id == null && $screen_name == null)
 		{
 			$this->setExpectedException('RuntimeException');
 			$this->object->addListMembers($this->oauth, $list, $user_id, $screen_name, $owner);

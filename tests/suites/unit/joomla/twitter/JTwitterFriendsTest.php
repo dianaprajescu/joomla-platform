@@ -91,14 +91,6 @@ class JTwitterFriendsTest extends TestCase
 		$this->oauth->setToken($key, $secret);
 	}
 
-	protected function getMethod($name)
-	{
-		$class = new ReflectionClass('JTwitterFriends');
-		$method = $class->getMethod($name);
-		$method->setAccessible(true);
-		return $method;
-	}
-
 	/**
 	* Provides test data for request format detection.
 	*

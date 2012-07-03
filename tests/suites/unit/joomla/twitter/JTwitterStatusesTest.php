@@ -92,14 +92,6 @@ class JTwitterStatusesTest extends TestCase
 		$this->oauth->setToken($key, $secret);
 	}
 
-	protected function getMethod($name)
-	{
-		$class = new ReflectionClass('JTwitterStatuses');
-		$method = $class->getMethod($name);
-		$method->setAccessible(true);
-		return $method;
-	}
-
 	/**
 	 * Tests the getRetweetedByUser method
 	 *

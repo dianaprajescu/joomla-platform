@@ -91,14 +91,6 @@ class JTwitterDirectmessagesTest extends TestCase
 		$this->oauth->setToken($key, $secret);
 	}
 
-	protected function getMethod($name)
-	{
-		$class = new ReflectionClass('JTwitterDirectmessages');
-		$method = $class->getMethod($name);
-		$method->setAccessible(true);
-		return $method;
-	}
-
 	/**
 	 * Tests the getDirectMessages method
 	 *
