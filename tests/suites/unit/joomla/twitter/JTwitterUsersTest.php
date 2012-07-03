@@ -55,7 +55,13 @@ class JTwitterUsersTest extends TestCase
 	 * @var    string  Sample JSON error message.
 	 * @since  12.1
 	 */
-	protected $errorString = '{"errors":[{"message":"Sorry, that page does not exist","code":34}]}';
+	protected $errorString = '{"error":"Generic error"}';
+
+	/**
+	 * @var    string  Sample JSON Twitter error message.
+	 * @since  12.1
+	 */
+	protected $twitterErrorString = '{"errors":[{"message":"Sorry, that page does not exist","code":34}]}';
 
 	/**
 	 * @var    string  Sample JSON string.
