@@ -37,6 +37,6 @@ class JTwitterHelp extends JTwitterObject
 		$path = $base;
 
 		// Send the request.
-		return $this->sendRequest($path, 200);
+		return $this->sendRequest($path);
 	}
 }
