@@ -156,4 +156,102 @@ class JTwitterPlacesTest extends TestCase
 
 		$this->object->getPlace($id);
 	}
+
+	/**
+	 * Tests the getGeocode method
+	 *
+	 * @return  void
+	 *
+	 * @since   12.1
+	 */
+	public function testGetGeocode()
+	{
+		$lat = 45;
+		$long = 45;
+		$accuracy = '5ft';
+		$granularity = 'city';
+		$max_results = 10;
+		$callback = 'callback';
+
+		$returnData = new stdClass;
+		$returnData->code = 200;
+		$returnData->body = $this->rateLimit;
+
+		$this->client->expects($this->at(0))
+		->method('get')
+		->with('/1/account/rate_limit_status.json')
+		->will($this->returnValue($returnData));
+
+		$returnData = new stdClass;
+		$returnData->code = 200;
+		$returnData->body = $this->sampleString;
+
+		// Set request data.
+		$data['lat'] = $lat;
+		$data['long'] = $long;
+		$data['accuracy'] = $accuracy;
+		$data['granularity'] = $granularity;
+		$data['max_results'] = $max_results;
+		$data['callback'] = $callback;
+
+		$path = $this->object->fetchUrl('/1/geo/reverse_geocode.json', $data);
+
+		$this->client->expects($this->at(1))
+		->method('get')
+		->with($path)
+		->will($this->returnValue($returnData));
+
+		$this->assertThat(
+			$this->object->getGeocode($lat, $long, $accuracy, $granularity, $max_results, $callback),
+			$this->equalTo(json_decode($this->sampleString))
+		);
+	}
+
+	/**
+	 * Tests the getGeocode method - failure
+	 *
+	 * @return  void
+	 *
+	 * @since   12.1
+	 * @expectedException DomainException
+	 */
+	public function testGetGeocodeFailure()
+	{
+		$lat = 45;
+		$long = 45;
+		$accuracy = '5ft';
+		$granularity = 'city';
+		$max_results = 10;
+		$callback = 'callback';
+
+		$returnData = new stdClass;
+		$returnData->code = 200;
+		$returnData->body = $this->rateLimit;
+
+		$this->client->expects($this->at(0))
+		->method('get')
+		->with('/1/account/rate_limit_status.json')
+		->will($this->returnValue($returnData));
+
+		$returnData = new stdClass;
+		$returnData->code = 500;
+		$returnData->body = $this->errorString;
+
+		// Set request data.
+		$data['lat'] = $lat;
+		$data['long'] = $long;
+		$data['accuracy'] = $accuracy;
+		$data['granularity'] = $granularity;
+		$data['max_results'] = $max_results;
+		$data['callback'] = $callback;
+
+		$path = $this->object->fetchUrl('/1/geo/reverse_geocode.json', $data);
+
+		$this->client->expects($this->at(1))
+		->method('get')
+		->with($path)
+		->will($this->returnValue($returnData));
+
+		$this->object->getGeocode($lat, $long, $accuracy, $granularity, $max_results, $callback);
+	}
 }
