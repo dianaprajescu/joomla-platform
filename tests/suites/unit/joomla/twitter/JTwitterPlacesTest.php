@@ -58,12 +58,6 @@ class JTwitterPlacesTest extends TestCase
 	protected $errorString = '{"error":"Generic error"}';
 
 	/**
-	 * @var    string  Sample JSON Twitter error message.
-	 * @since  12.1
-	 */
-	protected $twitterErrorString = '{"errors":[{"message":"Sorry, that page does not exist","code":34}]}';
-
-	/**
 	 * @var    string  Sample JSON string.
 	 * @since  12.1
 	 */
@@ -89,5 +83,77 @@ class JTwitterPlacesTest extends TestCase
 		$this->object = new JTwitterPlaces($this->options, $this->client);
 		$this->oauth = new JTwitterOAuth($key, $secret, $my_url, $this->client);
 		$this->oauth->setToken($key, $secret);
+	}
+
+	/**
+	 * Tests the getPlace method
+	 *
+	 * @return  void
+	 *
+	 * @since   12.1
+	 */
+	public function testGetPlace()
+	{
+		$id = '1a2b3c4d';
+
+		$returnData = new stdClass;
+		$returnData->code = 200;
+		$returnData->body = $this->rateLimit;
+
+		$this->client->expects($this->at(0))
+		->method('get')
+		->with('/1/account/rate_limit_status.json')
+		->will($this->returnValue($returnData));
+
+		$returnData = new stdClass;
+		$returnData->code = 200;
+		$returnData->body = $this->sampleString;
+
+		$path = $this->object->fetchUrl('/1/geo/id/' . $id . '.json');
+
+		$this->client->expects($this->at(1))
+		->method('get')
+		->with($path)
+		->will($this->returnValue($returnData));
+
+		$this->assertThat(
+			$this->object->getPlace($id),
+			$this->equalTo(json_decode($this->sampleString))
+		);
+	}
+
+	/**
+	 * Tests the getPlace method - failure
+	 *
+	 * @return  void
+	 *
+	 * @since   12.1
+	 * @expectedException DomainException
+	 */
+	public function testGetPlaceFailure()
+	{
+		$id = '1a2b3c4d';
+
+		$returnData = new stdClass;
+		$returnData->code = 200;
+		$returnData->body = $this->rateLimit;
+
+		$this->client->expects($this->at(0))
+		->method('get')
+		->with('/1/account/rate_limit_status.json')
+		->will($this->returnValue($returnData));
+
+		$returnData = new stdClass;
+		$returnData->code = 500;
+		$returnData->body = $this->errorString;
+
+		$path = $this->object->fetchUrl('/1/geo/id/' . $id . '.json');
+
+		$this->client->expects($this->at(1))
+		->method('get')
+		->with($path)
+		->will($this->returnValue($returnData));
+
+		$this->object->getPlace($id);
 	}
 }
