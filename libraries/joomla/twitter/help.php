@@ -39,4 +39,26 @@ class JTwitterHelp extends JTwitterObject
 		// Send the request.
 		return $this->sendRequest($path);
 	}
+
+	/**
+	 * Method to get the current configuration used by Twitter including twitter.com slugs which are not usernames, maximum photo resolutions, and t.co URL lengths.
+	 *
+	 * @return  array  The decoded JSON response
+	 *
+	 * @since   12.1
+	 */
+	public function getConfiguration()
+	{
+		// Check the rate limit for remaining hits
+		$this->checkRateLimit();
+
+		// Set the API base
+		$base = '/1/help/configuration.json';
+
+		// Build the request path.
+		$path = $base;
+
+		// Send the request.
+		return $this->sendRequest($path);
+	}
 }
