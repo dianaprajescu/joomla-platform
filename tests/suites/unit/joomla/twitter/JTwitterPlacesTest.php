@@ -254,4 +254,150 @@ class JTwitterPlacesTest extends TestCase
 
 		$this->object->getGeocode($lat, $long, $accuracy, $granularity, $max_results, $callback);
 	}
+
+	/**
+	* Provides test data for request format detection.
+	*
+	* @return array
+	*
+	* @since 12.1
+	*/
+	public function seedSearch()
+	{
+		// User latitude, longitude, query and ip
+		return array(
+			array(45, 45, 'Twitter HQ', '74.125.19.104'),
+			array(null, null, null, null)
+			);
+	}
+
+	/**
+	 * Tests the search method
+	 *
+	 * @param   float   $lat    The latitude to search around.
+	 * @param   float   $long   The longitude to search around.
+	 * @param   string  $query  Free-form text to match against while executing a geo-based query, best suited for finding nearby locations by name.
+	 * @param   string  $ip     An IP address.
+	 *
+	 * @return  void
+	 *
+	 * @since 12.1
+	 * @dataProvider seedSearch
+	 */
+	public function testSearch($lat, $long, $query, $ip)
+	{
+		$granularity = 'city';
+		$accuracy = '5ft';
+		$max_results = 10;
+		$within = '247f43d441defc03';
+		$attribute = '795 Folsom St';
+		$callback = 'callback';
+
+		$returnData = new stdClass;
+		$returnData->code = 200;
+		$returnData->body = $this->rateLimit;
+
+		$this->client->expects($this->at(0))
+		->method('get')
+		->with('/1/account/rate_limit_status.json')
+		->will($this->returnValue($returnData));
+
+		$returnData = new stdClass;
+		$returnData->code = 200;
+		$returnData->body = $this->sampleString;
+
+		// Set request parameters.
+		if ($lat == null && $long == null && $ip == null && $query == null)
+		{
+			$this->setExpectedException('RuntimeException');
+			$this->object->search();
+		}
+
+		$data['lat'] = $lat;
+		$data['long'] = $long;
+		$data['query'] = rawurlencode($query);
+		$data['ip'] = $ip;
+		$data['granularity'] = $granularity;
+		$data['accuracy'] = $accuracy;
+		$data['max_results'] = $max_results;
+		$data['contained_within '] = $within;
+		$data['attribute:street_address '] = rawurlencode($attribute);
+		$data['callback'] = $callback;
+
+		$path = $this->object->fetchUrl('/1/geo/search.json', $data);
+
+		$this->client->expects($this->at(1))
+		->method('get')
+		->with($path)
+		->will($this->returnValue($returnData));
+
+		$this->assertThat(
+			$this->object->search($lat, $long, $query, $ip, $granularity, $accuracy, $max_results, $within, $attribute, $callback),
+			$this->equalTo(json_decode($this->sampleString))
+		);
+	}
+
+	/**
+	 * Tests the search method - failure
+	 *
+	 * @param   float   $lat    The latitude to search around.
+	 * @param   float   $long   The longitude to search around.
+	 * @param   string  $query  Free-form text to match against while executing a geo-based query, best suited for finding nearby locations by name.
+	 * @param   string  $ip     An IP address.
+	 *
+	 * @return  void
+	 *
+	 * @since 12.1
+	 * @dataProvider seedSearch
+	 * @expectedException DomainException
+	 */
+	public function testSearchFailure($lat, $long, $query, $ip)
+	{
+		$granularity = 'city';
+		$accuracy = '5ft';
+		$max_results = 10;
+		$within = '247f43d441defc03';
+		$attribute = '795 Folsom St';
+		$callback = 'callback';
+
+		$returnData = new stdClass;
+		$returnData->code = 200;
+		$returnData->body = $this->rateLimit;
+
+		$this->client->expects($this->at(0))
+		->method('get')
+		->with('/1/account/rate_limit_status.json')
+		->will($this->returnValue($returnData));
+
+		$returnData = new stdClass;
+		$returnData->code = 500;
+		$returnData->body = $this->errorString;
+
+		// Set request parameters.
+		if ($lat == null && $long == null && $ip == null && $query == null)
+		{
+			$this->setExpectedException('RuntimeException');
+			$this->object->search();
+		}
+
+		$data['lat'] = $lat;
+		$data['long'] = $long;
+		$data['query'] = rawurlencode($query);
+		$data['ip'] = $ip;
+		$data['granularity'] = $granularity;
+		$data['accuracy'] = $accuracy;
+		$data['max_results'] = $max_results;
+		$data['contained_within '] = $within;
+		$data['attribute:street_address '] = rawurlencode($attribute);
+		$data['callback'] = $callback;
+
+		$path = $this->object->fetchUrl('/1/geo/search.json', $data);
+
+		$this->client->expects($this->at(1))
+		->method('get')
+		->with($path)
+		->will($this->returnValue($returnData));
+
+		$this->object->search($lat, $long, $query, $ip, $granularity, $accuracy, $max_results, $within, $attribute, $callback);
+	}
 }
