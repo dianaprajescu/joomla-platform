@@ -212,4 +212,54 @@ class JTwitterHelpTest extends TestCase
 
 		$this->object->getConfiguration();
 	}
+
+	/**
+	 * Tests the test method
+	 *
+	 * @return  void
+	 *
+	 * @since   12.1
+	 */
+	public function testTest()
+	{
+		$returnData = new stdClass;
+		$returnData->code = 200;
+		$returnData->body = $this->sampleString;
+
+		$path = $this->object->fetchUrl('/1/help/test.json');
+
+		$this->client->expects($this->once())
+		->method('get')
+		->with($path)
+		->will($this->returnValue($returnData));
+
+		$this->assertThat(
+			$this->object->test(),
+			$this->equalTo(json_decode($this->sampleString))
+		);
+	}
+
+	/**
+	 * Tests the test method - failure
+	 *
+	 * @return  void
+	 *
+	 * @since   12.1
+	 * @expectedException DomainException
+	 */
+	public function testTestFailure()
+	{
+		$returnData = new stdClass;
+		$returnData->code = 500;
+		$returnData->body = $this->errorString;
+
+		$path = $this->object->fetchUrl('/1/help/test.json');
+
+		$this->client->expects($this->once())
+		->method('get')
+		->with($path)
+		->will($this->returnValue($returnData));
+
+		$this->object->test();
+	}
 }
