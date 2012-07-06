@@ -12,7 +12,7 @@ require_once JPATH_PLATFORM . '/joomla/twitter/http.php';
 require_once JPATH_PLATFORM . '/joomla/twitter/trends.php';
 
 /**
- * Test class for JTwitterFriends.
+ * Test class for JTwitterTrends.
  *
  * @package     Joomla.UnitTest
  * @subpackage  Twitter
