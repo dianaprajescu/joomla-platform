@@ -520,6 +520,19 @@ class JTwitterOAuth
 		return json_decode($response->body);
 	}
 
+	public function endSession()
+	{
+		// Set parameters.
+		$parameters = array('oauth_token' => $this->getToken('key'));
+
+		// Set the API base
+		$path = 'https://api.twitter.com/1/account/end_session.json';
+
+		// Send the request.
+		$response = $this->oauthRequest($path, 'POST', $parameters);
+		return json_decode($response->body);
+	}
+
 	/**
 	 * Get the current user id and screen name.
 	 *
