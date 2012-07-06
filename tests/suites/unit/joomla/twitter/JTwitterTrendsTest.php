@@ -322,4 +322,84 @@ class JTwitterTrendsTest extends TestCase
 
 		$this->object->getDailyTrends($date, $exclude);
 	}
+
+	/**
+	 * Tests the getWeeklyTrends method
+	 *
+	 * @return  void
+	 *
+	 * @since   12.1
+	 */
+	public function testGetWeeklyTrends()
+	{
+		$date = '2010-06-20';
+		$exclude = 'hashtags';
+
+		$returnData = new stdClass;
+		$returnData->code = 200;
+		$returnData->body = $this->rateLimit;
+
+		$this->client->expects($this->at(0))
+		->method('get')
+		->with('/1/account/rate_limit_status.json')
+		->will($this->returnValue($returnData));
+
+		$returnData = new stdClass;
+		$returnData->code = 200;
+		$returnData->body = $this->sampleString;
+
+		$data['date'] = $date;
+		$data['exclude'] = $exclude;
+
+		$path = $this->object->fetchUrl('/1/trends/weekly.json', $data);
+
+		$this->client->expects($this->at(1))
+		->method('get')
+		->with($path)
+		->will($this->returnValue($returnData));
+
+		$this->assertThat(
+			$this->object->getWeeklyTrends($date, $exclude),
+			$this->equalTo(json_decode($this->sampleString))
+		);
+	}
+
+	/**
+	 * Tests the getWeeklyTrends method - failure
+	 *
+	 * @return  void
+	 *
+	 * @since   12.1
+	 * @expectedException DomainException
+	 */
+	public function testGetWeeklyTrendsFailure()
+	{
+		$date = '2010-06-20';
+		$exclude = 'hashtags';
+
+		$returnData = new stdClass;
+		$returnData->code = 200;
+		$returnData->body = $this->rateLimit;
+
+		$this->client->expects($this->at(0))
+		->method('get')
+		->with('/1/account/rate_limit_status.json')
+		->will($this->returnValue($returnData));
+
+		$returnData = new stdClass;
+		$returnData->code = 500;
+		$returnData->body = $this->errorString;
+
+		$data['date'] = $date;
+		$data['exclude'] = $exclude;
+
+		$path = $this->object->fetchUrl('/1/trends/weekly.json', $data);
+
+		$this->client->expects($this->at(1))
+		->method('get')
+		->with($path)
+		->will($this->returnValue($returnData));
+
+		$this->object->getWeeklyTrends($date, $exclude);
+	}
 }

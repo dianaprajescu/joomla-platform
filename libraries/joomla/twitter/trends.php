@@ -119,4 +119,40 @@ class JTwitterTrends extends JTwitterObject
 		// Send the request.
 		return $this->sendRequest($base, 'get', $parameters);
 	}
+
+	/**
+	 * Method to get the top 30 trending topics for each day in a given week.
+	 *
+	 * @param   string  $date     The start date for the report. The date should be formatted YYYY-MM-DD.
+	 * @param   string  $exclude  Setting this equal to hashtags will remove all hashtags from the trends list.
+	 *
+	 * @return  array  The decoded JSON response
+	 *
+	 * @since   12.1
+	 */
+	public function getWeeklyTrends($date = null, $exclude = null)
+	{
+		// Check the rate limit for remaining hits
+		$this->checkRateLimit();
+
+		// Set the API base
+		$base = '/1/trends/weekly.json';
+
+		$parameters = array();
+
+		// Check if date is specified
+		if ($date)
+		{
+			$parameters['date'] = $date;
+		}
+
+		// Check if exclude is specified
+		if ($exclude)
+		{
+			$parameters['exclude'] = $exclude;
+		}
+
+		// Send the request.
+		return $this->sendRequest($base, 'get', $parameters);
+	}
 }
