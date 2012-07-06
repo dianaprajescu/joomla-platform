@@ -18,5 +18,31 @@ defined('JPATH_PLATFORM') or die();
  */
 class JTwitterTrends extends JTwitterObject
 {
+	/**
+	 * Method to get the top 10 trending topics for a specific WOEID, if trending information is available for it.
+	 *
+	 * @param   integer  $woeid    The Yahoo! Where On Earth ID of the location to return trending information for. Global information is available by using 1 as the WOEID.
+	 * @param   string   $exclude  Setting this equal to hashtags will remove all hashtags from the trends list.
+	 *
+	 * @return  array  The decoded JSON response
+	 *
+	 * @since   12.1
+	 */
+	public function getTrends($woeid, $exclude = null)
+	{
+		// Check the rate limit for remaining hits
+		$this->checkRateLimit();
 
+		// Set the API base
+		$base = '/1/trends/' . $woeid . '.json';
+
+		// Check if exclude is specified
+		if ($exclude)
+		{
+			$parameters['exclude'] = $exclude;
+		}
+
+		// Send the request.
+		return $this->sendRequest($base);
+	}
 }

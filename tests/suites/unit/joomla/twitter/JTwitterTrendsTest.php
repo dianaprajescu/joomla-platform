@@ -84,4 +84,78 @@ class JTwitterTrendsTest extends TestCase
 		$this->oauth = new JTwitterOAuth($key, $secret, $my_url, $this->client);
 		$this->oauth->setToken($key, $secret);
 	}
+
+	/**
+	 * Tests the getTrends method
+	 *
+	 * @return  void
+	 *
+	 * @since   12.1
+	 */
+	public function testGetTrends()
+	{
+		$woeid = '1a2b3c4d';
+		$exclude = 'hashtags';
+
+		$returnData = new stdClass;
+		$returnData->code = 200;
+		$returnData->body = $this->rateLimit;
+
+		$this->client->expects($this->at(0))
+		->method('get')
+		->with('/1/account/rate_limit_status.json')
+		->will($this->returnValue($returnData));
+
+		$returnData = new stdClass;
+		$returnData->code = 200;
+		$returnData->body = $this->sampleString;
+
+		$path = $this->object->fetchUrl('/1/trends/' . $woeid . '.json');
+
+		$this->client->expects($this->at(1))
+		->method('get')
+		->with($path)
+		->will($this->returnValue($returnData));
+
+		$this->assertThat(
+			$this->object->getTrends($woeid, $exclude),
+			$this->equalTo(json_decode($this->sampleString))
+		);
+	}
+
+	/**
+	 * Tests the getTrends method - failure
+	 *
+	 * @return  void
+	 *
+	 * @since   12.1
+	 * @expectedException DomainException
+	 */
+	public function testGetTrendsFailure()
+	{
+		$woeid = '1a2b3c4d';
+		$exclude = 'hashtags';
+
+		$returnData = new stdClass;
+		$returnData->code = 200;
+		$returnData->body = $this->rateLimit;
+
+		$this->client->expects($this->at(0))
+		->method('get')
+		->with('/1/account/rate_limit_status.json')
+		->will($this->returnValue($returnData));
+
+		$returnData = new stdClass;
+		$returnData->code = 500;
+		$returnData->body = $this->errorString;
+
+		$path = $this->object->fetchUrl('/1/trends/' . $woeid . '.json');
+
+		$this->client->expects($this->at(1))
+		->method('get')
+		->with($path)
+		->will($this->returnValue($returnData));
+
+		$this->object->getTrends($woeid, $exclude);
+	}
 }
