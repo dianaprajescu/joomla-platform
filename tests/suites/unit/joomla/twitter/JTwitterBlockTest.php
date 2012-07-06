@@ -305,4 +305,120 @@ class JTwitterBlockTest extends TestCase
 
 		$this->object->block($this->oauth, $user, $entities, $skip_status);
 	}
+
+	/**
+	 * Tests the unblock method
+	 *
+	 * @param   mixed  $user  Either an integer containing the user ID or a string containing the screen name.
+	 *
+	 * @return  void
+	 *
+	 * @dataProvider  seedUser
+	 * @since   12.1
+	 */
+	public function testUnlock($user)
+	{
+		$entities = true;
+		$skip_status = true;
+
+		$returnData = new stdClass;
+		$returnData->code = 200;
+		$returnData->body = $this->rateLimit;
+
+		$this->client->expects($this->at(0))
+		->method('get')
+		->with('/1/account/rate_limit_status.json')
+		->will($this->returnValue($returnData));
+
+		$returnData = new stdClass;
+		$returnData->code = 200;
+		$returnData->body = $this->sampleString;
+
+		// Set request parameters.
+		if (is_numeric($user))
+		{
+			$data['user_id'] = $user;
+		}
+		elseif (is_string($user))
+		{
+			$data['screen_name'] = $user;
+		}
+		else
+		{
+			$this->setExpectedException('RuntimeException');
+			$this->object->unblock($this->oauth, $user);
+		}
+
+		$data['include_entities'] = $entities;
+		$data['skip_status'] = $skip_status;
+
+		$path = $this->object->fetchUrl('/1/blocks/destroy.json');
+
+		$this->client->expects($this->at(1))
+		->method('post')
+		->with($path, $data)
+		->will($this->returnValue($returnData));
+
+		$this->assertThat(
+			$this->object->unblock($this->oauth, $user, $entities, $skip_status),
+			$this->equalTo(json_decode($this->sampleString))
+		);
+	}
+
+	/**
+	 * Tests the unblock method - failure
+	 *
+	 * @param   mixed  $user  Either an integer containing the user ID or a string containing the screen name.
+	 *
+	 * @return  void
+	 *
+	 * @dataProvider  seedUser
+	 * @expectedException DomainException
+	 * @since   12.1
+	 */
+	public function testUnblockFailure($user)
+	{
+		$entities = true;
+		$skip_status = true;
+
+		$returnData = new stdClass;
+		$returnData->code = 200;
+		$returnData->body = $this->rateLimit;
+
+		$this->client->expects($this->at(0))
+		->method('get')
+		->with('/1/account/rate_limit_status.json')
+		->will($this->returnValue($returnData));
+
+		$returnData = new stdClass;
+		$returnData->code = 500;
+		$returnData->body = $this->errorString;
+
+		// Set request parameters.
+		if (is_numeric($user))
+		{
+			$data['user_id'] = $user;
+		}
+		elseif (is_string($user))
+		{
+			$data['screen_name'] = $user;
+		}
+		else
+		{
+			$this->setExpectedException('RuntimeException');
+			$this->object->unblock($this->oauth, $user);
+		}
+
+		$data['include_entities'] = $entities;
+		$data['skip_status'] = $skip_status;
+
+		$path = $this->object->fetchUrl('/1/blocks/destroy.json');
+
+		$this->client->expects($this->at(1))
+		->method('post')
+		->with($path, $data)
+		->will($this->returnValue($returnData));
+
+		$this->object->unblock($this->oauth, $user, $entities, $skip_status);
+	}
 }
