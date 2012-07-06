@@ -36,6 +36,8 @@ class JTwitterTrends extends JTwitterObject
 		// Set the API base
 		$base = '/1/trends/' . $woeid . '.json';
 
+		$parameters = array();
+
 		// Check if exclude is specified
 		if ($exclude)
 		{
@@ -43,7 +45,7 @@ class JTwitterTrends extends JTwitterObject
 		}
 
 		// Send the request.
-		return $this->sendRequest($base);
+		return $this->sendRequest($base, 'get', $parameters);
 	}
 
 	/**
@@ -64,6 +66,8 @@ class JTwitterTrends extends JTwitterObject
 		// Set the API base
 		$base = '/1/trends/available.json';
 
+		$parameters = array();
+
 		// Check if lat is specified
 		if ($lat)
 		{
@@ -77,6 +81,42 @@ class JTwitterTrends extends JTwitterObject
 		}
 
 		// Send the request.
-		return $this->sendRequest($base);
+		return $this->sendRequest($base, 'get', $parameters);
+	}
+
+	/**
+	 * Method to get the top 20 trending topics for each hour in a given day.
+	 *
+	 * @param   string  $date     The start date for the report. The date should be formatted YYYY-MM-DD.
+	 * @param   string  $exclude  Setting this equal to hashtags will remove all hashtags from the trends list.
+	 *
+	 * @return  array  The decoded JSON response
+	 *
+	 * @since   12.1
+	 */
+	public function getDailyTrends($date = null, $exclude = null)
+	{
+		// Check the rate limit for remaining hits
+		$this->checkRateLimit();
+
+		// Set the API base
+		$base = '/1/trends/daily.json';
+
+		$parameters = array();
+
+		// Check if date is specified
+		if ($date)
+		{
+			$parameters['date'] = $date;
+		}
+
+		// Check if exclude is specified
+		if ($exclude)
+		{
+			$parameters['exclude'] = $exclude;
+		}
+
+		// Send the request.
+		return $this->sendRequest($base, 'get', $parameters);
 	}
 }

@@ -110,7 +110,9 @@ class JTwitterTrendsTest extends TestCase
 		$returnData->code = 200;
 		$returnData->body = $this->sampleString;
 
-		$path = $this->object->fetchUrl('/1/trends/' . $woeid . '.json');
+		$data['exclude'] = $exclude;
+
+		$path = $this->object->fetchUrl('/1/trends/' . $woeid . '.json', $data);
 
 		$this->client->expects($this->at(1))
 		->method('get')
@@ -149,7 +151,9 @@ class JTwitterTrendsTest extends TestCase
 		$returnData->code = 500;
 		$returnData->body = $this->errorString;
 
-		$path = $this->object->fetchUrl('/1/trends/' . $woeid . '.json');
+		$data['exclude'] = $exclude;
+
+		$path = $this->object->fetchUrl('/1/trends/' . $woeid . '.json', $data);
 
 		$this->client->expects($this->at(1))
 		->method('get')
@@ -184,7 +188,10 @@ class JTwitterTrendsTest extends TestCase
 		$returnData->code = 200;
 		$returnData->body = $this->sampleString;
 
-		$path = $this->object->fetchUrl('/1/trends/available.json');
+		$data['lat'] = $lat;
+		$data['long'] = $long;
+
+		$path = $this->object->fetchUrl('/1/trends/available.json', $data);
 
 		$this->client->expects($this->at(1))
 		->method('get')
@@ -223,7 +230,10 @@ class JTwitterTrendsTest extends TestCase
 		$returnData->code = 500;
 		$returnData->body = $this->errorString;
 
-		$path = $this->object->fetchUrl('/1/trends/available.json');
+		$data['lat'] = $lat;
+		$data['long'] = $long;
+
+		$path = $this->object->fetchUrl('/1/trends/available.json', $data);
 
 		$this->client->expects($this->at(1))
 		->method('get')
@@ -231,5 +241,85 @@ class JTwitterTrendsTest extends TestCase
 		->will($this->returnValue($returnData));
 
 		$this->object->getLocations($lat, $long);
+	}
+
+	/**
+	 * Tests the getDailyTrends method
+	 *
+	 * @return  void
+	 *
+	 * @since   12.1
+	 */
+	public function testGetDailyTrends()
+	{
+		$date = '2010-06-20';
+		$exclude = 'hashtags';
+
+		$returnData = new stdClass;
+		$returnData->code = 200;
+		$returnData->body = $this->rateLimit;
+
+		$this->client->expects($this->at(0))
+		->method('get')
+		->with('/1/account/rate_limit_status.json')
+		->will($this->returnValue($returnData));
+
+		$returnData = new stdClass;
+		$returnData->code = 200;
+		$returnData->body = $this->sampleString;
+
+		$data['date'] = $date;
+		$data['exclude'] = $exclude;
+
+		$path = $this->object->fetchUrl('/1/trends/daily.json', $data);
+
+		$this->client->expects($this->at(1))
+		->method('get')
+		->with($path)
+		->will($this->returnValue($returnData));
+
+		$this->assertThat(
+			$this->object->getDailyTrends($date, $exclude),
+			$this->equalTo(json_decode($this->sampleString))
+		);
+	}
+
+	/**
+	 * Tests the getDailyTrends method - failure
+	 *
+	 * @return  void
+	 *
+	 * @since   12.1
+	 * @expectedException DomainException
+	 */
+	public function testGetDailyTrendsFailure()
+	{
+		$date = '2010-06-20';
+		$exclude = 'hashtags';
+
+		$returnData = new stdClass;
+		$returnData->code = 200;
+		$returnData->body = $this->rateLimit;
+
+		$this->client->expects($this->at(0))
+		->method('get')
+		->with('/1/account/rate_limit_status.json')
+		->will($this->returnValue($returnData));
+
+		$returnData = new stdClass;
+		$returnData->code = 500;
+		$returnData->body = $this->errorString;
+
+		$data['date'] = $date;
+		$data['exclude'] = $exclude;
+
+		$path = $this->object->fetchUrl('/1/trends/daily.json', $data);
+
+		$this->client->expects($this->at(1))
+		->method('get')
+		->with($path)
+		->will($this->returnValue($returnData));
+
+		$this->object->getDailyTrends($date, $exclude);
 	}
 }
