@@ -482,6 +482,45 @@ class JTwitterOAuth
 	}
 
 	/**
+	 * Returns an HTTP 200 OK response code and a representation of the requesting user if authentication was successful;
+	 * returns a 401 status code and an error message if not.
+	 *
+	 * @param   boolean        $entities      When set to either true, t or 1, each tweet will include a node called "entities,". This node offers a variety of metadata
+	 * 										  about the tweet in a discreet structure, including: user_mentions, urls, and hashtags.
+	 * @param   boolean        $skip_statuse  When set to either true, t or 1 statuses will not be included in the returned user objects.
+	 *
+	 * @return  array  The decoded JSON response
+	 *
+	 * @since   12.1
+	 */
+	public function verifyCredentials($entities = false, $skip_status = false)
+	{
+		// Set parameters.
+		$parameters = array('oauth_token' => $this->getToken('key'));
+
+		$data = array();
+
+		// Check if entities is specified
+		if ($entities)
+		{
+			$data['include_entities'] = $entities;
+		}
+
+		// Check if skip_statuses is specified
+		if ($skip_status)
+		{
+			$data['skip_status'] = $skip_status;
+		}
+
+		// Set the API base
+		$path = 'https://api.twitter.com/1/account/verify_credentials.json';
+
+		// Send the request.
+		$response = $this->oauthRequest($path, 'GET', $parameters, $data);
+		return json_decode($response->body);
+	}
+
+	/**
 	 * Get the current user id and screen name.
 	 *
 	 * @return  array  The user array.
