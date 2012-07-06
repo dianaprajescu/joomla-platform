@@ -177,13 +177,13 @@ class JTwitterPlaces extends JTwitterObject
 		// Check if within is specified
 		if ($within)
 		{
-			$parameters['contained_within '] = $within;
+			$parameters['contained_within'] = $within;
 		}
 
 		// Check if attribute is specified
 		if ($attribute)
 		{
-			$parameters['attribute:street_address '] = rawurlencode($attribute);
+			$parameters['attribute:street_address'] = rawurlencode($attribute);
 		}
 
 		// Check if callback is specified
@@ -199,12 +199,12 @@ class JTwitterPlaces extends JTwitterObject
 	/**
 	 * Method to locate places near the given coordinates which are similar in name.
 	 *
-	 * @param   float    $lat          The latitude to search around.
-	 * @param   float    $long         The longitude to search around.
-	 * @param   string   $name         The name a place is known as.
-	 * @param   string   $within       This is the place_id which you would like to restrict the search results to.
-	 * @param   string   $attribute    This parameter searches for places which have this given street address.
-	 * @param   string   $callback     If supplied, the response will use the JSONP format with a callback of the given name.
+	 * @param   float   $lat        The latitude to search around.
+	 * @param   float   $long       The longitude to search around.
+	 * @param   string  $name       The name a place is known as.
+	 * @param   string  $within     This is the place_id which you would like to restrict the search results to.
+	 * @param   string  $attribute  This parameter searches for places which have this given street address.
+	 * @param   string  $callback   If supplied, the response will use the JSONP format with a callback of the given name.
 	 *
 	 * @return  array  The decoded JSON response
 	 *
@@ -225,13 +225,13 @@ class JTwitterPlaces extends JTwitterObject
 		// Check if within is specified
 		if ($within)
 		{
-			$parameters['contained_within '] = $within;
+			$parameters['contained_within'] = $within;
 		}
 
 		// Check if attribute is specified
 		if ($attribute)
 		{
-			$parameters['attribute:street_address '] = rawurlencode($attribute);
+			$parameters['attribute:street_address'] = rawurlencode($attribute);
 		}
 
 		// Check if callback is specified
@@ -242,5 +242,58 @@ class JTwitterPlaces extends JTwitterObject
 
 		// Send the request.
 		return $this->sendRequest($base, 'get', $parameters);
+	}
+
+	/**
+	 * Method to create a new place object at the given latitude and longitude.
+	 *
+	 * @param   JTwitterOAuth  $oauth      The JTwitterOAuth object.
+	 * @param   float          $lat        The latitude to search around.
+	 * @param   float          $long       The longitude to search around.
+	 * @param   string         $name       The name a place is known as.
+	 * @param   string         $token      The token found in the response from geo/similar_places.
+	 * @param   string         $within     This is the place_id which you would like to restrict the search results to.
+	 * @param   string         $attribute  This parameter searches for places which have this given street address.
+	 * @param   string         $callback   If supplied, the response will use the JSONP format with a callback of the given name.
+	 *
+	 * @return  array  The decoded JSON response
+	 *
+	 * @since   12.1
+	 */
+	public function createPlace($oauth, $lat, $long, $name, $token, $within, $attribute = null, $callback = null)
+	{
+		// Check the rate limit for remaining hits
+		$this->checkRateLimit();
+
+		// Set parameters.
+		$parameters = array('oauth_token' => $oauth->getToken('key'));
+
+		$data['lat'] = $lat;
+		$data['long'] = $long;
+		$data['name'] = rawurlencode($name);
+		$data['token'] = $token;
+		$data['contained_within'] = $within;
+
+		// Check if attribute is specified
+		if ($attribute)
+		{
+			$data['attribute:street_address'] = rawurlencode($attribute);
+		}
+
+		// Check if callback is specified
+		if ($callback)
+		{
+			$data['callback'] = $callback;
+		}
+
+		// Set the API base
+		$base = '/1/geo/place.json';
+
+		// Build the request path.
+		$path = $this->getOption('api.url') . $base;
+
+		// Send the request.
+		$response = $oauth->oauthRequest($path, 'POST', $parameters, $data);
+		return json_decode($response->body);
 	}
 }
