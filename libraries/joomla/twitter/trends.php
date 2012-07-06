@@ -45,4 +45,38 @@ class JTwitterTrends extends JTwitterObject
 		// Send the request.
 		return $this->sendRequest($base);
 	}
+
+	/**
+	 * Method to get the locations that Twitter has trending topic information for.
+	 *
+	 * @param   float    $lat          The latitude to search around.
+	 * @param   float    $long         The longitude to search around.
+	 *
+	 * @return  array  The decoded JSON response
+	 *
+	 * @since   12.1
+	 */
+	public function getLocations($lat = null, $long = null)
+	{
+		// Check the rate limit for remaining hits
+		$this->checkRateLimit();
+
+		// Set the API base
+		$base = '/1/trends/available.json';
+
+		// Check if lat is specified
+		if ($lat)
+		{
+			$parameters['lat'] = $lat;
+		}
+
+		// Check if long is specified
+		if ($long)
+		{
+			$parameters['long'] = $long;
+		}
+
+		// Send the request.
+		return $this->sendRequest($base);
+	}
 }
