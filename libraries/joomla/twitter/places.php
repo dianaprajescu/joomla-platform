@@ -195,4 +195,52 @@ class JTwitterPlaces extends JTwitterObject
 		// Send the request.
 		return $this->sendRequest($base, 'get', $parameters);
 	}
+
+	/**
+	 * Method to locate places near the given coordinates which are similar in name.
+	 *
+	 * @param   float    $lat          The latitude to search around.
+	 * @param   float    $long         The longitude to search around.
+	 * @param   string   $name         The name a place is known as.
+	 * @param   string   $within       This is the place_id which you would like to restrict the search results to.
+	 * @param   string   $attribute    This parameter searches for places which have this given street address.
+	 * @param   string   $callback     If supplied, the response will use the JSONP format with a callback of the given name.
+	 *
+	 * @return  array  The decoded JSON response
+	 *
+	 * @since   12.1
+	 */
+	public function getSimilarPlaces($lat, $long, $name, $within = null, $attribute = null, $callback = null)
+	{
+		// Check the rate limit for remaining hits
+		$this->checkRateLimit();
+
+		// Set the API base
+		$base = '/1/geo/similar_places.json';
+
+		$parameters['lat'] = $lat;
+		$parameters['long'] = $long;
+		$parameters['name'] = rawurlencode($name);
+
+		// Check if within is specified
+		if ($within)
+		{
+			$parameters['contained_within '] = $within;
+		}
+
+		// Check if attribute is specified
+		if ($attribute)
+		{
+			$parameters['attribute:street_address '] = rawurlencode($attribute);
+		}
+
+		// Check if callback is specified
+		if ($callback)
+		{
+			$parameters['callback'] = $callback;
+		}
+
+		// Send the request.
+		return $this->sendRequest($base, 'get', $parameters);
+	}
 }

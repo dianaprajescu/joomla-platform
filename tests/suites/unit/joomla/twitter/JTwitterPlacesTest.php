@@ -400,4 +400,100 @@ class JTwitterPlacesTest extends TestCase
 
 		$this->object->search($lat, $long, $query, $ip, $granularity, $accuracy, $max_results, $within, $attribute, $callback);
 	}
+
+	/**
+	 * Tests the getSimilarPlaces method
+	 *
+	 * @return  void
+	 *
+	 * @since 12.1
+	 */
+	public function testSimilarPlaces()
+	{
+		$lat = 45;
+		$long = 45;
+		$name = 'Twitter HQ';
+		$within = '247f43d441defc03';
+		$attribute = '795 Folsom St';
+		$callback = 'callback';
+
+		$returnData = new stdClass;
+		$returnData->code = 200;
+		$returnData->body = $this->rateLimit;
+
+		$this->client->expects($this->at(0))
+		->method('get')
+		->with('/1/account/rate_limit_status.json')
+		->will($this->returnValue($returnData));
+
+		$returnData = new stdClass;
+		$returnData->code = 200;
+		$returnData->body = $this->sampleString;
+
+		$data['lat'] = $lat;
+		$data['long'] = $long;
+		$data['name'] = rawurlencode($name);
+		$data['contained_within '] = $within;
+		$data['attribute:street_address '] = rawurlencode($attribute);
+		$data['callback'] = $callback;
+
+		$path = $this->object->fetchUrl('/1/geo/similar_places.json', $data);
+
+		$this->client->expects($this->at(1))
+		->method('get')
+		->with($path)
+		->will($this->returnValue($returnData));
+
+		$this->assertThat(
+			$this->object->getSimilarPlaces($lat, $long, $name, $within, $attribute, $callback),
+			$this->equalTo(json_decode($this->sampleString))
+		);
+	}
+
+	/**
+	 * Tests the getSimilarPlaces method - failure
+	 *
+	 * @return  void
+	 *
+	 * @since 12.1
+	 * @expectedException DomainException
+	 */
+	public function testSimilarPlacesFailure()
+	{
+		$lat = 45;
+		$long = 45;
+		$name = 'Twitter HQ';
+		$within = '247f43d441defc03';
+		$attribute = '795 Folsom St';
+		$callback = 'callback';
+
+		$returnData = new stdClass;
+		$returnData->code = 200;
+		$returnData->body = $this->rateLimit;
+
+		$this->client->expects($this->at(0))
+		->method('get')
+		->with('/1/account/rate_limit_status.json')
+		->will($this->returnValue($returnData));
+
+		$returnData = new stdClass;
+		$returnData->code = 500;
+		$returnData->body = $this->errorString;
+
+		$data['lat'] = $lat;
+		$data['long'] = $long;
+		$data['name'] = rawurlencode($name);
+		$data['contained_within '] = $within;
+		$data['attribute:street_address '] = rawurlencode($attribute);
+		$data['callback'] = $callback;
+
+		$path = $this->object->fetchUrl('/1/geo/similar_places.json', $data);
+
+		$this->client->expects($this->at(1))
+		->method('get')
+		->with($path)
+		->will($this->returnValue($returnData));
+
+		$this->object->getSimilarPlaces($lat, $long, $name, $within, $attribute, $callback);
+	}
 }
