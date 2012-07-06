@@ -510,9 +510,9 @@ class JTwitterOAuth
 	 * Returns an HTTP 200 OK response code and a representation of the requesting user if authentication was successful;
 	 * returns a 401 status code and an error message if not.
 	 *
-	 * @param   boolean        $entities      When set to either true, t or 1, each tweet will include a node called "entities,". This node offers a variety of metadata
-	 * 										  about the tweet in a discreet structure, including: user_mentions, urls, and hashtags.
-	 * @param   boolean        $skip_statuse  When set to either true, t or 1 statuses will not be included in the returned user objects.
+	 * @param   boolean  $entities     When set to either true, t or 1, each tweet will include a node called "entities,". This node offers a
+	 * 								   variety of metadata about the tweet in a discreet structure, including: user_mentions, urls, and hashtags.
+	 * @param   boolean  $skip_status  When set to either true, t or 1 statuses will not be included in the returned user objects.
 	 *
 	 * @return  array  The decoded JSON response
 	 *
@@ -536,7 +536,6 @@ class JTwitterOAuth
 		{
 			$data['skip_status'] = $skip_status;
 		}
-
 
 		// Set the API base
 		$path = 'https://api.twitter.com/1/account/verify_credentials.json';
