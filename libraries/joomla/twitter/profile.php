@@ -284,7 +284,7 @@ class JTwitterProfile extends JTwitterObject
 	/**
 	 * Method to get the current count of friends, followers, updates (statuses) and favorites of the authenticating user.
 	 *
-	 * @param   JTwitterOAuth  $oauth           The JTwitterOAuth object.
+	 * @param   JTwitterOAuth  $oauth  The JTwitterOAuth object.
 	 *
 	 * @return  array  The decoded JSON response
 	 *
@@ -300,6 +300,34 @@ class JTwitterProfile extends JTwitterObject
 
 		// Set the API base
 		$base = '/1/account/totals.json';
+
+		// Build the request path.
+		$path = $this->getOption('api.url') . $base;
+
+		// Send the request.
+		$response = $oauth->oauthRequest($path, 'GET', $parameters);
+		return json_decode($response->body);
+	}
+
+	/**
+	 * Method to get the settings (including current trend, geo and sleep time information) for the authenticating user.
+	 *
+	 * @param   JTwitterOAuth  $oauth  The JTwitterOAuth object.
+	 *
+	 * @return  array  The decoded JSON response
+	 *
+	 * @since   12.1
+	 */
+	public function getSettings($oauth)
+	{
+		// Check the rate limit for remaining hits
+		$this->checkRateLimit();
+
+		// Set parameters.
+		$parameters = array('oauth_token' => $oauth->getToken('key'));
+
+		// Set the API base
+		$base = '/1/account/settings.json';
 
 		// Build the request path.
 		$path = $this->getOption('api.url') . $base;

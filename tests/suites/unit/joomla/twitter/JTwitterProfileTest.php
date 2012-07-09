@@ -442,4 +442,68 @@ class JTwitterProfileTest extends TestCase
 
 		$this->object->getTotals($this->oauth);
 	}
+
+	/**
+	 * Tests the getSettings method
+	 *
+	 * @return  void
+	 *
+	 * @since   12.1
+	 */
+	public function testGetSettings()
+	{
+		$returnData = new stdClass;
+		$returnData->code = 200;
+		$returnData->body = $this->rateLimit;
+
+		$this->client->expects($this->at(0))
+		->method('get')
+		->with('/1/account/rate_limit_status.json')
+		->will($this->returnValue($returnData));
+
+		$returnData = new stdClass;
+		$returnData->code = 200;
+		$returnData->body = $this->sampleString;
+
+		$this->client->expects($this->at(1))
+			->method('get')
+			->with('/1/account/settings.json')
+			->will($this->returnValue($returnData));
+
+		$this->assertThat(
+			$this->object->getSettings($this->oauth),
+			$this->equalTo(json_decode($this->sampleString))
+		);
+	}
+
+	/**
+	 * Tests the getSettings method - failure
+	 *
+	 * @return  void
+	 *
+	 * @since   12.1
+	 * @expectedException DomainException
+	 */
+	public function testGetSettingsFailure()
+	{
+		$returnData = new stdClass;
+		$returnData->code = 200;
+		$returnData->body = $this->rateLimit;
+
+		$this->client->expects($this->at(0))
+		->method('get')
+		->with('/1/account/rate_limit_status.json')
+		->will($this->returnValue($returnData));
+
+		$returnData = new stdClass;
+		$returnData->code = 500;
+		$returnData->body = $this->errorString;
+
+		$this->client->expects($this->at(1))
+			->method('get')
+			->with('/1/account/settings.json')
+			->will($this->returnValue($returnData));
+
+		$this->object->getSettings($this->oauth);
+	}
 }
