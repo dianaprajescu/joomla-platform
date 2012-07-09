@@ -162,4 +162,76 @@ class JTwitterProfileTest extends TestCase
 
 		$this->object->updateProfile($this->oauth, $name, $url, $location, $description, $entities, $skip_status);
 	}
+
+	/**
+	 * Tests the updateProfileBackgroundImage method
+	 *
+	 * @return  void
+	 *
+	 * @since   12.1
+	 */
+	public function testUpdateProfileBackgroundImage()
+	{
+		$image = 'path/to/source';
+		$tile = true;
+		$entities = true;
+		$skip_status = true;
+		$use = true;
+
+		$returnData = new stdClass;
+		$returnData->code = 200;
+		$returnData->body = $this->sampleString;
+
+		// Set POST request parameters.
+		$data['image'] = "@{$image}";
+		$data['tile'] = $tile;
+		$data['include_entities'] = $entities;
+		$data['skip_status'] = $skip_status;
+		$data['use'] = $use;
+
+		$this->client->expects($this->once())
+			->method('post')
+			->with('/1/account/update_profile_background_image.json', $data)
+			->will($this->returnValue($returnData));
+
+		$this->assertThat(
+			$this->object->updateProfileBackgroundImage($this->oauth, $image, $tile, $entities, $skip_status, $use),
+			$this->equalTo(json_decode($this->sampleString))
+		);
+	}
+
+	/**
+	 * Tests the updateProfileBackgroundImage method - failure
+	 *
+	 * @return  void
+	 *
+	 * @since   12.1
+	 * @expectedException DomainException
+	 */
+	public function testUpdateProfileBackgroundImageFailure()
+	{
+		$image = 'path/to/source';
+		$tile = true;
+		$entities = true;
+		$skip_status = true;
+		$use = true;
+
+		$returnData = new stdClass;
+		$returnData->code = 500;
+		$returnData->body = $this->errorString;
+
+		// Set POST request parameters.
+		$data['image'] = "@{$image}";
+		$data['tile'] = $tile;
+		$data['include_entities'] = $entities;
+		$data['skip_status'] = $skip_status;
+		$data['use'] = $use;
+
+		$this->client->expects($this->once())
+			->method('post')
+			->with('/1/account/update_profile_background_image.json', $data)
+			->will($this->returnValue($returnData));
+
+		$this->object->updateProfileBackgroundImage($this->oauth, $image, $tile, $entities, $skip_status, $use);
+	}
 }

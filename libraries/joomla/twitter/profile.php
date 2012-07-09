@@ -87,4 +87,69 @@ class JTwitterProfile extends JTwitterObject
 		$response = $oauth->oauthRequest($path, 'POST', $parameters, $data);
 		return json_decode($response->body);
 	}
+
+	/**
+	 * Updates the authenticating user's profile background image. This method can also be used to enable or disable the profile background image.
+	 *
+	 * @param   JTwitterOAuth  $oauth        The JTwitterOAuth object.
+	 * @param   string         $image        The background image for the profile.
+	 * @param   boolean        $tile         Whether or not to tile the background image.
+	 * @param   boolean        $entities     When set to either true, t or 1, each tweet will include a node called "entities,". This node offers a
+	 * 								  		 variety of metadata about the tweet in a discreet structure, including: user_mentions, urls, and hashtags.
+	 * @param   boolean        $skip_status  When set to either true, t or 1 statuses will not be included in the returned user objects.
+	 * @param   boolean        $use          Determines whether to display the profile background image or not.
+	 *
+	 * @return  array  The decoded JSON response
+	 *
+	 * @since   12.1
+	 */
+	public function updateProfileBackgroundImage($oauth, $image = null, $tile = false, $entities = false, $skip_status = false, $use = false)
+	{
+		// Set parameters.
+		$parameters = array('oauth_token' => $oauth->getToken('key'));
+
+		$data = array();
+
+		// Check if image is specified.
+		if ($image)
+		{
+			$data['image'] = "@{$image}";
+		}
+
+		// Check if url is true.
+		if ($tile)
+		{
+			$data['tile'] = $tile;
+		}
+
+		// Check if entities is true.
+		if ($entities)
+		{
+			$data['include_entities'] = $entities;
+		}
+
+		// Check if skip_status is true.
+		if ($skip_status)
+		{
+			$data['skip_status'] = $skip_status;
+		}
+
+		// Check if use is true.
+		if ($use)
+		{
+			$data['use'] = $use;
+		}
+
+		// Set the API base
+		$base = '/1/account/update_profile_background_image.json';
+
+		$header = array('Content-Type' => 'multipart/form-data', 'Expect' => '');
+
+		// Build the request path.
+		$path = $this->getOption('api.url') . $base;
+
+		// Send the request.
+		$response = $oauth->oauthRequest($path, 'POST', $parameters, $data, $header);
+		return json_decode($response->body);
+	}
 }

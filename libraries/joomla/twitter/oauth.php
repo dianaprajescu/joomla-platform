@@ -277,7 +277,7 @@ class JTwitterOAuth
 		if ($data)
 		{
 			// Do not encode multipart parameters.
-			if (!array_key_exists('media[]', $data))
+			if (empty($headers))
 			{
 				// Use all parameters for the signature.
 				$oauth_headers = array_merge($parameters, $data);
