@@ -203,4 +203,81 @@ class JTwitterProfile extends JTwitterObject
 		$response = $oauth->oauthRequest($path, 'POST', $parameters, $data, $header);
 		return json_decode($response->body);
 	}
+
+	/**
+	 * Method to set one or more hex values that control the color scheme of the authenticating user's profile page on twitter.com.
+	 *
+	 * @param   JTwitterOAuth  $oauth           The JTwitterOAuth object.
+	 * @param   string         $background      Profile background color.
+	 * @param   string         $link            Profile link color.
+	 * @param   string         $sidebar_border  Profile sidebar's border color.
+	 * @param   string         $sidebar_fill    Profile sidebar's fill color.
+	 * @param   string         $text            Profile text color.
+	 * @param   boolean        $entities        When set to either true, t or 1, each tweet will include a node called "entities,". This node offers a
+	 * 											variety of metadata about the tweet in a discreet structure, including: user_mentions, urls, and hashtags.
+	 * @param   boolean        $skip_status     When set to either true, t or 1 statuses will not be included in the returned user objects.
+	 *
+	 * @return  array  The decoded JSON response
+	 *
+	 * @since   12.1
+	 */
+	public function updateProfileColors($oauth, $background = null, $link = null, $sidebar_border = null, $sidebar_fill = null, $text = null, $entities = false, $skip_status = false)
+	{
+		// Set parameters.
+		$parameters = array('oauth_token' => $oauth->getToken('key'));
+
+		$data = array();
+
+		// Check if background is specified.
+		if ($background)
+		{
+			$data['profile_background_color'] = $background;
+		}
+
+		// Check if link is specified.
+		if ($link)
+		{
+			$data['profile_link_color'] = $link;
+		}
+
+		// Check if sidebar_border is specified.
+		if ($sidebar_border)
+		{
+			$data['profile_sidebar_border_color'] = $sidebar_border;
+		}
+
+		// Check if sidebar_fill is specified.
+		if ($sidebar_fill)
+		{
+			$data['profile_sidebar_fill_color'] = $sidebar_fill;
+		}
+
+		// Check if text is specified.
+		if ($text)
+		{
+			$data['profile_text_color'] = $text;
+		}
+
+		// Check if entities is true.
+		if ($entities)
+		{
+			$data['include_entities'] = $entities;
+		}
+
+		// Check if skip_status is true.
+		if ($skip_status)
+		{
+			$data['skip_status'] = $skip_status;
+		}
+
+		// Set the API base
+		$base = '/1/account/update_profile_colors.json';
+
+		// Build the request path.
+		$path = $this->getOption('api.url') . $base;
+
+		// Send the request.
+		$response = $oauth->oauthRequest($path, 'POST', $parameters, $data);
+		return json_decode($response->body);
+	}
 }

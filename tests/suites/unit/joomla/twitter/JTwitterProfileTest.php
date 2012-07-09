@@ -298,4 +298,84 @@ class JTwitterProfileTest extends TestCase
 
 		$this->object->updateProfileImage($this->oauth, $image, $entities, $skip_status);
 	}
+
+	/**
+	 * Tests the updateProfileColors method
+	 *
+	 * @return  void
+	 *
+	 * @since   12.1
+	 */
+	public function testUpdateProfileColors()
+	{
+		$background = 'C0DEED ';
+		$link = '0084B4';
+		$sidebar_border = '0084B4';
+		$sidebar_fill = 'DDEEF6';
+		$text = '333333';
+		$entities = true;
+		$skip_status = true;
+
+		$returnData = new stdClass;
+		$returnData->code = 200;
+		$returnData->body = $this->sampleString;
+
+		// Set POST request parameters.
+		$data['profile_background_color'] = $background;
+		$data['profile_link_color'] = $link;
+		$data['profile_sidebar_border_color'] = $sidebar_border;
+		$data['profile_sidebar_fill_color'] = $sidebar_fill;
+		$data['profile_text_color'] = $text;
+		$data['include_entities'] = $entities;
+		$data['skip_status'] = $skip_status;
+
+		$this->client->expects($this->once())
+			->method('post')
+			->with('/1/account/update_profile_colors.json', $data)
+			->will($this->returnValue($returnData));
+
+		$this->assertThat(
+			$this->object->updateProfileColors($this->oauth, $background, $link, $sidebar_border, $sidebar_fill, $text, $entities, $skip_status),
+			$this->equalTo(json_decode($this->sampleString))
+		);
+	}
+
+	/**
+	 * Tests the updateProfileColors method - failure
+	 *
+	 * @return  void
+	 *
+	 * @since   12.1
+	 * @expectedException DomainException
+	 */
+	public function testUpdateProfileColorsFailure()
+	{
+		$background = 'C0DEED ';
+		$link = '0084B4';
+		$sidebar_border = '0084B4';
+		$sidebar_fill = 'DDEEF6';
+		$text = '333333';
+		$entities = true;
+		$skip_status = true;
+
+		$returnData = new stdClass;
+		$returnData->code = 500;
+		$returnData->body = $this->errorString;
+
+		// Set POST request parameters.
+		$data['profile_background_color'] = $background;
+		$data['profile_link_color'] = $link;
+		$data['profile_sidebar_border_color'] = $sidebar_border;
+		$data['profile_sidebar_fill_color'] = $sidebar_fill;
+		$data['profile_text_color'] = $text;
+		$data['include_entities'] = $entities;
+		$data['skip_status'] = $skip_status;
+
+		$this->client->expects($this->once())
+			->method('post')
+			->with('/1/account/update_profile_colors.json', $data)
+			->will($this->returnValue($returnData));
+
+		$this->object->updateProfileColors($this->oauth, $background, $link, $sidebar_border, $sidebar_fill, $text, $entities, $skip_status);
+	}
 }
