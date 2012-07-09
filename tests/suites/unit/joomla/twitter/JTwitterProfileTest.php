@@ -506,4 +506,82 @@ class JTwitterProfileTest extends TestCase
 
 		$this->object->getSettings($this->oauth);
 	}
+
+	/**
+	 * Tests the updateSettings method
+	 *
+	 * @return  void
+	 *
+	 * @since   12.1
+	 */
+	public function testUpdateSettings()
+	{
+		$location = 1;
+		$sleep_time = true;
+		$start_sleep = 10;
+		$end_sleep = 14;
+		$time_zone = 'Europe/Copenhagen';
+		$lang = 'en';
+
+		$returnData = new stdClass;
+		$returnData->code = 200;
+		$returnData->body = $this->sampleString;
+
+		// Set POST request parameters.
+		$data['trend_location_woeid '] = $location;
+		$data['sleep_time_enabled'] = $sleep_time;
+		$data['start_sleep_time'] = $start_sleep;
+		$data['end_sleep_time'] = $end_sleep;
+		$data['time_zone'] = $time_zone;
+		$data['lang'] = $lang;
+
+
+		$this->client->expects($this->once())
+			->method('post')
+			->with('/1/account/settings.json', $data)
+			->will($this->returnValue($returnData));
+
+		$this->assertThat(
+			$this->object->updateSettings($this->oauth, $location, $sleep_time, $start_sleep, $end_sleep, $time_zone, $lang),
+			$this->equalTo(json_decode($this->sampleString))
+		);
+	}
+
+	/**
+	 * Tests the updateSettings method - failure
+	 *
+	 * @return  void
+	 *
+	 * @since   12.1
+	 * @expectedException DomainException
+	 */
+	public function testUpdateSettingsFailure()
+	{
+		$location = 1;
+		$sleep_time = true;
+		$start_sleep = 10;
+		$end_sleep = 14;
+		$time_zone = 'Europe/Copenhagen';
+		$lang = 'en';
+
+		$returnData = new stdClass;
+		$returnData->code = 500;
+		$returnData->body = $this->errorString;
+
+		// Set POST request parameters.
+		$data['trend_location_woeid '] = $location;
+		$data['sleep_time_enabled'] = $sleep_time;
+		$data['start_sleep_time'] = $start_sleep;
+		$data['end_sleep_time'] = $end_sleep;
+		$data['time_zone'] = $time_zone;
+		$data['lang'] = $lang;
+
+
+		$this->client->expects($this->once())
+			->method('post')
+			->with('/1/account/settings.json', $data)
+			->will($this->returnValue($returnData));
+
+		$this->object->updateSettings($this->oauth, $location, $sleep_time, $start_sleep, $end_sleep, $time_zone, $lang);
+	}
 }

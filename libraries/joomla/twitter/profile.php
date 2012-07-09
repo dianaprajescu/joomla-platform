@@ -336,4 +336,69 @@ class JTwitterProfile extends JTwitterObject
 		$response = $oauth->oauthRequest($path, 'GET', $parameters);
 		return json_decode($response->body);
 	}
+
+	/**
+	 * Method to update the authenticating user's settings.
+	 *
+	 * @param   JTwitterOAuth  $oauth        The JTwitterOAuth object.
+	 * @param   integer        $location     The Yahoo! Where On Earth ID to use as the user's default trend location.
+	 * @param   boolean        $sleep_time   When set to true, t or 1, will enable sleep time for the user.
+	 * @param   integer        $start_sleep  The hour that sleep time should begin if it is enabled.
+	 * @param   integer        $end_sleep    The hour that sleep time should end if it is enabled.
+	 * @param   string         $time_zone    The timezone dates and times should be displayed in for the user. The timezone must be one of the Rails TimeZone names.
+	 * @param   string         $lang         The language which Twitter should render in for this user.
+	 */
+	public function updateSettings($oauth, $location = null, $sleep_time = false, $start_sleep = null, $end_sleep = null, $time_zone = null, $lang = null)
+	{
+		// Set parameters.
+		$parameters = array('oauth_token' => $oauth->getToken('key'));
+
+		$data = array();
+
+		// Check if location is specified.
+		if ($location)
+		{
+			$data['trend_location_woeid '] = $location;
+		}
+
+		// Check if sleep_time is true.
+		if ($sleep_time)
+		{
+			$data['sleep_time_enabled'] = $sleep_time;
+		}
+
+		// Check if start_sleep is specified.
+		if ($start_sleep)
+		{
+			$data['start_sleep_time'] = $start_sleep;
+		}
+
+		// Check if end_sleep is specified.
+		if ($end_sleep)
+		{
+			$data['end_sleep_time'] = $end_sleep;
+		}
+
+		// Check if time_zone is specified.
+		if ($time_zone)
+		{
+			$data['time_zone'] = $time_zone;
+		}
+
+		// Check if lang is specified.
+		if ($lang)
+		{
+			$data['lang'] = $lang;
+		}
+
+		// Set the API base
+		$base = '/1/account/settings.json';
+
+		// Build the request path.
+		$path = $this->getOption('api.url') . $base;
+
+		// Send the request.
+		$response = $oauth->oauthRequest($path, 'POST', $parameters, $data);
+		return json_decode($response->body);
+	}
 }
