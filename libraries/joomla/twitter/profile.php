@@ -280,4 +280,32 @@ class JTwitterProfile extends JTwitterObject
 		$response = $oauth->oauthRequest($path, 'POST', $parameters, $data);
 		return json_decode($response->body);
 	}
+
+	/**
+	 * Method to get the current count of friends, followers, updates (statuses) and favorites of the authenticating user.
+	 *
+	 * @param   JTwitterOAuth  $oauth           The JTwitterOAuth object.
+	 *
+	 * @return  array  The decoded JSON response
+	 *
+	 * @since   12.1
+	 */
+	public function getTotals($oauth)
+	{
+		// Check the rate limit for remaining hits
+		$this->checkRateLimit();
+
+		// Set parameters.
+		$parameters = array('oauth_token' => $oauth->getToken('key'));
+
+		// Set the API base
+		$base = '/1/account/totals.json';
+
+		// Build the request path.
+		$path = $this->getOption('api.url') . $base;
+
+		// Send the request.
+		$response = $oauth->oauthRequest($path, 'GET', $parameters);
+		return json_decode($response->body);
+	}
 }
