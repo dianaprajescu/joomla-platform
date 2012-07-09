@@ -89,7 +89,7 @@ class JTwitterProfile extends JTwitterObject
 	}
 
 	/**
-	 * Updates the authenticating user's profile background image. This method can also be used to enable or disable the profile background image.
+	 * Method to update the authenticating user's profile background image. This method can also be used to enable or disable the profile background image.
 	 *
 	 * @param   JTwitterOAuth  $oauth        The JTwitterOAuth object.
 	 * @param   string         $image        The background image for the profile.
@@ -142,6 +142,57 @@ class JTwitterProfile extends JTwitterObject
 
 		// Set the API base
 		$base = '/1/account/update_profile_background_image.json';
+
+		$header = array('Content-Type' => 'multipart/form-data', 'Expect' => '');
+
+		// Build the request path.
+		$path = $this->getOption('api.url') . $base;
+
+		// Send the request.
+		$response = $oauth->oauthRequest($path, 'POST', $parameters, $data, $header);
+		return json_decode($response->body);
+	}
+
+	/**
+	 * Method to update the authenticating user's profile image.
+	 *
+	 * @param   JTwitterOAuth  $oauth        The JTwitterOAuth object.
+	 * @param   string         $image        The background image for the profile.
+	 * @param   boolean        $entities     When set to either true, t or 1, each tweet will include a node called "entities,". This node offers a
+	 * 								  		 variety of metadata about the tweet in a discreet structure, including: user_mentions, urls, and hashtags.
+	 * @param   boolean        $skip_status  When set to either true, t or 1 statuses will not be included in the returned user objects.
+	 *
+	 * @return  array  The decoded JSON response
+	 *
+	 * @since   12.1
+	 */
+	public function updateProfileImage($oauth, $image = null, $entities = false, $skip_status = false)
+	{
+		// Set parameters.
+		$parameters = array('oauth_token' => $oauth->getToken('key'));
+
+		$data = array();
+
+		// Check if image is specified.
+		if ($image)
+		{
+			$data['image'] = "@{$image}";
+		}
+
+		// Check if entities is true.
+		if ($entities)
+		{
+			$data['include_entities'] = $entities;
+		}
+
+		// Check if skip_status is true.
+		if ($skip_status)
+		{
+			$data['skip_status'] = $skip_status;
+		}
+
+		// Set the API base
+		$base = '/1/account/update_profile_image.json';
 
 		$header = array('Content-Type' => 'multipart/form-data', 'Expect' => '');
 

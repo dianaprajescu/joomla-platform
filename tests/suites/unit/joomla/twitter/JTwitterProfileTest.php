@@ -234,4 +234,68 @@ class JTwitterProfileTest extends TestCase
 
 		$this->object->updateProfileBackgroundImage($this->oauth, $image, $tile, $entities, $skip_status, $use);
 	}
+
+	/**
+	 * Tests the updateProfileImage method
+	 *
+	 * @return  void
+	 *
+	 * @since   12.1
+	 */
+	public function testUpdateProfileImage()
+	{
+		$image = 'path/to/source';
+		$entities = true;
+		$skip_status = true;
+
+		$returnData = new stdClass;
+		$returnData->code = 200;
+		$returnData->body = $this->sampleString;
+
+		// Set POST request parameters.
+		$data['image'] = "@{$image}";
+		$data['include_entities'] = $entities;
+		$data['skip_status'] = $skip_status;
+
+		$this->client->expects($this->once())
+			->method('post')
+			->with('/1/account/update_profile_image.json', $data)
+			->will($this->returnValue($returnData));
+
+		$this->assertThat(
+			$this->object->updateProfileImage($this->oauth, $image, $entities, $skip_status),
+			$this->equalTo(json_decode($this->sampleString))
+		);
+	}
+
+	/**
+	 * Tests the updateProfileImage method - failure
+	 *
+	 * @return  void
+	 *
+	 * @since   12.1
+	 * @expectedException DomainException
+	 */
+	public function testUpdateProfileImageFailure()
+	{
+		$image = 'path/to/source';
+		$entities = true;
+		$skip_status = true;
+
+		$returnData = new stdClass;
+		$returnData->code = 500;
+		$returnData->body = $this->errorString;
+
+		// Set POST request parameters.
+		$data['image'] = "@{$image}";
+		$data['include_entities'] = $entities;
+		$data['skip_status'] = $skip_status;
+
+		$this->client->expects($this->once())
+			->method('post')
+			->with('/1/account/update_profile_image.json', $data)
+			->will($this->returnValue($returnData));
+
+		$this->object->updateProfileImage($this->oauth, $image, $entities, $skip_status);
+	}
 }
