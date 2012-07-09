@@ -1234,7 +1234,7 @@ class JTwitterStatusesTest extends TestCase
 		$data['display_coordinates'] = $display_coordinates;
 		$data['possibly_sensitive'] = $sensitive;
 
-		$this->client->expects($this->once())
+		$this->client->expects($this->at(1))
 			->method('post')
 			->with('https://upload.twitter.com/1/statuses/update_with_media.json', $data)
 			->will($this->returnValue($returnData));
@@ -1283,7 +1283,7 @@ class JTwitterStatusesTest extends TestCase
 		$data['media[]'] = "@{$media}";
 		$data['status'] = utf8_encode($status);
 
-		$this->client->expects($this->once())
+		$this->client->expects($this->at(1))
 			->method('post')
 			->with('https://upload.twitter.com/1/statuses/update_with_media.json', $data)
 			->will($this->returnValue($returnData));
