@@ -535,7 +535,6 @@ class JTwitterProfileTest extends TestCase
 		$data['time_zone'] = $time_zone;
 		$data['lang'] = $lang;
 
-
 		$this->client->expects($this->once())
 			->method('post')
 			->with('/1/account/settings.json', $data)
@@ -575,7 +574,6 @@ class JTwitterProfileTest extends TestCase
 		$data['end_sleep_time'] = $end_sleep;
 		$data['time_zone'] = $time_zone;
 		$data['lang'] = $lang;
-
 
 		$this->client->expects($this->once())
 			->method('post')

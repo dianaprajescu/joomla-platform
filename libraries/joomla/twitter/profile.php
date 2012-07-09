@@ -24,7 +24,8 @@ class JTwitterProfile extends JTwitterObject
 	 * @param   JTwitterOAuth  $oauth        The JTwitterOAuth object.
 	 * @param   string         $name         Full name associated with the profile. Maximum of 20 characters.
 	 * @param   string         $url          URL associated with the profile. Will be prepended with "http://" if not present. Maximum of 100 characters.
-	 * @param   string         $location     The city or country describing where the user of the account is located. The contents are not normalized or geocoded in any way. Maximum of 30 characters.
+	 * @param   string         $location     The city or country describing where the user of the account is located. The contents are not normalized
+	 * 										 or geocoded in any way. Maximum of 30 characters.
 	 * @param   string         $description  A description of the user owning the account. Maximum of 160 characters.
 	 * @param   boolean        $entities     When set to either true, t or 1, each tweet will include a node called "entities,". This node offers a
 	 * 								  		 variety of metadata about the tweet in a discreet structure, including: user_mentions, urls, and hashtags.
@@ -89,7 +90,8 @@ class JTwitterProfile extends JTwitterObject
 	}
 
 	/**
-	 * Method to update the authenticating user's profile background image. This method can also be used to enable or disable the profile background image.
+	 * Method to update the authenticating user's profile background image. This method can also be used to enable or disable the profile
+	 * background image.
 	 *
 	 * @param   JTwitterOAuth  $oauth        The JTwitterOAuth object.
 	 * @param   string         $image        The background image for the profile.
@@ -221,7 +223,8 @@ class JTwitterProfile extends JTwitterObject
 	 *
 	 * @since   12.1
 	 */
-	public function updateProfileColors($oauth, $background = null, $link = null, $sidebar_border = null, $sidebar_fill = null, $text = null, $entities = false, $skip_status = false)
+	public function updateProfileColors($oauth, $background = null, $link = null, $sidebar_border = null, $sidebar_fill = null, $text = null,
+		$entities = false, $skip_status = false)
 	{
 		// Set parameters.
 		$parameters = array('oauth_token' => $oauth->getToken('key'));
@@ -345,10 +348,16 @@ class JTwitterProfile extends JTwitterObject
 	 * @param   boolean        $sleep_time   When set to true, t or 1, will enable sleep time for the user.
 	 * @param   integer        $start_sleep  The hour that sleep time should begin if it is enabled.
 	 * @param   integer        $end_sleep    The hour that sleep time should end if it is enabled.
-	 * @param   string         $time_zone    The timezone dates and times should be displayed in for the user. The timezone must be one of the Rails TimeZone names.
+	 * @param   string         $time_zone    The timezone dates and times should be displayed in for the user. The timezone must be one of the
+	 * 										 Rails TimeZone names.
 	 * @param   string         $lang         The language which Twitter should render in for this user.
+	 *
+	 * @return  array  The decoded JSON response
+	 *
+	 * @since   12.1
 	 */
-	public function updateSettings($oauth, $location = null, $sleep_time = false, $start_sleep = null, $end_sleep = null, $time_zone = null, $lang = null)
+	public function updateSettings($oauth, $location = null, $sleep_time = false, $start_sleep = null, $end_sleep = null,
+		$time_zone = null, $lang = null)
 	{
 		// Set parameters.
 		$parameters = array('oauth_token' => $oauth->getToken('key'));
