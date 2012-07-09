@@ -58,12 +58,6 @@ class JTwitterUsersTest extends TestCase
 	protected $errorString = '{"error":"Generic error"}';
 
 	/**
-	 * @var    string  Sample JSON Twitter error message.
-	 * @since  12.1
-	 */
-	protected $twitterErrorString = '{"errors":[{"message":"Sorry, that page does not exist","code":34}]}';
-
-	/**
 	 * @var    string  Sample JSON string.
 	 * @since  12.1
 	 */
@@ -248,7 +242,8 @@ class JTwitterUsersTest extends TestCase
 
 		$returnData = new stdClass;
 		$returnData->code = 200;
-		$returnData->body = $this->sampleString;
+		$returnData->body = '{"body":"You are being redirected."}';
+		$returnData->headers = array('Location' => 'image/location');
 
 		// Set request parameters.
 		$data['screen_name'] = $screen_name;
@@ -263,7 +258,7 @@ class JTwitterUsersTest extends TestCase
 
 		$this->assertThat(
 			$this->object->getUserProfileImage($screen_name, $size),
-			$this->equalTo(json_decode($this->sampleString))
+			$this->equalTo('image/location')
 		);
 	}
 
