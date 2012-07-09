@@ -91,10 +91,16 @@ class JTwitter
 	protected $trends;
 
 	/**
-	 * @var    JTwitterBlck  Twitter API object for block.
+	 * @var    JTwitterBlock  Twitter API object for block.
 	 * @since  12.1
 	 */
 	protected $block;
+
+	/**
+	 * @var    JTwitterProfile  Twitter API object for profile.
+	 * @since  12.1
+	 */
+	protected $profile;
 
 	/**
 	 * Constructor.
@@ -202,6 +208,13 @@ class JTwitter
 					$this->block = new JTwitterBlock($this->options, $this->client);
 				}
 				return $this->block;
+
+			case 'profile':
+				if ($this->profile == null)
+				{
+					$this->profile = new JTwitterProfile($this->options, $this->client);
+				}
+				return $this->profile;
 		}
 	}
 

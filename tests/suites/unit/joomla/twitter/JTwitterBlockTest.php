@@ -34,7 +34,7 @@ class JTwitterBlockTest extends TestCase
 	protected $client;
 
 	/**
-	 * @var    JTwitterPlaces  Object under test.
+	 * @var    JTwitterBlock  Object under test.
 	 * @since  12.1
 	 */
 	protected $object;

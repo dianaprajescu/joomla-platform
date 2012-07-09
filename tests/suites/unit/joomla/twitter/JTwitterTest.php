@@ -241,6 +241,21 @@ class JTwitterTest extends TestCase
 	}
 
 	/**
+	 * Tests the magic __get method - profile
+	 *
+	 * @return  void
+	 *
+	 * @since   12.1
+	 */
+	public function test__GetProfile()
+	{
+		$this->assertThat(
+			$this->object->profile,
+			$this->isInstanceOf('JTwitterProfile')
+		);
+	}
+
+	/**
 	 * Tests the setOption method
 	 *
 	 * @return  void
