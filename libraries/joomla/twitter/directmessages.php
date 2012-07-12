@@ -163,6 +163,7 @@ class JTwitterDirectMessages extends JTwitterObject
 	 * @return  array  The decoded JSON response
 	 *
 	 * @since   12.1
+	 * @throws  RuntimeException
 	 */
 	public function sendDirectMessages($oauth, $user, $text)
 	{

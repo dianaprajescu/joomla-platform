@@ -24,7 +24,7 @@ class JTwitterBlock extends JTwitterObject
 	 * @param   JTwitterOAuth  $oauth        The JTwitterOAuth object.
 	 * @param   integer        $page         Specifies the page of results to retrieve.
 	 * @param   integer        $per_page     Specifies the number of results to retrieve per page.
-	 * @param   boolean        $entities     When set to either true, t or 1, each tweet will include a node called "entities,". This node offers a
+	 * @param   boolean        $entities     When set to either true, t or 1, each tweet will include a node called "entities". This node offers a
 	 * 										 variety of metadata about the tweet in a discreet structure, including: user_mentions, urls, and hashtags.
 	 * @param   boolean        $skip_status  When set to either true, t or 1 statuses will not be included in the returned user objects.
 	 *

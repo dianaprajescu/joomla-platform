@@ -409,6 +409,7 @@ class JTwitterFriends extends JTwitterObject
 	 * @return  array  The decoded JSON response
 	 *
 	 * @since   12.1
+	 * @throws  RuntimeException
 	 */
 	public function getFriendshipsLookup($oauth, $screen_name = null, $id = null)
 	{

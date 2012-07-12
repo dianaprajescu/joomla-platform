@@ -163,6 +163,7 @@ class JTwitterLists extends JTwitterObject
 	 * @return  array  The decoded JSON response
 	 *
 	 * @since   12.1
+	 * @throws  RuntimeException
 	 */
 	public function getListMemberships($user, $filter = false)
 	{
@@ -1057,6 +1058,7 @@ class JTwitterLists extends JTwitterObject
 	 * @return  array  The decoded JSON response
 	 *
 	 * @since   12.1
+	 * @throws  RuntimeException
 	 */
 	public function deleteList($oauth, $list, $owner = null)
 	{

@@ -64,10 +64,10 @@ class JTwitterOAuth
 	protected $authenticateURL = 'https://api.twitter.com/oauth/authenticate';
 
 	/**
-	 * @var string  The authorize URL
+	 * @var string  The authorise URL
 	 * @since 12.1
 	 */
-	protected $authorizeURL = 'https://api.twitter.com/oauth/authorize';
+	protected $authoriseURL = 'https://api.twitter.com/oauth/authorize';
 
 	/**
 	 * @var string  The request token URL
@@ -131,7 +131,7 @@ class JTwitterOAuth
 			$this->generateRequestToken();
 
 			// Authenticate the user.
-			$this->authorize();
+			$this->authorise();
 		}
 		// Callback from Twitter.
 		else
@@ -161,6 +161,7 @@ class JTwitterOAuth
 	 * @return void
 	 *
 	 * @since  12.1
+	 * @throws  DomainException
 	 */
 	public function generateRequestToken()
 	{
@@ -204,15 +205,15 @@ class JTwitterOAuth
 	}
 
 	/**
-	 * Method used to authorize the application.
+	 * Method used to authorise the application.
 	 *
 	 * @return void
 	 *
 	 * @since  12.1
 	 */
-	public function authorize()
+	public function authorise()
 	{
-		$url = $this->authorizeURL . '?oauth_token=' . $this->token['key'];
+		$url = $this->authoriseURL . '?oauth_token=' . $this->token['key'];
 		JResponse::setHeader('Location', $url, true);
 		JResponse::sendHeaders();
 	}
@@ -252,13 +253,14 @@ class JTwitterOAuth
 	 *
 	 * @param   string  $url          The request URL.
 	 * @param   string  $method       The request method.
-	 * @param   array   &$parameters  Array containg request parameters.
+	 * @param   array   &$parameters  Array containing request parameters.
 	 * @param   array   $data         The POST request data.
 	 * @param   array   $headers      An array of name-value pairs to include in the header of the request
 	 *
 	 * @return  object  The JHttpResponse object.
 	 *
 	 * @since 12.1
+	 * @throws  DomainException
 	 */
 	public function oauthRequest($url, $method, &$parameters, $data = array(), $headers = array())
 	{
@@ -290,7 +292,7 @@ class JTwitterOAuth
 			// Sign the request.
 			$this->signRequest($url, $method, $oauth_headers);
 
-			// Get parameters for the Authorization header.
+			// Get parameters for the Authorisation header.
 			$oauth_headers = array_diff_key($oauth_headers, $data);
 		}
 		else
@@ -336,7 +338,7 @@ class JTwitterOAuth
 	/**
 	 * Method used to create the header for the POST request.
 	 *
-	 * @param   array  &$parameters  Array containg request parameters.
+	 * @param   array  &$parameters  Array containing request parameters.
 	 *
 	 * @return  string  The header.
 	 *
@@ -365,7 +367,7 @@ class JTwitterOAuth
 	 * Method to create the URL formed string with the parameters.
 	 *
 	 * @param   string  $url          The request URL.
-	 * @param   array   &$parameters  Array containg request parameters.
+	 * @param   array   &$parameters  Array containing request parameters.
 	 *
 	 * @return  string  The formed URL.
 	 *
@@ -393,7 +395,7 @@ class JTwitterOAuth
 	 *
 	 * @param   string  $url          The URL to sign.
 	 * @param   string  $method       The request method.
-	 * @param   array   &$parameters  Array containg request parameters.
+	 * @param   array   &$parameters  Array containing request parameters.
 	 *
 	 * @return  void
 	 *
@@ -416,7 +418,7 @@ class JTwitterOAuth
 	 *
 	 * @param   string  $url          The URL to sign.
 	 * @param   string  $method       The request method.
-	 * @param   array   &$parameters  Array containg request parameters.
+	 * @param   array   &$parameters  Array containing request parameters.
 	 *
 	 * @return string  The base string.
 	 *
@@ -479,7 +481,7 @@ class JTwitterOAuth
 	}
 
 	/**
-	 * Method used to genereate the current nonce.
+	 * Method used to generate the current nonce.
 	 *
 	 * @return  string  The current nonce.
 	 *

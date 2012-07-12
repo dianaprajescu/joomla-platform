@@ -120,7 +120,7 @@ class JTwitterStatuses extends JTwitterObject
 		// Check if my_retweet is true
 		if ($my_retweet)
 		{
-			$parameters['incluce_my_retweet'] = $my_retweet;
+			$parameters['include_my_retweet'] = $my_retweet;
 		}
 
 		// Build the request path.
@@ -412,6 +412,7 @@ class JTwitterStatuses extends JTwitterObject
 	 * @return  array  The decoded JSON response
 	 *
 	 * @since   12.1
+	 * @throws  RuntimeException
 	 */
 	public function getRetweetedToUser($user, $count = 20, $since_id = 0, $entities = false, $max_id = 0, $page = 0, $trim_user = false)
 	{
@@ -781,6 +782,7 @@ class JTwitterStatuses extends JTwitterObject
 	 * @return  array  The decoded JSON response
 	 *
 	 * @since   12.1
+	 * @throws  RuntimeException
 	 */
 	public function tweetWithMedia($oauth, $status, $media, $in_reply_to_status_id = null, $lat = null, $long = null, $place_id = null,
 		$display_coordinates = false, $sensitive = false)
