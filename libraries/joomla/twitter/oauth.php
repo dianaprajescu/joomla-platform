@@ -17,61 +17,61 @@ jimport('joomla.environment.response');
  * @package     Joomla.Platform
  * @subpackage  Twitter
  *
- * @since       12.1
+ * @since       12.3
  */
 class JTwitterOAuth
 {
 	/**
 	* @var array  Contains consumer key and secret for the Twitter application.
-	* @since 12.1
+	* @since 12.3
 	*/
 	protected $consumer = array();
 
 	/**
 	 * @var array  Contains user's id and screen name.
-	 * @since 12.1
+	 * @since 12.3
 	 */
 	protected $user = array();
 
 	/**
 	 * @var array  Contains access token key, secret and verifier.
-	 * @since 12.1
+	 * @since 12.3
 	 */
 	protected $token = array();
 
 	/**
 	* @var string  Callback URL for the Twitter application.
-	* @since 12.1
+	* @since 12.3
 	*/
 	protected $callback_url;
 
 	/**
 	 * @var    JTwitterHttp  The HTTP client object to use in sending HTTP requests.
-	 * @since  12.1
+	 * @since  12.3
 	 */
 	protected $client;
 
 	/**
 	 * @var string  The access token URL
-	 * @since 12.1
+	 * @since 12.3
 	 */
 	protected $accessTokenURL = 'https://api.twitter.com/oauth/access_token';
 
 	/**
 	 * @var string  The authenticate URL
-	 * @since 12.1
+	 * @since 12.3
 	 */
 	protected $authenticateURL = 'https://api.twitter.com/oauth/authenticate';
 
 	/**
 	 * @var string  The authorise URL
-	 * @since 12.1
+	 * @since 12.3
 	 */
 	protected $authoriseURL = 'https://api.twitter.com/oauth/authorize';
 
 	/**
 	 * @var string  The request token URL
-	 * @since 12.1
+	 * @since 12.3
 	 */
 	protected $requestTokenURL = 'https://api.twitter.com/oauth/request_token';
 
@@ -83,7 +83,7 @@ class JTwitterOAuth
 	 * @param   string        $callback_url     Twitter calback URL.
 	 * @param   JTwitterHttp  $client           The HTTP client object.
 	 *
-	 * @since 12.1
+	 * @since 12.3
 	 */
 	public function __construct($consumer_key, $consumer_secret, $callback_url, JTwitterHttp $client = null)
 	{
@@ -97,7 +97,7 @@ class JTwitterOAuth
 	 *
 	 * @return void
 	 *
-	 * @since  12.1
+	 * @since  12.3
 	 *
 	 * @throws DomainException
 	 */
@@ -160,7 +160,7 @@ class JTwitterOAuth
 	 *
 	 * @return void
 	 *
-	 * @since  12.1
+	 * @since  12.3
 	 * @throws  DomainException
 	 */
 	public function generateRequestToken()
@@ -195,7 +195,7 @@ class JTwitterOAuth
 	 *
 	 * @return void
 	 *
-	 * @since  12.1
+	 * @since  12.3
 	 */
 	public function authenticate()
 	{
@@ -209,7 +209,7 @@ class JTwitterOAuth
 	 *
 	 * @return void
 	 *
-	 * @since  12.1
+	 * @since  12.3
 	 */
 	public function authorise()
 	{
@@ -223,7 +223,7 @@ class JTwitterOAuth
 	 *
 	 * @return void
 	 *
-	 * @since  12.1
+	 * @since  12.3
 	 */
 	public function generateAccessToken()
 	{
@@ -259,7 +259,7 @@ class JTwitterOAuth
 	 *
 	 * @return  object  The JHttpResponse object.
 	 *
-	 * @since 12.1
+	 * @since 12.3
 	 * @throws  DomainException
 	 */
 	public function oauthRequest($url, $method, &$parameters, $data = array(), $headers = array())
@@ -342,7 +342,7 @@ class JTwitterOAuth
 	 *
 	 * @return  string  The header.
 	 *
-	 * @since 12.1
+	 * @since 12.3
 	 */
 	public function createHeader(&$parameters)
 	{
@@ -371,7 +371,7 @@ class JTwitterOAuth
 	 *
 	 * @return  string  The formed URL.
 	 *
-	 * @since  12.1
+	 * @since  12.3
 	 */
 	public function to_url($url, &$parameters)
 	{
@@ -399,7 +399,7 @@ class JTwitterOAuth
 	 *
 	 * @return  void
 	 *
-	 * @since   12.1
+	 * @since   12.3
 	 */
 	public function signRequest($url, $method, &$parameters)
 	{
@@ -422,7 +422,7 @@ class JTwitterOAuth
 	 *
 	 * @return string  The base string.
 	 *
-	 * @since 12.1
+	 * @since 12.3
 	 */
 	private function baseString($url, $method, &$parameters)
 	{
@@ -458,7 +458,7 @@ class JTwitterOAuth
 	 *
 	 * @return  string  $data encoded in a way compatible with OAuth.
 	 *
-	 * @since 12.1
+	 * @since 12.3
 	 */
 	public function safeEncode($data)
 	{
@@ -485,7 +485,7 @@ class JTwitterOAuth
 	 *
 	 * @return  string  The current nonce.
 	 *
-	 * @since 12.1
+	 * @since 12.3
 	 */
 	public static function generateNonce()
 	{
@@ -501,7 +501,7 @@ class JTwitterOAuth
 	 *
 	 * @return string  The prepared signing key.
 	 *
-	 * @since 12.1
+	 * @since 12.3
 	 */
 	private function prepare_signing_key()
 	{
@@ -518,7 +518,7 @@ class JTwitterOAuth
 	 *
 	 * @return  array  The decoded JSON response
 	 *
-	 * @since   12.1
+	 * @since   12.3
 	 */
 	public function verifyCredentials($entities = false, $skip_status = false)
 	{
@@ -552,7 +552,7 @@ class JTwitterOAuth
 	 *
 	 * @return  array  The decoded JSON response
 	 *
-	 * @since   12.1
+	 * @since   12.3
 	 */
 	public function endSession()
 	{
@@ -572,7 +572,7 @@ class JTwitterOAuth
 	 *
 	 * @return  array  The user array.
 	 *
-	 * @since   12.1
+	 * @since   12.3
 	 */
 	public function getUser()
 	{
@@ -586,7 +586,7 @@ class JTwitterOAuth
 	 *
 	 * @return  array  The oauth token key and secret.
 	 *
-	 * @since   12.1
+	 * @since   12.3
 	 */
 	public function getToken($key)
 	{
@@ -601,7 +601,7 @@ class JTwitterOAuth
 	 *
 	 * @return  void
 	 *
-	 * @since   12.1
+	 * @since   12.3
 	 */
 	public function setToken($key, $secret)
 	{

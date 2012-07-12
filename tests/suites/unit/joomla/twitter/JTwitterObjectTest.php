@@ -17,43 +17,43 @@ require_once __DIR__ . '/stubs/JTwitterObjectMock.php';
  * @package     Joomla.UnitTest
  * @subpackage  Twitter
  *
- * @since       12.1
+ * @since       12.3
  */
 class JTwitterObjectTest extends TestCase
 {
 	/**
 	 * @var    JRegistry  Options for the Twitter object.
-	 * @since  12.1
+	 * @since  12.3
 	 */
 	protected $options;
 
 	/**
 	 * @var    JTwitterHttp  Mock client object.
-	 * @since  12.1
+	 * @since  12.3
 	 */
 	protected $client;
 
 	/**
 	 * @var    JTwitterObjectMock  Object under test.
-	 * @since  12.1
+	 * @since  12.3
 	 */
 	protected $object;
 
 	/**
 	 * @var    string  Sample JSON string.
-	 * @since  12.1
+	 * @since  12.3
 	 */
 	protected $sampleString = '{"a":1,"b":2,"c":3,"d":4,"e":5}';
 
 	/**
 	 * @var    string  Sample JSON string.
-	 * @since  12.1
+	 * @since  12.3
 	 */
 	protected $rateLimit = '{"remaining_hits":150, "reset_time":"Mon Jun 25 17:20:53 +0000 2012"}';
 
 	/**
 	 * @var    string  Sample JSON error message.
-	 * @since  12.1
+	 * @since  12.3
 	 */
 	protected $errorString = '{"errors":[{"message":"Sorry, that page does not exist","code":34}]}';
 
@@ -90,7 +90,7 @@ class JTwitterObjectTest extends TestCase
 	 *
 	 * @return void
 	 *
-	 * @since 12.1
+	 * @since 12.3
 	 * @expectedException RuntimeException
 	 */
 	public function testCheckRateLimit()
@@ -112,7 +112,7 @@ class JTwitterObjectTest extends TestCase
 	 *
 	 * @return void
 	 *
-	 * @since 12.1
+	 * @since 12.3
 	 */
 	public function testFetchUrl()
 	{
@@ -125,7 +125,7 @@ class JTwitterObjectTest extends TestCase
 	 *
 	 * @return  void
 	 *
-	 * @since   12.1
+	 * @since   12.3
 	 */
 	public function testGetRateLimit()
 	{
@@ -149,7 +149,7 @@ class JTwitterObjectTest extends TestCase
 	 *
 	 * @return  void
 	 *
-	 * @since   12.1
+	 * @since   12.3
 	 *
 	 * @expectedException  DomainException
 	 */
@@ -174,7 +174,7 @@ class JTwitterObjectTest extends TestCase
 	 *
 	 * @return  void
 	 *
-	 * @since   12.1
+	 * @since   12.3
 	 */
 	public function testSendRequest()
 	{
@@ -187,7 +187,7 @@ class JTwitterObjectTest extends TestCase
 	 *
 	 * @return void
 	 *
-	 * @since 12.1
+	 * @since 12.3
 	 */
 	public function testSetOption()
 	{

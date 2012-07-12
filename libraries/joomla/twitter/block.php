@@ -14,7 +14,7 @@ defined('JPATH_PLATFORM') or die();
  *
  * @package     Joomla.Platform
  * @subpackage  Twitter
- * @since       12.1
+ * @since       12.3
  */
 class JTwitterBlock extends JTwitterObject
 {
@@ -30,7 +30,7 @@ class JTwitterBlock extends JTwitterObject
 	 *
 	 * @return  array  The decoded JSON response
 	 *
-	 * @since   12.1
+	 * @since   12.3
 	 */
 	public function getBlocking($oauth, $page = 0, $per_page = 0, $entities = false, $skip_status = false)
 	{
@@ -88,7 +88,7 @@ class JTwitterBlock extends JTwitterObject
 	 *
 	 * @return  array  The decoded JSON response
 	 *
-	 * @since   12.1
+	 * @since   12.3
 	 * @throws  RuntimeException
 	 */
 	public function block($oauth, $user, $entities = false, $skip_status = false)
@@ -148,7 +148,7 @@ class JTwitterBlock extends JTwitterObject
 	 *
 	 * @return  array  The decoded JSON response
 	 *
-	 * @since   12.1
+	 * @since   12.3
 	 * @throws  RuntimeException
 	 */
 	public function unblock($oauth, $user, $entities = false, $skip_status = false)

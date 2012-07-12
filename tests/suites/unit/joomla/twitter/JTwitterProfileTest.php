@@ -17,49 +17,49 @@ require_once JPATH_PLATFORM . '/joomla/twitter/profile.php';
  * @package     Joomla.UnitTest
  * @subpackage  Twitter
  *
- * @since       12.1
+ * @since       12.3
  */
 class JTwitterProfileTest extends TestCase
 {
 	/**
 	 * @var    JRegistry  Options for the Twitter object.
-	 * @since  12.1
+	 * @since  12.3
 	 */
 	protected $options;
 
 	/**
 	 * @var    JTwitterHttp  Mock client object.
-	 * @since  12.1
+	 * @since  12.3
 	 */
 	protected $client;
 
 	/**
 	 * @var    JTwitterProfile  Object under test.
-	 * @since  12.1
+	 * @since  12.3
 	 */
 	protected $object;
 
 	/**
 	 * @var    JTwitterOAuth  Authentication object for the Twitter object.
-	 * @since  12.1
+	 * @since  12.3
 	 */
 	protected $oauth;
 
 	/**
 	 * @var    string  Sample JSON string.
-	 * @since  12.1
+	 * @since  12.3
 	 */
 	protected $sampleString = '{"a":1,"b":2,"c":3,"d":4,"e":5}';
 
 	/**
 	 * @var    string  Sample JSON error message.
-	 * @since  12.1
+	 * @since  12.3
 	 */
 	protected $errorString = '{"error":"Generic error"}';
 
 	/**
 	 * @var    string  Sample JSON string.
-	 * @since  12.1
+	 * @since  12.3
 	 */
 	protected $rateLimit = '{"remaining_hits":150, "reset_time":"Mon Jun 25 17:20:53 +0000 2012"}';
 
@@ -90,7 +90,7 @@ class JTwitterProfileTest extends TestCase
 	 *
 	 * @return  void
 	 *
-	 * @since 12.1
+	 * @since 12.3
 	 */
 	public function testUpdateProfile()
 	{
@@ -130,7 +130,7 @@ class JTwitterProfileTest extends TestCase
 	 *
 	 * @return  void
 	 *
-	 * @since 12.1
+	 * @since 12.3
 	 * @expectedException DomainException
 	 */
 	public function testUpdateProfileFailure()
@@ -168,7 +168,7 @@ class JTwitterProfileTest extends TestCase
 	 *
 	 * @return  void
 	 *
-	 * @since   12.1
+	 * @since   12.3
 	 */
 	public function testUpdateProfileBackgroundImage()
 	{
@@ -205,7 +205,7 @@ class JTwitterProfileTest extends TestCase
 	 *
 	 * @return  void
 	 *
-	 * @since   12.1
+	 * @since   12.3
 	 * @expectedException DomainException
 	 */
 	public function testUpdateProfileBackgroundImageFailure()
@@ -240,7 +240,7 @@ class JTwitterProfileTest extends TestCase
 	 *
 	 * @return  void
 	 *
-	 * @since   12.1
+	 * @since   12.3
 	 */
 	public function testUpdateProfileImage()
 	{
@@ -273,7 +273,7 @@ class JTwitterProfileTest extends TestCase
 	 *
 	 * @return  void
 	 *
-	 * @since   12.1
+	 * @since   12.3
 	 * @expectedException DomainException
 	 */
 	public function testUpdateProfileImageFailure()
@@ -304,7 +304,7 @@ class JTwitterProfileTest extends TestCase
 	 *
 	 * @return  void
 	 *
-	 * @since   12.1
+	 * @since   12.3
 	 */
 	public function testUpdateProfileColors()
 	{
@@ -345,7 +345,7 @@ class JTwitterProfileTest extends TestCase
 	 *
 	 * @return  void
 	 *
-	 * @since   12.1
+	 * @since   12.3
 	 * @expectedException DomainException
 	 */
 	public function testUpdateProfileColorsFailure()
@@ -384,7 +384,7 @@ class JTwitterProfileTest extends TestCase
 	 *
 	 * @return  void
 	 *
-	 * @since   12.1
+	 * @since   12.3
 	 */
 	public function testGetTotals()
 	{
@@ -417,7 +417,7 @@ class JTwitterProfileTest extends TestCase
 	 *
 	 * @return  void
 	 *
-	 * @since   12.1
+	 * @since   12.3
 	 * @expectedException DomainException
 	 */
 	public function testGetTotalsFailure()
@@ -448,7 +448,7 @@ class JTwitterProfileTest extends TestCase
 	 *
 	 * @return  void
 	 *
-	 * @since   12.1
+	 * @since   12.3
 	 */
 	public function testGetSettings()
 	{
@@ -481,7 +481,7 @@ class JTwitterProfileTest extends TestCase
 	 *
 	 * @return  void
 	 *
-	 * @since   12.1
+	 * @since   12.3
 	 * @expectedException DomainException
 	 */
 	public function testGetSettingsFailure()
@@ -512,7 +512,7 @@ class JTwitterProfileTest extends TestCase
 	 *
 	 * @return  void
 	 *
-	 * @since   12.1
+	 * @since   12.3
 	 */
 	public function testUpdateSettings()
 	{
@@ -551,7 +551,7 @@ class JTwitterProfileTest extends TestCase
 	 *
 	 * @return  void
 	 *
-	 * @since   12.1
+	 * @since   12.3
 	 * @expectedException DomainException
 	 */
 	public function testUpdateSettingsFailure()
