@@ -38,7 +38,7 @@ class JTwitterOAuth extends JOAuth1aClient
 	 *
 	 * @since 12.3
 	 */
-	public function __construct($consumer_key, $consumer_secret, $callback_url, JTwitterHttp $client = null)
+	public function __construct($consumer_key, $consumer_secret, $callback_url, JRegistry $options = null, JTwitterHttp $client = null)
 	{
 		$this->options = isset($options) ? $options : new JRegistry;
 
