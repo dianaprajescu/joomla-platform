@@ -145,11 +145,6 @@ abstract class JOAuth1aClient
 	 */
 	public function generateRequestToken()
 	{
-		// Set the parameters.
-		$parameters = array(
-			'oauth_token' => $this->consumer['key']
-		);
-
 		$parameters = array();
 
 		// Make an OAuth request for the Request Token.
@@ -247,7 +242,6 @@ abstract class JOAuth1aClient
 	{
 		// Set the parameters.
 		$defaults = array(
-			'oauth_callback' => $this->callback_url,
 			'oauth_consumer_key' => $this->consumer['key'],
 			'oauth_signature_method' => 'HMAC-SHA1',
 			'oauth_version' => '1.0',
