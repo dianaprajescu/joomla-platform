@@ -75,7 +75,7 @@ class JTwitterHelpTest extends TestCase
 		$this->client = $this->getMock('JTwitterHttp', array('get', 'post', 'delete', 'put'));
 
 		$this->object = new JTwitterHelp($this->options, $this->client);
-		$this->oauth = new JTwitterOAuth($key, $secret, $my_url, $this->client);
+		$this->oauth = new JTwitterOAuth($key, $secret, $my_url, $this->options, $this->client);
 		$this->oauth->setToken($key, $secret);
 	}
 
