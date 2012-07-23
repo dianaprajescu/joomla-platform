@@ -30,15 +30,12 @@ class JTwitterOAuth extends JOAuth1aClient
 	/**
 	 * Constructor.
 	 *
-	 * @param   string        $consumer_key     Twitter consumer key.
-	 * @param   string        $consumer_secret  Twitter consumer secret.
-	 * @param   string        $callback_url     Twitter calback URL.
 	 * @param   JRegistry     $options          JTwitterOAuth options object.
 	 * @param   JTwitterHttp  $client           The HTTP client object.
 	 *
 	 * @since 12.3
 	 */
-	public function __construct($consumer_key, $consumer_secret, $callback_url, JRegistry $options = null, JTwitterHttp $client = null)
+	public function __construct(JRegistry $options = null, JTwitterHttp $client = null)
 	{
 		$this->options = isset($options) ? $options : new JRegistry;
 
@@ -48,7 +45,7 @@ class JTwitterOAuth extends JOAuth1aClient
 		$this->setOption('requestTokenURL', 'https://api.twitter.com/oauth/request_token');
 
 		// Call the JOAuth1aClient constructor to setup the object.
-		parent::__construct($consumer_key, $consumer_secret, $callback_url, $this->options, $client);
+		parent::__construct($this->options, $client);
 	}
 
 	/**
