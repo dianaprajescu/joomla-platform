@@ -1055,7 +1055,7 @@ class JTwitterFriendsTest extends TestCase
 			$this->object->getFriendshipsLookup($this->oauth, $screen_name, $id);
 		}
 
-		$path = $this->object->fetchUrl('/1/friendships/lookup.json', $data);
+		$path = $this->oauth->toUrl('/1/friendships/lookup.json', $data);
 
 		$this->client->expects($this->at(1))
 		->method('get')
@@ -1111,7 +1111,7 @@ class JTwitterFriendsTest extends TestCase
 			$this->object->getFriendshipsLookup($this->oauth, $screen_name, $id);
 		}
 
-		$path = $this->object->fetchUrl('/1/friendships/lookup.json', $data);
+		$path = $this->oauth->toUrl('/1/friendships/lookup.json', $data);
 
 		$this->client->expects($this->at(1))
 		->method('get')
