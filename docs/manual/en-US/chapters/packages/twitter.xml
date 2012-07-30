@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+"http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+<!ENTITY % BOOK_ENTITIES SYSTEM "../../Developer_Manual.ent">
+%BOOK_ENTITIES;
+]>
+<section id="chap-Joomla_Platform_Manual-Twitter">
+  <title>The Twitter Package</title>
+
+  <section>
+    <title>Using the Twitter Package</title>
+
+    <para>The Twitter package is designed to be a straightforward interface for working with Twitter. It is based on the REST API.
+    You can find documentation on the API at <ulink url="https://dev.twitter.com/docs/api">https://dev.twitter.com/docs/api.</ulink></para>
+
+    <para>JTwitter is built upon the JHttp package which provides an easy way to consume URLs and web services in a transport
+    independent way. JHttp currently supports streams, sockets and CURL. It is possible to create a custom context and inject it
+    into the JTwitter class if one so desires.</para>
+
+    <section>
+      <title>Instantiating JTwitter</title>
+
+      <para>Instantiating JTwitter is easy:</para>
+
+      <programlisting>$twitter = new JTwitter;</programlisting>
+
+      <para>This creates a basic JTwitter object that can be used to access publically available read-only resources on twitter.com,
+      which don't require an active access token.</para>
+
+      <para>Sometimes it is necessary to provide an active access token. This can be done by instantiating JTwitterOauth.
+      <simplelist>
+        <member>Create a Twitter application at <ulink url="https://dev.twitter.com/apps">https://dev.twitter.com/apps</ulink>
+        in order to request permissions.
+        </member>
+        <member>Instantiate JTwitterOauth, passing the JRegistry options needed. The Consumer key, Consumer secret and callback URL (which is the script's path)
+        from the Twitter application are passed through the JRegistry object. By default you have to set and send headers manually in your application,
+        but if you want this to be done automatically you can set JRegistry option 'sendheaders' to true.
+          <element>
+          	<programlisting>
+	          	$options = new JRegistry;
+				$options->set('consumer_key', $consumer_key);
+				$options->set('consumer_secret', $consumer_secret);
+				$options->set('callback', $callback_url);
+				$options->set('sendheaders', true);
+				$oauth = new JTwitterOauth($options);
+			</programlisting>
+          </element>
+          Now you can authenticate and request the user to authorise your application in order to get an access token, but if you already have
+          an access token stored you can set it to the JTwitterOauth object and if it's still valid your application will use it.
+          <element>
+          	<programlisting>
+          		// Set the stored access token.
+          		$oauth->setToken($token['key'], $token['secret']);
+          		
+          		$access_token = $oauth->auth();
+          	</programlisting>
+          </element>
+          When calling the auth() method, your stored access token will be used only if it's valid, a new one will be created if you don't have an access token
+          or if the stored one is not valid. The method will return the access token used.
+        </member>
+      </simplelist>
+      </para>
+    </section>
+
+    <section>
+      <title>Accessing the JTwitter API's objects</title>
+
+      <para>The Twitter package covers almost all Resources of the REST API:
+        <simplelist>
+          <member>Block object interacts with Block resources.</member>
+          <member>DirectMessages object interacts with Direct Messages resources.</member>
+          <member>Favorites object interacts with Favorites resources.</member>
+          <member>Friends object interacts with Friends and Followers resources.</member>
+          <member>Help object interacts with Help resources.</member>
+          <member>Lists object interacts with Lists resources.</member>
+          <member>Places object interacts with Places and Geo resources.</member>
+          <member>Profile object interacts with some resources from Accounts</member>
+          <member>Search object interacts with Search and Saved Searches resources.</member>
+          <member>Statuses object interacts with Timelines and Tweets resources.</member>
+          <member>Trends object interacts with Trends resources.</member>
+          <member>Users object interacts with Users and Suggested Users resources.</member>
+        </simplelist>
+      </para>
+
+      <para>Once a JTwitter object has been created, it is simple to use it to access Twitter:
+        <programlisting>
+        	$users = $twitter-&gt;users-&gt;getUser($user);
+        </programlisting>
+        This will retrieve extended information of a given user, specified by ID or screen name. If a method requests
+        authentication then the JTwitterOauth object will be passed as first parameter of the method.
+        <programlisting>
+        	$directMessages = $twitter-&gt;directMessages-&gt;sendDirectMessages($oauth, $user, $text);
+        </programlisting>
+        This will send a new direct message to the specified user from the authenticating user.
+      </para>
+    </section>
+
+    <section>
+      <title>A More Complete Example</title>
+
+      <para>See below for an example demonstrating more of the JTwitter package:
+        <programlisting>
+        	$twitter = new JTwitter;
+        	
+        	// Set options.
+        	$options = new JRegistry;
+			$options->set('consumer_key', $consumer_key);
+			$options->set('consumer_secret', $consumer_secret);
+			$options->set('callback', $callback_url);
+			
+			// Automatically set and send headers.
+			$options->set('sendheaders', true);
+			
+			$oauth = new JTwitterOauth($options);
+			
+			// Set the stored access token, if there is one.
+			if ($token = $this->getStoredToken())
+			{
+       			$oauth->setToken($token['key'], $token['secret']);
+       		}
+        	
+       		$access_token = $oauth->auth();
+       		
+       		// Store the new access token.
+       		if ($access_token != $this->getStoredToken())
+       		{
+       			$this->storeToken($access_token);
+       		}
+       		
+       		// Send a direct message.
+       		$directMessages = $twitter-&gt;directMessages-&gt;sendDirectMessages($oauth, $user, $text);
+       		
+       		print_r($directMessages->recipient);
+			echo '<br /><br />';
+			print_r($directMessages->sender);
+			echo '<br /><br />';
+			print_r($directMessages->text);
+        </programlisting>
+      </para>
+    </section>
+
+    <section>
+      <title>More Information</title>
+
+      <para>The following resources contain more information:
+      	<simplelist>
+          <member><ulink url="http://api.joomla.org">Joomla! API Reference</ulink></member>
+          <member><ulink url="https://dev.twitter.com/docs/api">Twitter REST API Reference</ulink></member>
+        </simplelist>
+      </para>
+    </section>
+  </section>
+</section>
