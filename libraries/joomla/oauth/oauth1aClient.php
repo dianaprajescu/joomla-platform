@@ -18,7 +18,7 @@ jimport('joomla.environment.response');
  *
  * @since       12.3
  */
-abstract class JOAuth1aClient
+abstract class JOauth1aClient
 {
 	/**
 	 * @var    JRegistry  Options for the OAuth1aClient object.
@@ -41,8 +41,8 @@ abstract class JOAuth1aClient
 	/**
 	 * Constructor.
 	 *
-	 * @param   JRegistry  $options          OAuth1aClient options object.
-	 * @param   JHttp      $client           The HTTP client object.
+	 * @param   JRegistry  $options  Oauth1aClient options object.
+	 * @param   JHttp      $client   The HTTP client object.
 	 *
 	 * @since 12.3
 	 */
@@ -212,11 +212,11 @@ abstract class JOAuth1aClient
 	/**
 	 * Method used to make an OAuth request.
 	 *
-	 * @param   string  $url          The request URL.
-	 * @param   string  $method       The request method.
+	 * @param   string  $url         The request URL.
+	 * @param   string  $method      The request method.
 	 * @param   array   $parameters  Array containing request parameters.
-	 * @param   array   $data         The POST request data.
-	 * @param   array   $headers      An array of name-value pairs to include in the header of the request
+	 * @param   array   $data        The POST request data.
+	 * @param   array   $headers     An array of name-value pairs to include in the header of the request
 	 *
 	 * @return  object  The JHttpResponse object.
 	 *
@@ -334,7 +334,7 @@ abstract class JOAuth1aClient
 	/**
 	 * Method to create the URL formed string with the parameters.
 	 *
-	 * @param   string  $url          The request URL.
+	 * @param   string  $url         The request URL.
 	 * @param   array   $parameters  Array containing request parameters.
 	 *
 	 * @return  string  The formed URL.
@@ -351,16 +351,21 @@ abstract class JOAuth1aClient
 				{
 					if (strpos($url, '?') === false)
 					{
-						$url .= '?' . $key . '=' . $k . ',' . $v;
+						$url .= '?' . $key . '=' . $v;
 					}
 					else
 					{
-						$url .= '&' . $key . '=' . $k . ',' . $v;
+						$url .= '&' . $key . '=' . $v;
 					}
 				}
 			}
 			else
 			{
+				if (strpos($value, ' ') !== false)
+				{
+					$value = $this->safeEncode($value);
+				}
+
 				if (strpos($url, '?') === false)
 				{
 					$url .= '?' . $key . '=' . $value;
@@ -378,8 +383,8 @@ abstract class JOAuth1aClient
 	/**
 	 * Method used to sign requests.
 	 *
-	 * @param   string  $url          The URL to sign.
-	 * @param   string  $method       The request method.
+	 * @param   string  $url         The URL to sign.
+	 * @param   string  $method      The request method.
 	 * @param   array   $parameters  Array containing request parameters.
 	 *
 	 * @return  void
@@ -403,8 +408,8 @@ abstract class JOAuth1aClient
 	/**
 	 * Prepare the signature base string.
 	 *
-	 * @param   string  $url          The URL to sign.
-	 * @param   string  $method       The request method.
+	 * @param   string  $url         The URL to sign.
+	 * @param   string  $method      The request method.
 	 * @param   array   $parameters  Array containing request parameters.
 	 *
 	 * @return string  The base string.
@@ -425,13 +430,12 @@ abstract class JOAuth1aClient
 			{
 				foreach ($value as $k => $v)
 				{
-					$v = $this->safeEncode($k . ',' . $v);
+					$v = $this->safeEncode($v);
 					$kv[] = "{$key}={$v}";
 				}
 			}
 			else
 			{
-
 				$value = $this->safeEncode($value);
 				$kv[] = "{$key}={$value}";
 			}

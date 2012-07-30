@@ -21,7 +21,7 @@ class JTwitterDirectMessages extends JTwitterObject
 	/**
 	 * Method to get the most recent direct messages sent to the authenticating user.
 	 *
-	 * @param   JTwitterOAuth  $oauth        The JTwitterOAuth object.
+	 * @param   JTwitterOauth  $oauth        The JTwitterOauth object.
 	 * @param   integer        $since_id     Returns results with an ID greater than (that is, more recent than) the specified ID.
 	 * @param   integer        $max_id       Returns results with an ID less than (that is, older than) or equal to the specified ID.
 	 * @param   integer        $count        Specifies the number of direct messages to try and retrieve, up to a maximum of 200.
@@ -92,7 +92,7 @@ class JTwitterDirectMessages extends JTwitterObject
 	/**
 	 * Method to get the most recent direct messages sent by the authenticating user.
 	 *
-	 * @param   JTwitterOAuth  $oauth     The JTwitterOAuth object.
+	 * @param   JTwitterOauth  $oauth     The JTwitterOauth object.
 	 * @param   integer        $since_id  Returns results with an ID greater than (that is, more recent than) the specified ID.
 	 * @param   integer        $max_id    Returns results with an ID less than (that is, older than) or equal to the specified ID.
 	 * @param   integer        $count     Specifies the number of direct messages to try and retrieve, up to a maximum of 200.
@@ -156,7 +156,7 @@ class JTwitterDirectMessages extends JTwitterObject
 	/**
 	 * Method to send a new direct message to the specified user from the authenticating user.
 	 *
-	 * @param   JTwitterOAuth  $oauth  The JTwitterOAuth object.
+	 * @param   JTwitterOauth  $oauth  The JTwitterOauth object.
 	 * @param   mixed          $user   Either an integer containing the user ID or a string containing the screen name.
 	 * @param   string         $text   The text of your direct message. Be sure to keep the message under 140 characters.
 	 *
@@ -201,7 +201,7 @@ class JTwitterDirectMessages extends JTwitterObject
 	/**
 	 * Method to get a single direct message, specified by an id parameter.
 	 *
-	 * @param   JTwitterOAuth  $oauth  The JTwitterOAuth object.
+	 * @param   JTwitterOauth  $oauth  The JTwitterOauth object.
 	 * @param   integer        $id     The ID of the direct message.
 	 *
 	 * @return  array  The decoded JSON response
@@ -230,7 +230,7 @@ class JTwitterDirectMessages extends JTwitterObject
 	/**
 	 * Method to delete the direct message specified in the required ID parameter.
 	 *
-	 * @param   JTwitterOAuth  $oauth     The JTwitterOAuth object.
+	 * @param   JTwitterOauth  $oauth     The JTwitterOauth object.
 	 * @param   integer        $id        The ID of the direct message.
 	 * @param   boolean        $entities  When set to true,  each tweet will include a node called "entities,". This node offers a variety of metadata
 	 *                                    about the tweet in a discreet structure, including: user_mentions, urls, and hashtags.

@@ -41,7 +41,7 @@ class JTwitterStatusesTest extends TestCase
 	protected $object;
 
 	/**
-	 * @var    JTwitterOAuth  Authentication object for the Twitter object.
+	 * @var    JTwitterOauth  Authentication object for the Twitter object.
 	 * @since  12.3
 	 */
 	protected $oauth;
@@ -63,12 +63,6 @@ class JTwitterStatusesTest extends TestCase
 	 * @since  12.3
 	 */
 	protected $errorString = '{"error":"Generic error"}';
-
-	/**
-	 * @var    string  Sample JSON Twitter error message.
-	 * @since  12.3
-	 */
-	protected $twitterErrorString = '{"errors":[{"message":"Sorry, that page does not exist","code":34}]}';
 
 	/**
 	 * Sets up the fixture, for example, opens a network connection.
@@ -93,7 +87,7 @@ class JTwitterStatusesTest extends TestCase
 		$this->options->set('consumer_secret', $secret);
 		$this->options->set('callback', $my_url);
 		$this->options->set('sendheaders', true);
-		$this->oauth = new JTwitterOAuth($this->options, $this->client);
+		$this->oauth = new JTwitterOauth($this->options, $this->client);
 		$this->oauth->setToken($key, $secret);
 	}
 

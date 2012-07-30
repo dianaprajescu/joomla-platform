@@ -21,7 +21,7 @@ class JTwitterBlock extends JTwitterObject
 	/**
 	 * Method to get the top 10 trending topics for a specific WOEID, if trending information is available for it.
 	 *
-	 * @param   JTwitterOAuth  $oauth        The JTwitterOAuth object.
+	 * @param   JTwitterOauth  $oauth        The JTwitterOauth object.
 	 * @param   integer        $page         Specifies the page of results to retrieve.
 	 * @param   integer        $per_page     Specifies the number of results to retrieve per page.
 	 * @param   boolean        $entities     When set to either true, t or 1, each tweet will include a node called "entities". This node offers a
@@ -80,7 +80,7 @@ class JTwitterBlock extends JTwitterObject
 	/**
 	 * Method to block the specified user from following the authenticating user.
 	 *
-	 * @param   JTwitterOAuth  $oauth        The JTwitterOAuth object.
+	 * @param   JTwitterOauth  $oauth        The JTwitterOauth object.
 	 * @param   mixed          $user         Either an integer containing the user ID or a string containing the screen name.
 	 * @param   boolean        $entities     When set to either true, t or 1, each tweet will include a node called "entities,". This node offers a
 	 * 										 variety of metadata about the tweet in a discreet structure, including: user_mentions, urls, and hashtags.
@@ -140,7 +140,7 @@ class JTwitterBlock extends JTwitterObject
 	/**
 	 * Method to unblock the specified user from following the authenticating user.
 	 *
-	 * @param   JTwitterOAuth  $oauth        The JTwitterOAuth object.
+	 * @param   JTwitterOauth  $oauth        The JTwitterOauth object.
 	 * @param   mixed          $user         Either an integer containing the user ID or a string containing the screen name.
 	 * @param   boolean        $entities     When set to either true, t or 1, each tweet will include a node called "entities,". This node offers a
 	 * 										 variety of metadata about the tweet in a discreet structure, including: user_mentions, urls, and hashtags.

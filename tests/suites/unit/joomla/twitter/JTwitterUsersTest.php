@@ -40,7 +40,7 @@ class JTwitterUsersTest extends TestCase
 	protected $object;
 
 	/**
-	 * @var    JTwitterOAuth  Authentication object for the Twitter object.
+	 * @var    JTwitterOauth  Authentication object for the Twitter object.
 	 * @since  12.3
 	 */
 	protected $oauth;
@@ -86,7 +86,7 @@ class JTwitterUsersTest extends TestCase
 		$this->options->set('consumer_secret', $secret);
 		$this->options->set('callback', $my_url);
 		$this->options->set('sendheaders', true);
-		$this->oauth = new JTwitterOAuth($this->options, $this->client);
+		$this->oauth = new JTwitterOauth($this->options, $this->client);
 		$this->oauth->setToken($key, $secret);
 	}
 
@@ -247,7 +247,7 @@ class JTwitterUsersTest extends TestCase
 
 		$returnData = new stdClass;
 		$returnData->code = 200;
-		$returnData->body = '{"body":"You are being redirected."}';
+		$returnData->body = 'You are being redirected.';
 		$returnData->headers = array('Location' => 'image/location');
 
 		// Set request parameters.

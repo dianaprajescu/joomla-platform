@@ -98,7 +98,7 @@ class JTwitterUsers extends JTwitterObject
 	/**
 	 * Method used to search for users
 	 *
-	 * @param   JTwitterOAuth  $oauth     The JTwitterOAuth object.
+	 * @param   JTwitterOauth  $oauth     The JTwitterOauth object.
 	 * @param   string         $query     The search query to run against people search.
 	 * @param   integer        $page      Specifies the page of results to retrieve.
 	 * @param   integer        $per_page  The number of people to retrieve. Maximum of 20 allowed per page.

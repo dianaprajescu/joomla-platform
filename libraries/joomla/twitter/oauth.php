@@ -19,10 +19,10 @@ jimport('joomla.oauth.oauth1aClient');
  *
  * @since       12.3
  */
-class JTwitterOAuth extends JOAuth1aClient
+class JTwitterOauth extends JOAuth1aClient
 {
 	/**
-	* @var JRegistry Options for the JTwitterOAuth object.
+	* @var JRegistry Options for the JTwitterOauth object.
 	* @since 12.3
 	*/
 	protected $options;
@@ -30,8 +30,8 @@ class JTwitterOAuth extends JOAuth1aClient
 	/**
 	 * Constructor.
 	 *
-	 * @param   JRegistry     $options          JTwitterOAuth options object.
-	 * @param   JTwitterHttp  $client           The HTTP client object.
+	 * @param   JRegistry     $options  JTwitterOauth options object.
+	 * @param   JTwitterHttp  $client   The HTTP client object.
 	 *
 	 * @since 12.3
 	 */
@@ -44,7 +44,7 @@ class JTwitterOAuth extends JOAuth1aClient
 		$this->setOption('authoriseURL', 'https://api.twitter.com/oauth/authorize');
 		$this->setOption('requestTokenURL', 'https://api.twitter.com/oauth/request_token');
 
-		// Call the JOAuth1aClient constructor to setup the object.
+		// Call the JOauth1aClient constructor to setup the object.
 		parent::__construct($this->options, $client);
 	}
 

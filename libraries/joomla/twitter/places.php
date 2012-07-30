@@ -247,7 +247,7 @@ class JTwitterPlaces extends JTwitterObject
 	/**
 	 * Method to create a new place object at the given latitude and longitude.
 	 *
-	 * @param   JTwitterOAuth  $oauth      The JTwitterOAuth object.
+	 * @param   JTwitterOauth  $oauth      The JTwitterOauth object.
 	 * @param   float          $lat        The latitude to search around.
 	 * @param   float          $long       The longitude to search around.
 	 * @param   string         $name       The name a place is known as.

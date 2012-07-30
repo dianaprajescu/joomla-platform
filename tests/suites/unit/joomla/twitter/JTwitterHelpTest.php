@@ -80,7 +80,7 @@ class JTwitterHelpTest extends TestCase
 		$this->options->set('consumer_secret', $secret);
 		$this->options->set('callback', $my_url);
 		$this->options->set('sendheaders', true);
-		$this->oauth = new JTwitterOAuth($this->options, $this->client);
+		$this->oauth = new JTwitterOauth($this->options, $this->client);
 		$this->oauth->setToken($key, $secret);
 	}
 
