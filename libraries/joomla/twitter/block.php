@@ -37,8 +37,9 @@ class JTwitterBlock extends JTwitterObject
 		// Check the rate limit for remaining hits
 		$this->checkRateLimit();
 
+		$token = $oauth->getToken();
 		// Set parameters.
-		$parameters = array('oauth_token' => $oauth->getToken('key'));
+		$parameters = array('oauth_token' => $token['key']);
 
 		$data = array();
 
@@ -111,8 +112,9 @@ class JTwitterBlock extends JTwitterObject
 			throw new RuntimeException('The specified username is not in the correct format; must use integer or string');
 		}
 
+		$token = $oauth->getToken();
 		// Set parameters.
-		$parameters = array('oauth_token' => $oauth->getToken('key'));
+		$parameters = array('oauth_token' => $token['key']);
 
 		// Check if entities is specified
 		if ($entities)
@@ -171,8 +173,9 @@ class JTwitterBlock extends JTwitterObject
 			throw new RuntimeException('The specified username is not in the correct format; must use integer or string');
 		}
 
+		$token = $oauth->getToken();
 		// Set parameters.
-		$parameters = array('oauth_token' => $oauth->getToken('key'));
+		$parameters = array('oauth_token' => $token['key']);
 
 		// Check if entities is specified
 		if ($entities)

@@ -43,8 +43,9 @@ class JTwitterFavorites extends JTwitterObject
 		// Set the API base.
 		$base = '/1/favorites.json';
 
+		$token = $oauth->getToken();
 		// Set parameters.
-		$parameters = array('oauth_token' => $oauth->getToken('key'));
+		$parameters = array('oauth_token' => $token['key']);
 
 		// Determine which type of data was passed for $user
 		if (is_numeric($user))
@@ -108,8 +109,9 @@ class JTwitterFavorites extends JTwitterObject
 		// Set the API base.
 		$base = '/1/favorites/create/' . $id . '.json';
 
+		$token = $oauth->getToken();
 		// Set parameters.
-		$parameters = array('oauth_token' => $oauth->getToken('key'));
+		$parameters = array('oauth_token' => $token['key']);
 
 		// Check if entities is true.
 		$data = array();
@@ -141,8 +143,9 @@ class JTwitterFavorites extends JTwitterObject
 		// Set the API base.
 		$base = '/1/favorites/destroy/' . $id . '.json';
 
+		$token = $oauth->getToken();
 		// Set parameters.
-		$parameters = array('oauth_token' => $oauth->getToken('key'));
+		$parameters = array('oauth_token' => $token['key']);
 
 		// Build the request path.
 		$path = $this->getOption('api.url') . $base;

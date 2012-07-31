@@ -227,9 +227,10 @@ class JTwitterFriends extends JTwitterObject
 		// Check the rate limit for remaining hits
 		$this->checkRateLimit();
 
+		$token = $oauth->getToken();
 		// Set parameters.
 		$parameters = array(
-			'oauth_token' => $oauth->getToken('key')
+			'oauth_token' => $token['key']
 		);
 
 		$data = array();
@@ -266,9 +267,10 @@ class JTwitterFriends extends JTwitterObject
 		// Check the rate limit for remaining hits
 		$this->checkRateLimit();
 
+		$token = $oauth->getToken();
 		// Set parameters.
 		$parameters = array(
-			'oauth_token' => $oauth->getToken('key')
+			'oauth_token' => $token['key']
 		);
 
 		$data = array();
@@ -304,9 +306,10 @@ class JTwitterFriends extends JTwitterObject
 	 */
 	public function follow($oauth, $user, $follow = false)
 	{
+		$token = $oauth->getToken();
 		// Set parameters.
 		$parameters = array(
-			'oauth_token' => $oauth->getToken('key')
+			'oauth_token' => $token['key']
 		);
 
 		// Set POST data.
@@ -359,9 +362,10 @@ class JTwitterFriends extends JTwitterObject
 	 */
 	public function unfollow($oauth, $user, $entities = false)
 	{
+		$token = $oauth->getToken();
 		// Set parameters.
 		$parameters = array(
-			'oauth_token' => $oauth->getToken('key')
+			'oauth_token' => $token['key']
 		);
 
 		// Set POST data.
@@ -416,9 +420,10 @@ class JTwitterFriends extends JTwitterObject
 		// Check the rate limit for remaining hits
 		$this->checkRateLimit();
 
+		$token = $oauth->getToken();
 		// Set parameters.
 		$parameters = array(
-			'oauth_token' => $oauth->getToken('key')
+			'oauth_token' => $token['key']
 		);
 
 		$data = array();
@@ -464,9 +469,10 @@ class JTwitterFriends extends JTwitterObject
 	 */
 	public function updateFriendship($oauth, $user, $device = false, $retweets = false)
 	{
+		$token = $oauth->getToken();
 		// Set parameters.
 		$parameters = array(
-			'oauth_token' => $oauth->getToken('key')
+			'oauth_token' => $token['key']
 		);
 
 		// Set POST data.
@@ -525,9 +531,10 @@ class JTwitterFriends extends JTwitterObject
 		// Check the rate limit for remaining hits
 		$this->checkRateLimit();
 
+		$token = $oauth->getToken();
 		// Set parameters.
 		$parameters = array(
-			'oauth_token' => $oauth->getToken('key')
+			'oauth_token' => $token['key']
 		);
 
 		$data = array();

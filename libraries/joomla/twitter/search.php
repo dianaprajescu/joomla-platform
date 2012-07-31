@@ -148,9 +148,10 @@ class JTwittersearch extends JTwitterObject
 		// Set the API base
 		$base = '/1/saved_searches.json';
 
+		$token = $oauth->getToken();
 		// Set parameters.
 		$parameters = array(
-			'oauth_token' => $oauth->getToken('key')
+			'oauth_token' => $token['key']
 		);
 
 		// Build the request path.
@@ -179,9 +180,10 @@ class JTwittersearch extends JTwitterObject
 		// Set the API base
 		$base = '/1/saved_searches/' . $id . '.json';
 
+		$token = $oauth->getToken();
 		// Set parameters.
 		$parameters = array(
-			'oauth_token' => $oauth->getToken('key')
+			'oauth_token' => $token['key']
 		);
 
 		// Build the request path.
@@ -207,9 +209,10 @@ class JTwittersearch extends JTwitterObject
 		// Set the API base
 		$base = '/1/saved_searches/create.json';
 
+		$token = $oauth->getToken();
 		// Set parameters.
 		$parameters = array(
-			'oauth_token' => $oauth->getToken('key')
+			'oauth_token' => $token['key']
 		);
 
 		// Set POST request data
@@ -238,9 +241,10 @@ class JTwittersearch extends JTwitterObject
 		// Set the API base
 		$base = '/1/saved_searches/destroy/' . $id . '.json';
 
+		$token = $oauth->getToken();
 		// Set parameters.
 		$parameters = array(
-			'oauth_token' => $oauth->getToken('key')
+			'oauth_token' => $token['key']
 		);
 
 		// Build the request path.

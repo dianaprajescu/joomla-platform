@@ -37,8 +37,9 @@ class JTwitterProfile extends JTwitterObject
 	 */
 	public function updateProfile($oauth, $name = null, $url = null, $location = null, $description = null, $entities = false, $skip_status = false)
 	{
+		$token = $oauth->getToken();
 		// Set parameters.
-		$parameters = array('oauth_token' => $oauth->getToken('key'));
+		$parameters = array('oauth_token' => $token['key']);
 
 		$data = array();
 
@@ -107,8 +108,9 @@ class JTwitterProfile extends JTwitterObject
 	 */
 	public function updateProfileBackgroundImage($oauth, $image = null, $tile = false, $entities = false, $skip_status = false, $use = false)
 	{
+		$token = $oauth->getToken();
 		// Set parameters.
-		$parameters = array('oauth_token' => $oauth->getToken('key'));
+		$parameters = array('oauth_token' => $token['key']);
 
 		$data = array();
 
@@ -170,8 +172,9 @@ class JTwitterProfile extends JTwitterObject
 	 */
 	public function updateProfileImage($oauth, $image = null, $entities = false, $skip_status = false)
 	{
+		$token = $oauth->getToken();
 		// Set parameters.
-		$parameters = array('oauth_token' => $oauth->getToken('key'));
+		$parameters = array('oauth_token' => $token['key']);
 
 		$data = array();
 
@@ -226,8 +229,9 @@ class JTwitterProfile extends JTwitterObject
 	public function updateProfileColors($oauth, $background = null, $link = null, $sidebar_border = null, $sidebar_fill = null, $text = null,
 		$entities = false, $skip_status = false)
 	{
+		$token = $oauth->getToken();
 		// Set parameters.
-		$parameters = array('oauth_token' => $oauth->getToken('key'));
+		$parameters = array('oauth_token' => $token['key']);
 
 		$data = array();
 
@@ -298,8 +302,9 @@ class JTwitterProfile extends JTwitterObject
 		// Check the rate limit for remaining hits
 		$this->checkRateLimit();
 
+		$token = $oauth->getToken();
 		// Set parameters.
-		$parameters = array('oauth_token' => $oauth->getToken('key'));
+		$parameters = array('oauth_token' => $token['key']);
 
 		// Set the API base
 		$base = '/1/account/totals.json';
@@ -326,8 +331,9 @@ class JTwitterProfile extends JTwitterObject
 		// Check the rate limit for remaining hits
 		$this->checkRateLimit();
 
+		$token = $oauth->getToken();
 		// Set parameters.
-		$parameters = array('oauth_token' => $oauth->getToken('key'));
+		$parameters = array('oauth_token' => $token['key']);
 
 		// Set the API base
 		$base = '/1/account/settings.json';
@@ -359,8 +365,9 @@ class JTwitterProfile extends JTwitterObject
 	public function updateSettings($oauth, $location = null, $sleep_time = false, $start_sleep = null, $end_sleep = null,
 		$time_zone = null, $lang = null)
 	{
+		$token = $oauth->getToken();
 		// Set parameters.
-		$parameters = array('oauth_token' => $oauth->getToken('key'));
+		$parameters = array('oauth_token' => $token['key']);
 
 		$data = array();
 

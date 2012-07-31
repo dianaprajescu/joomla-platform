@@ -42,8 +42,9 @@ class JTwitterDirectMessages extends JTwitterObject
 		// Set the API base
 		$base = '/1/direct_messages.json';
 
+		$token = $oauth->getToken();
 		// Set parameters.
-		$parameters = array('oauth_token' => $oauth->getToken('key'));
+		$parameters = array('oauth_token' => $token['key']);
 
 		// Check if since_id is specified.
 		if ($since_id)
@@ -112,8 +113,9 @@ class JTwitterDirectMessages extends JTwitterObject
 		// Set the API base
 		$base = '/1/direct_messages/sent.json';
 
+		$token = $oauth->getToken();
 		// Set parameters.
-		$parameters = array('oauth_token' => $oauth->getToken('key'));
+		$parameters = array('oauth_token' => $token['key']);
 
 		// Check if since_id is specified.
 		if ($since_id)
@@ -170,8 +172,9 @@ class JTwitterDirectMessages extends JTwitterObject
 		// Set the API base
 		$base = '/1/direct_messages/new.json';
 
+		$token = $oauth->getToken();
 		// Set parameters.
-		$parameters = array('oauth_token' => $oauth->getToken('key'));
+		$parameters = array('oauth_token' => $token['key']);
 
 		// Determine which type of data was passed for $user
 		if (is_numeric($user))
@@ -216,8 +219,9 @@ class JTwitterDirectMessages extends JTwitterObject
 		// Set the API base
 		$base = '/1/direct_messages/show/' . $id . '.json';
 
+		$token = $oauth->getToken();
 		// Set parameters.
-		$parameters = array('oauth_token' => $oauth->getToken('key'));
+		$parameters = array('oauth_token' => $token['key']);
 
 		// Build the request path.
 		$path = $this->getOption('api.url') . $base;
@@ -244,8 +248,9 @@ class JTwitterDirectMessages extends JTwitterObject
 		// Set the API base
 		$base = '/1/direct_messages/destroy/' . $id . '.json';
 
+		$token = $oauth->getToken();
 		// Set parameters.
-		$parameters = array('oauth_token' => $oauth->getToken('key'));
+		$parameters = array('oauth_token' => $token['key']);
 
 		$data = array();
 
