@@ -20,6 +20,12 @@ include_once __DIR__ . '/stubs/JOauth1aClientInspector.php';
 class JOauth1aClientTest extends TestCase
 {
 	/**
+	 * @var    Input  input for the Oauth object.
+	 * @since  12.2
+	 */
+	protected $input;
+
+	/**
 	 * @var    JRegistry  Options for the Oauth object.
 	 * @since  12.2
 	 */
@@ -65,6 +71,7 @@ class JOauth1aClientTest extends TestCase
 
 		$this->options = new JRegistry;
 		$this->client = $this->getMock('JHttp', array('get', 'post', 'delete', 'put'));
+		$this->input = new JInput;
 
 		$this->options->set('consumer_key', $key);
 		$this->options->set('consumer_secret', $secret);
@@ -132,6 +139,10 @@ class JOauth1aClientTest extends TestCase
 				->method('post')
 				->with($this->object->getOption('requestTokenURL'))
 				->will($this->returnValue($returnData));
+
+			$input = TestReflection::getValue($this->object, 'input');
+			$input->set('oauth_verifier', null);
+			TestReflection::setValue($this->object, 'input', $input);
 
 			$this->object->auth();
 
