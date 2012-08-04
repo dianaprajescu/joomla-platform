@@ -146,6 +146,7 @@
       	<simplelist>
           <member><ulink url="http://api.joomla.org">Joomla! API Reference</ulink></member>
           <member><ulink url="https://dev.twitter.com/docs/api">Twitter REST API Reference</ulink></member>
+          <member><ulink url="https://gist.github.com/3258852">Web Application using JTwitter package.</ulink></member>
         </simplelist>
       </para>
     </section>
