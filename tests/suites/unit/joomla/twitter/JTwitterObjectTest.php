@@ -170,8 +170,6 @@ class JTwitterObjectTest extends TestCase
 	/**
 	 * Tests the getSendRequest method
 	 *
-	 * @covers JTwitterObject::sendRequest
-	 *
 	 * @return  void
 	 *
 	 * @since   12.3

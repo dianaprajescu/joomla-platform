@@ -119,8 +119,6 @@ class JTwitterFriendsTest extends TestCase
 	 *
 	 * @param   mixed  $user  Either an integer containing the user ID or a string containing the screen name.
 	 *
-	 * @covers JTwitterFriends::getFriendIds
-	 *
 	 * @return  void
 	 *
 	 * @dataProvider  seedUser
@@ -177,8 +175,6 @@ class JTwitterFriendsTest extends TestCase
 	 * Tests the getFriendIds method - failure
 	 *
 	 * @param   mixed  $user  Either an integer containing the user ID or a string containing the screen name.
-	 *
-	 * @covers JTwitterFriends::getFriendIds
 	 *
 	 * @return  void
 	 *
@@ -256,8 +252,6 @@ class JTwitterFriendsTest extends TestCase
 	 * @param   mixed  $user_a  Either an integer containing the user ID or a string containing the screen name of the first user.
 	 * @param   mixed  $user_b  Either an integer containing the user ID or a string containing the screen name of the second user.
 	 *
-	 * @covers JTwitterFriends::getFriendshipDetails
-	 *
 	 * @dataProvider seedFriendshipDetails
 	 * @return  void
 	 *
@@ -326,8 +320,6 @@ class JTwitterFriendsTest extends TestCase
 	 * @param   mixed  $user_a  Either an integer containing the user ID or a string containing the screen name of the first user.
 	 * @param   mixed  $user_b  Either an integer containing the user ID or a string containing the screen name of the second user.
 	 *
-	 * @covers JTwitterFriends::getFriendshipDetails
-	 *
 	 * @dataProvider seedFriendshipDetails
 	 * @return  void
 	 *
@@ -393,8 +385,6 @@ class JTwitterFriendsTest extends TestCase
 	 *
 	 * @param   mixed  $user_a  Either an integer containing the user ID or a string containing the screen name of the first user.
 	 * @param   mixed  $user_b  Either an integer containing the user ID or a string containing the screen name of the second user.
-	 *
-	 * @covers JTwitterFriends::getFriendshipExists
 	 *
 	 * @dataProvider seedFriendshipDetails
 	 * @return  void
@@ -464,8 +454,6 @@ class JTwitterFriendsTest extends TestCase
 	 * @param   mixed  $user_a  Either an integer containing the user ID or a string containing the screen name of the first user.
 	 * @param   mixed  $user_b  Either an integer containing the user ID or a string containing the screen name of the second user.
 	 *
-	 * @covers JTwitterFriends::getFriendshipExists
-	 *
 	 * @dataProvider seedFriendshipDetails
 	 * @return  void
 	 *
@@ -531,8 +519,6 @@ class JTwitterFriendsTest extends TestCase
 	 *
 	 * @param   mixed  $user  Either an integer containing the user ID or a string containing the screen name.
 	 *
-	 * @covers JTwitterFriends::getFollowerIds
-	 *
 	 * @return  void
 	 *
 	 * @dataProvider  seedUser
@@ -590,8 +576,6 @@ class JTwitterFriendsTest extends TestCase
 	 *
 	 * @param   mixed  $user  Either an integer containing the user ID or a string containing the screen name.
 	 *
-	 * @covers JTwitterFriends::getFollowerIds
-	 *
 	 * @return  void
 	 *
 	 * @dataProvider  seedUser
@@ -645,8 +629,6 @@ class JTwitterFriendsTest extends TestCase
 	/**
 	 * Tests the getFriendshipsIncoming method
 	 *
-	 * @covers JTwitterFriends::getFriendshipsIncoming
-	 *
 	 * @return  void
 	 *
 	 * @since 12.3
@@ -686,8 +668,6 @@ class JTwitterFriendsTest extends TestCase
 	/**
 	 * Tests the getFriendshipsIncoming method - failure
 	 *
-	 * @covers JTwitterFriends::getFriendshipsIncoming
-	 *
 	 * @return  void
 	 *
 	 * @since 12.3
@@ -724,8 +704,6 @@ class JTwitterFriendsTest extends TestCase
 
 	/**
 	 * Tests the getFriendshipsOutgoing method
-	 *
-	 * @covers JTwitterFriends::getFriendshipsOutgoing
 	 *
 	 * @return  void
 	 *
@@ -765,8 +743,6 @@ class JTwitterFriendsTest extends TestCase
 
 	/**
 	 * Tests the getFriendshipsOutgoing method - failure
-	 *
-	 * @covers JTwitterFriends::getFriendshipsOutgoing
 	 *
 	 * @return  void
 	 *
@@ -1020,8 +996,6 @@ class JTwitterFriendsTest extends TestCase
 	 * @param   string  $screen_name  A comma separated list of screen names, up to 100 are allowed in a single request.
 	 * @param   string  $id           A comma separated list of user IDs, up to 100 are allowed in a single request.
 	 *
-	 * @covers JTwitterFriends::getFriendshipsLookup
-	 *
 	 * @return  void
 	 *
 	 * @since 12.3
@@ -1074,8 +1048,6 @@ class JTwitterFriendsTest extends TestCase
 	 *
 	 * @param   string  $screen_name  A comma separated list of screen names, up to 100 are allowed in a single request.
 	 * @param   string  $id           A comma separated list of user IDs, up to 100 are allowed in a single request.
-	 *
-	 * @covers JTwitterFriends::getFriendshipsLookup
 	 *
 	 * @return  void
 	 *
@@ -1215,8 +1187,6 @@ class JTwitterFriendsTest extends TestCase
 	/**
 	 * Tests the getFriendshipNoRetweetIds method
 	 *
-	 * @covers JTwitterFriends::getFriendshipNoRetweetIds
-	 *
 	 * @return  void
 	 *
 	 * @since 12.3
@@ -1255,8 +1225,6 @@ class JTwitterFriendsTest extends TestCase
 
 	/**
 	 * Tests the getFriendshipNoRetweetIds method - failure
-	 *
-	 * @covers JTwitterFriends::getFriendshipNoRetweetIds
 	 *
 	 * @return  void
 	 *

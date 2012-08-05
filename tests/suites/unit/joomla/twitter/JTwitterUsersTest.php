@@ -122,8 +122,6 @@ class JTwitterUsersTest extends TestCase
 	 * @param   string  $screen_name  A comma separated list of screen names, up to 100 are allowed in a single request.
 	 * @param   string  $id           A comma separated list of user IDs, up to 100 are allowed in a single request.
 	 *
-	 * @covers JTwitterUsers::getUsersLookup
-	 *
 	 * @return  void
 	 *
 	 * @since 12.3
@@ -181,8 +179,6 @@ class JTwitterUsersTest extends TestCase
 	 * @param   string  $screen_name  A comma separated list of screen names, up to 100 are allowed in a single request.
 	 * @param   string  $id           A comma separated list of user IDs, up to 100 are allowed in a single request.
 	 *
-	 * @covers JTwitterUsers::getUsersLookup
-	 *
 	 * @return  void
 	 *
 	 * @since 12.3
@@ -232,8 +228,6 @@ class JTwitterUsersTest extends TestCase
 	/**
 	 * Tests the getUserProfileImage method
 	 *
-	 * @covers JTwitterUsers::getUserProfileImage
-	 *
 	 * @return  void
 	 *
 	 * @since 12.3
@@ -276,8 +270,6 @@ class JTwitterUsersTest extends TestCase
 
 	/**
 	 * Tests the getUserProfileImage method - failure
-	 *
-	 * @covers JTwitterUsers::getUserProfileImage
 	 *
 	 * @return  void
 	 *
@@ -337,8 +329,6 @@ class JTwitterUsersTest extends TestCase
 	 *
 	 * @param   string  $header  The JSON encoded header.
 	 *
-	 * @covers JTwitterUsers::searchUsers
-	 *
 	 * @return  void
 	 *
 	 * @since 12.3
@@ -392,8 +382,6 @@ class JTwitterUsersTest extends TestCase
 
 	/**
 	 * Tests the searchUsers method - failure
-	 *
-	 * @covers JTwitterUsers::searchUsers
 	 *
 	 * @return  void
 	 *
@@ -452,8 +440,6 @@ class JTwitterUsersTest extends TestCase
 	 *
 	 * @param   mixed  $user  Either an integer containing the user ID or a string containing the screen name.
 	 *
-	 * @covers JTwitterUsers::getUser
-	 *
 	 * @return  void
 	 *
 	 * @since 12.3
@@ -510,8 +496,6 @@ class JTwitterUsersTest extends TestCase
 	 *
 	 * @param   mixed  $user  Either an integer containing the user ID or a string containing the screen name.
 	 *
-	 * @covers JTwitterUsers::getUser
-	 *
 	 * @return  void
 	 *
 	 * @since 12.3
@@ -565,8 +549,6 @@ class JTwitterUsersTest extends TestCase
 	 * Tests the getContributees method
 	 *
 	 * @param   mixed  $user  Either an integer containing the user ID or a string containing the screen name.
-	 *
-	 * @covers JTwitterUsers::getContributees
 	 *
 	 * @return  void
 	 *
@@ -626,8 +608,6 @@ class JTwitterUsersTest extends TestCase
 	 *
 	 * @param   mixed  $user  Either an integer containing the user ID or a string containing the screen name.
 	 *
-	 * @covers JTwitterUsers::getContributees
-	 *
 	 * @return  void
 	 *
 	 * @since 12.3
@@ -683,8 +663,6 @@ class JTwitterUsersTest extends TestCase
 	 * Tests the getContributors method
 	 *
 	 * @param   mixed  $user  Either an integer containing the user ID or a string containing the screen name.
-	 *
-	 * @covers JTwitterUsers::getContributors
 	 *
 	 * @return  void
 	 *
@@ -744,8 +722,6 @@ class JTwitterUsersTest extends TestCase
 	 *
 	 * @param   mixed  $user  Either an integer containing the user ID or a string containing the screen name.
 	 *
-	 * @covers JTwitterUsers::getContributors
-	 *
 	 * @return  void
 	 *
 	 * @since 12.3
@@ -800,8 +776,6 @@ class JTwitterUsersTest extends TestCase
 	/**
 	 * Tests the getSuggestions method
 	 *
-	 * @covers JTwitterUsers::getSuggestions
-	 *
 	 * @return  void
 	 *
 	 * @since 12.3
@@ -842,8 +816,6 @@ class JTwitterUsersTest extends TestCase
 	/**
 	 * Tests the getSuggestions method - failure
 	 *
-	 * @covers JTwitterUsers::getSuggestions
-	 *
 	 * @return  void
 	 *
 	 * @since 12.3
@@ -881,8 +853,6 @@ class JTwitterUsersTest extends TestCase
 
 	/**
 	 * Tests the getSuggestionsSlug method
-	 *
-	 * @covers JTwitterUsers::getSuggestionsSlug
 	 *
 	 * @return  void
 	 *
@@ -925,8 +895,6 @@ class JTwitterUsersTest extends TestCase
 	/**
 	 * Tests the getSuggestionsSlug method - failure
 	 *
-	 * @covers JTwitterUsers::getSuggestionsSlug
-	 *
 	 * @return  void
 	 *
 	 * @since 12.3
@@ -966,8 +934,6 @@ class JTwitterUsersTest extends TestCase
 	/**
 	 * Tests the getSuggestionsSlugMembers method
 	 *
-	 * @covers JTwitterUsers::getSuggestionsSlugMembers
-	 *
 	 * @return  void
 	 *
 	 * @since 12.3
@@ -1004,8 +970,6 @@ class JTwitterUsersTest extends TestCase
 
 	/**
 	 * Tests the getSuggestionsSlugMembers method - failure
-	 *
-	 * @covers JTwitterUsers::getSuggestionsSlugMembers
 	 *
 	 * @return  void
 	 *
