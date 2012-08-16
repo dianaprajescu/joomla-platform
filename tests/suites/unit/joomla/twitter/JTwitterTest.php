@@ -25,7 +25,7 @@ class JTwitterTest extends TestCase
 	protected $options;
 
 	/**
-	 * @var    JTwitterHttp  Mock http object.
+	 * @var    JHttp  Mock http object.
 	 * @since  12.3
 	 */
 	protected $client;
@@ -45,7 +45,7 @@ class JTwitterTest extends TestCase
 	protected function setUp()
 	{
 		$this->options = new JRegistry;
-		$this->client = $this->getMock('JTwitterHttp', array('get', 'post', 'delete', 'put'));
+		$this->client = $this->getMock('JHttp', array('get', 'post', 'delete', 'put'));
 
 		$this->object = new JTwitter($this->options, $this->client);
 	}

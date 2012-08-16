@@ -8,7 +8,6 @@
  */
 
 require_once JPATH_PLATFORM . '/joomla/twitter/twitter.php';
-require_once JPATH_PLATFORM . '/joomla/twitter/http.php';
 require_once JPATH_PLATFORM . '/joomla/twitter/lists.php';
 
 /**
@@ -28,7 +27,7 @@ class JTwitterListsTest extends TestCase
 	protected $options;
 
 	/**
-	 * @var    JTwitterHttp  Mock client object.
+	 * @var    JHttp  Mock client object.
 	 * @since  12.3
 	 */
 	protected $client;
@@ -85,7 +84,7 @@ class JTwitterListsTest extends TestCase
 
 		$this->options = new JRegistry;
 		$this->input = new JInput;
-		$this->client = $this->getMock('JTwitterHttp', array('get', 'post', 'delete', 'put'));
+		$this->client = $this->getMock('JHttp', array('get', 'post', 'delete', 'put'));
 
 		$this->object = new JTwitterLists($this->options, $this->client);
 

@@ -25,7 +25,7 @@ class JTwitter
 	protected $options;
 
 	/**
-	 * @var    JTwitterHttp  The HTTP client object to use in sending HTTP requests.
+	 * @var    JHttp  The HTTP client object to use in sending HTTP requests.
 	 * @since  12.3
 	 */
 	protected $client;
@@ -110,10 +110,10 @@ class JTwitter
 	 *
 	 * @since   12.3
 	 */
-	public function __construct(JRegistry $options = null, JTwitterHttp $client = null)
+	public function __construct(JRegistry $options = null, JHttp $client = null)
 	{
 		$this->options = isset($options) ? $options : new JRegistry;
-		$this->client  = isset($client) ? $client : new JTwitterHttp($this->options);
+		$this->client  = isset($client) ? $client : new JHttp($this->options);
 
 		// Setup the default API url if not already set.
 		$this->options->def('api.url', 'https://api.twitter.com');
