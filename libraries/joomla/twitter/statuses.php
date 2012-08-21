@@ -256,6 +256,7 @@ class JTwitterStatuses extends JTwitterObject
 		$data = array('status' => utf8_encode($status));
 
 		$token = $oauth->getToken();
+
 		// Set parameters.
 		$parameters = array('oauth_token' => $token['key']);
 
@@ -341,6 +342,7 @@ class JTwitterStatuses extends JTwitterObject
 		$base = '/1/statuses/mentions.json';
 
 		$token = $oauth->getToken();
+
 		// Set parameters.
 		$parameters = array('oauth_token' => $token['key']);
 
@@ -505,6 +507,7 @@ class JTwitterStatuses extends JTwitterObject
 		$base = '/1/statuses/retweets_of_me.json';
 
 		$token = $oauth->getToken();
+
 		// Set parameters.
 		$parameters = array('oauth_token' => $token['key']);
 
@@ -603,6 +606,7 @@ class JTwitterStatuses extends JTwitterObject
 		$base = '/1/statuses/' . $id . '/retweeted_by.json';
 
 		$token = $oauth->getToken();
+
 		// Set parameters.
 		$parameters = array('oauth_token' => $token['key']);
 
@@ -654,6 +658,7 @@ class JTwitterStatuses extends JTwitterObject
 		$base = '/1/statuses/retweets/' . $id . '.json';
 
 		$token = $oauth->getToken();
+
 		// Set parameters.
 		$parameters = array('oauth_token' => $token['key']);
 
@@ -700,6 +705,7 @@ class JTwitterStatuses extends JTwitterObject
 		$base = '/1/statuses/destroy/' . $id . '.json';
 
 		$token = $oauth->getToken();
+
 		// Set parameters.
 		$parameters = array('oauth_token' => $token['key']);
 
@@ -748,6 +754,7 @@ class JTwitterStatuses extends JTwitterObject
 		$base = '/1/statuses/retweet/' . $id . '.json';
 
 		$token = $oauth->getToken();
+
 		// Set parameters.
 		$parameters = array('oauth_token' => $token['key']);
 
@@ -807,6 +814,7 @@ class JTwitterStatuses extends JTwitterObject
 		);
 
 		$token = $oauth->getToken();
+
 		// Set parameters.
 		$parameters = array(
 			'oauth_token' => $token['key']

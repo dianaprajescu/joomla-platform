@@ -286,6 +286,7 @@ class JTwitterLists extends JTwitterObject
 	public function deleteListMembers($oauth, $list, $user_id = null, $screen_name = null, $owner = null)
 	{
 		$token = $oauth->getToken();
+
 		// Set parameters.
 		$parameters = array('oauth_token' => $token['key']);
 
@@ -362,6 +363,7 @@ class JTwitterLists extends JTwitterObject
 		$this->checkRateLimit();
 
 		$token = $oauth->getToken();
+
 		// Set parameters.
 		$parameters = array('oauth_token' => $token['key']);
 
@@ -428,6 +430,7 @@ class JTwitterLists extends JTwitterObject
 		$this->checkRateLimit();
 
 		$token = $oauth->getToken();
+
 		// Set parameters.
 		$parameters = array('oauth_token' => $token['key']);
 
@@ -520,6 +523,7 @@ class JTwitterLists extends JTwitterObject
 		$this->checkRateLimit();
 
 		$token = $oauth->getToken();
+
 		// Set parameters.
 		$parameters = array('oauth_token' => $token['key']);
 
@@ -605,6 +609,7 @@ class JTwitterLists extends JTwitterObject
 	public function unsubscribe($oauth, $list, $owner = null)
 	{
 		$token = $oauth->getToken();
+
 		// Set parameters.
 		$parameters = array('oauth_token' => $token['key']);
 
@@ -666,6 +671,7 @@ class JTwitterLists extends JTwitterObject
 	public function addListMembers($oauth, $list, $user_id = null, $screen_name = null, $owner = null)
 	{
 		$token = $oauth->getToken();
+
 		// Set parameters.
 		$parameters = array('oauth_token' => $token['key']);
 
@@ -946,6 +952,7 @@ class JTwitterLists extends JTwitterObject
 	public function updateList($oauth, $list, $owner = null, $name = null, $mode = null, $description = null)
 	{
 		$token = $oauth->getToken();
+
 		// Set parameters.
 		$parameters = array('oauth_token' => $token['key']);
 
@@ -1024,6 +1031,7 @@ class JTwitterLists extends JTwitterObject
 	public function createList($oauth, $name, $mode = null, $description = null)
 	{
 		$token = $oauth->getToken();
+
 		// Set parameters.
 		$parameters = array('oauth_token' => $token['key']);
 
@@ -1071,6 +1079,7 @@ class JTwitterLists extends JTwitterObject
 	public function deleteList($oauth, $list, $owner = null)
 	{
 		$token = $oauth->getToken();
+
 		// Set parameters.
 		$parameters = array('oauth_token' => $token['key']);
 

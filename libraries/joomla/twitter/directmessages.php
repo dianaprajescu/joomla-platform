@@ -43,6 +43,7 @@ class JTwitterDirectMessages extends JTwitterObject
 		$base = '/1/direct_messages.json';
 
 		$token = $oauth->getToken();
+
 		// Set parameters.
 		$parameters = array('oauth_token' => $token['key']);
 
@@ -114,6 +115,7 @@ class JTwitterDirectMessages extends JTwitterObject
 		$base = '/1/direct_messages/sent.json';
 
 		$token = $oauth->getToken();
+
 		// Set parameters.
 		$parameters = array('oauth_token' => $token['key']);
 
@@ -173,6 +175,7 @@ class JTwitterDirectMessages extends JTwitterObject
 		$base = '/1/direct_messages/new.json';
 
 		$token = $oauth->getToken();
+
 		// Set parameters.
 		$parameters = array('oauth_token' => $token['key']);
 
@@ -220,6 +223,7 @@ class JTwitterDirectMessages extends JTwitterObject
 		$base = '/1/direct_messages/show/' . $id . '.json';
 
 		$token = $oauth->getToken();
+
 		// Set parameters.
 		$parameters = array('oauth_token' => $token['key']);
 
@@ -249,6 +253,7 @@ class JTwitterDirectMessages extends JTwitterObject
 		$base = '/1/direct_messages/destroy/' . $id . '.json';
 
 		$token = $oauth->getToken();
+
 		// Set parameters.
 		$parameters = array('oauth_token' => $token['key']);
 

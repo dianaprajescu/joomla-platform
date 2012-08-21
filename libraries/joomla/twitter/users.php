@@ -116,6 +116,7 @@ class JTwitterUsers extends JTwitterObject
 		$this->checkRateLimit();
 
 		$token = $oauth->getToken();
+
 		// Set parameters.
 		$parameters = array(
 			'oauth_token' => $token['key']

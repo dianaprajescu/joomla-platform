@@ -38,6 +38,7 @@ class JTwitterBlock extends JTwitterObject
 		$this->checkRateLimit();
 
 		$token = $oauth->getToken();
+
 		// Set parameters.
 		$parameters = array('oauth_token' => $token['key']);
 
@@ -113,6 +114,7 @@ class JTwitterBlock extends JTwitterObject
 		}
 
 		$token = $oauth->getToken();
+
 		// Set parameters.
 		$parameters = array('oauth_token' => $token['key']);
 
@@ -174,6 +176,7 @@ class JTwitterBlock extends JTwitterObject
 		}
 
 		$token = $oauth->getToken();
+
 		// Set parameters.
 		$parameters = array('oauth_token' => $token['key']);
 

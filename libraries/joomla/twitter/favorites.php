@@ -44,6 +44,7 @@ class JTwitterFavorites extends JTwitterObject
 		$base = '/1/favorites.json';
 
 		$token = $oauth->getToken();
+
 		// Set parameters.
 		$parameters = array('oauth_token' => $token['key']);
 
@@ -110,6 +111,7 @@ class JTwitterFavorites extends JTwitterObject
 		$base = '/1/favorites/create/' . $id . '.json';
 
 		$token = $oauth->getToken();
+
 		// Set parameters.
 		$parameters = array('oauth_token' => $token['key']);
 
@@ -144,6 +146,7 @@ class JTwitterFavorites extends JTwitterObject
 		$base = '/1/favorites/destroy/' . $id . '.json';
 
 		$token = $oauth->getToken();
+
 		// Set parameters.
 		$parameters = array('oauth_token' => $token['key']);
 

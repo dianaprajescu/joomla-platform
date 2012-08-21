@@ -228,6 +228,7 @@ class JTwitterFriends extends JTwitterObject
 		$this->checkRateLimit();
 
 		$token = $oauth->getToken();
+
 		// Set parameters.
 		$parameters = array(
 			'oauth_token' => $token['key']
@@ -268,6 +269,7 @@ class JTwitterFriends extends JTwitterObject
 		$this->checkRateLimit();
 
 		$token = $oauth->getToken();
+
 		// Set parameters.
 		$parameters = array(
 			'oauth_token' => $token['key']
@@ -307,6 +309,7 @@ class JTwitterFriends extends JTwitterObject
 	public function follow($oauth, $user, $follow = false)
 	{
 		$token = $oauth->getToken();
+
 		// Set parameters.
 		$parameters = array(
 			'oauth_token' => $token['key']
@@ -363,6 +366,7 @@ class JTwitterFriends extends JTwitterObject
 	public function unfollow($oauth, $user, $entities = false)
 	{
 		$token = $oauth->getToken();
+
 		// Set parameters.
 		$parameters = array(
 			'oauth_token' => $token['key']
@@ -421,6 +425,7 @@ class JTwitterFriends extends JTwitterObject
 		$this->checkRateLimit();
 
 		$token = $oauth->getToken();
+
 		// Set parameters.
 		$parameters = array(
 			'oauth_token' => $token['key']
@@ -470,6 +475,7 @@ class JTwitterFriends extends JTwitterObject
 	public function updateFriendship($oauth, $user, $device = false, $retweets = false)
 	{
 		$token = $oauth->getToken();
+
 		// Set parameters.
 		$parameters = array(
 			'oauth_token' => $token['key']
@@ -532,6 +538,7 @@ class JTwitterFriends extends JTwitterObject
 		$this->checkRateLimit();
 
 		$token = $oauth->getToken();
+
 		// Set parameters.
 		$parameters = array(
 			'oauth_token' => $token['key']

@@ -149,6 +149,7 @@ class JTwittersearch extends JTwitterObject
 		$base = '/1/saved_searches.json';
 
 		$token = $oauth->getToken();
+
 		// Set parameters.
 		$parameters = array(
 			'oauth_token' => $token['key']
@@ -181,6 +182,7 @@ class JTwittersearch extends JTwitterObject
 		$base = '/1/saved_searches/' . $id . '.json';
 
 		$token = $oauth->getToken();
+
 		// Set parameters.
 		$parameters = array(
 			'oauth_token' => $token['key']
@@ -210,6 +212,7 @@ class JTwittersearch extends JTwitterObject
 		$base = '/1/saved_searches/create.json';
 
 		$token = $oauth->getToken();
+
 		// Set parameters.
 		$parameters = array(
 			'oauth_token' => $token['key']
@@ -242,6 +245,7 @@ class JTwittersearch extends JTwitterObject
 		$base = '/1/saved_searches/destroy/' . $id . '.json';
 
 		$token = $oauth->getToken();
+
 		// Set parameters.
 		$parameters = array(
 			'oauth_token' => $token['key']

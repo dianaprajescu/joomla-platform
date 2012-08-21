@@ -38,6 +38,7 @@ class JTwitterProfile extends JTwitterObject
 	public function updateProfile($oauth, $name = null, $url = null, $location = null, $description = null, $entities = false, $skip_status = false)
 	{
 		$token = $oauth->getToken();
+
 		// Set parameters.
 		$parameters = array('oauth_token' => $token['key']);
 
@@ -109,6 +110,7 @@ class JTwitterProfile extends JTwitterObject
 	public function updateProfileBackgroundImage($oauth, $image = null, $tile = false, $entities = false, $skip_status = false, $use = false)
 	{
 		$token = $oauth->getToken();
+
 		// Set parameters.
 		$parameters = array('oauth_token' => $token['key']);
 
@@ -173,6 +175,7 @@ class JTwitterProfile extends JTwitterObject
 	public function updateProfileImage($oauth, $image = null, $entities = false, $skip_status = false)
 	{
 		$token = $oauth->getToken();
+
 		// Set parameters.
 		$parameters = array('oauth_token' => $token['key']);
 
@@ -230,6 +233,7 @@ class JTwitterProfile extends JTwitterObject
 		$entities = false, $skip_status = false)
 	{
 		$token = $oauth->getToken();
+
 		// Set parameters.
 		$parameters = array('oauth_token' => $token['key']);
 
@@ -303,6 +307,7 @@ class JTwitterProfile extends JTwitterObject
 		$this->checkRateLimit();
 
 		$token = $oauth->getToken();
+
 		// Set parameters.
 		$parameters = array('oauth_token' => $token['key']);
 
@@ -332,6 +337,7 @@ class JTwitterProfile extends JTwitterObject
 		$this->checkRateLimit();
 
 		$token = $oauth->getToken();
+
 		// Set parameters.
 		$parameters = array('oauth_token' => $token['key']);
 
@@ -366,6 +372,7 @@ class JTwitterProfile extends JTwitterObject
 		$time_zone = null, $lang = null)
 	{
 		$token = $oauth->getToken();
+
 		// Set parameters.
 		$parameters = array('oauth_token' => $token['key']);
 

@@ -57,6 +57,7 @@ class JTwitterOauth extends JOauthOauth1aclient
 	public function verifyCredentials()
 	{
 		$token = $this->getToken();
+
 		// Set the parameters.
 		$parameters = array('oauth_token' => $token['key']);
 
@@ -87,6 +88,7 @@ class JTwitterOauth extends JOauthOauth1aclient
 	public function endSession()
 	{
 		$token = $this->getToken();
+
 		// Set parameters.
 		$parameters = array('oauth_token' => $token['key']);
 
