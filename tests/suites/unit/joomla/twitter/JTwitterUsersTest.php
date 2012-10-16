@@ -262,7 +262,7 @@ class JTwitterUsersTest extends TestCase
 		->will($this->returnValue($returnData));
 
 		$this->assertThat(
-			$this->object->getUserProfileImage($screen_name, $size),
+			$this->object->getUserProfileImage($screen_name, false, $size),
 			$this->equalTo('image/location')
 		);
 	}
@@ -304,7 +304,7 @@ class JTwitterUsersTest extends TestCase
 		->with($path)
 		->will($this->returnValue($returnData));
 
-		$this->object->getUserProfileImage($screen_name, $size);
+		$this->object->getUserProfileImage($screen_name, false, $size);
 	}
 
 	/**

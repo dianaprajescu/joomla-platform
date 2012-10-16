@@ -67,15 +67,16 @@ class JTwitterUsers extends JTwitterObject
 	/**
 	 * Method to access the profile image in various sizes for the user with the indicated screen_name.
 	 *
-	 * @param   string  $screen_name  The screen name of the user for whom to return results for.
-	 * 								  Helpful for disambiguating when a valid screen name is also a user ID.
-	 * @param   string  $size         Specifies the size of image to fetch. Not specifying a size will give the default, normal size of 48px by 48px.
+	 * @param   string   $screen_name  The screen name of the user for whom to return results for.
+	 * 								   Helpful for disambiguating when a valid screen name is also a user ID.
+	 * @param   boolean  $redirect     If false this will return the URL of the profile picture without a 302 redirect.
+	 * @param   string   $size         Specifies the size of image to fetch. Not specifying a size will give the default, normal size of 48px by 48px.
 	 *
 	 * @return  array  The decoded JSON response
 	 *
 	 * @since   12.3
 	 */
-	public function getUserProfileImage($screen_name, $size = null)
+	public function getUserProfileImage($screen_name, $redirect = true, $size = null)
 	{
 		// Check the rate limit for remaining hits
 		$this->checkRateLimit();
@@ -89,6 +90,12 @@ class JTwitterUsers extends JTwitterObject
 		if ($size)
 		{
 			$parameters['size'] = $size;
+		}
+
+		if ($redirect == false)
+		{
+			// Don't follow redirect.
+			$this->setOption('follow_location', 0);
 		}
 
 		// Send the request.
