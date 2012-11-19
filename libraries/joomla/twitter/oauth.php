@@ -17,7 +17,7 @@ defined('JPATH_PLATFORM') or die();
  *
  * @since       12.3
  */
-class JTwitterOauth extends JOauthOauth1aclient
+class JTwitterOauth extends JOAuth1Client
 {
 	/**
 	* @var JRegistry Options for the JTwitterOauth object.
