@@ -105,24 +105,23 @@ class JTwitterUsers extends JTwitterObject
 	/**
 	 * Method used to search for users
 	 *
-	 * @param   JTwitterOauth  $oauth     The JTwitterOauth object.
-	 * @param   string         $query     The search query to run against people search.
-	 * @param   integer        $page      Specifies the page of results to retrieve.
-	 * @param   integer        $per_page  The number of people to retrieve. Maximum of 20 allowed per page.
-	 * @param   boolean        $entities  When set to either true, t or 1, each tweet will include a node called "entities,". This node offers a
-	 * 									  variety of metadata about the tweet in a discreet structure, including: user_mentions, urls, and hashtags.
+	 * @param   string   $query     The search query to run against people search.
+	 * @param   integer  $page      Specifies the page of results to retrieve.
+	 * @param   integer  $per_page  The number of people to retrieve. Maximum of 20 allowed per page.
+	 * @param   boolean  $entities  When set to either true, t or 1, each tweet will include a node called "entities,". This node offers a
+	 * 								variety of metadata about the tweet in a discreet structure, including: user_mentions, urls, and hashtags.
 	 *
 	 * @return  array  The decoded JSON response
 	 *
 	 * @since   12.3
 	 * @throws  RuntimeException
 	 */
-	public function searchUsers($oauth, $query, $page = 0, $per_page = 0, $entities = false)
+	public function searchUsers($query, $page = 0, $per_page = 0, $entities = false)
 	{
 		// Check the rate limit for remaining hits
 		$this->checkRateLimit();
 
-		$token = $oauth->getToken();
+		$token = $this->oauth->getToken();
 
 		// Set parameters.
 		$parameters = array(
@@ -156,7 +155,7 @@ class JTwitterUsers extends JTwitterObject
 		$path = $this->getOption('api.url') . $base;
 
 		// Send the request.
-		$response = $oauth->oauthRequest($path, 'GET', $parameters, $data);
+		$response = $this->oauth->oauthRequest($path, 'GET', $parameters, $data);
 
 		// Check Feature Rate Limit.
 		$response_headers = $response->headers;

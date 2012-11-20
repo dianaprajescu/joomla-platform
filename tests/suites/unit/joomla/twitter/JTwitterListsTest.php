@@ -7,9 +7,6 @@
  * @license     GNU General Public License version 2 or later; see LICENSE
  */
 
-require_once JPATH_PLATFORM . '/joomla/twitter/twitter.php';
-require_once JPATH_PLATFORM . '/joomla/twitter/lists.php';
-
 /**
  * Test class for JTwitterLists.
  *
@@ -78,22 +75,29 @@ class JTwitterListsTest extends TestCase
 	 */
 	protected function setUp()
 	{
-		$key = "lIio7RcLe5IASG5jpnZrA";
-		$secret = "dl3BrWij7LT04NUpy37BRJxGXpWgjNvMrneuQ11EveE";
+		$_SERVER['HTTP_HOST'] = 'example.com';
+		$_SERVER['HTTP_USER_AGENT'] = 'Mozilla/5.0';
+		$_SERVER['REQUEST_URI'] = '/index.php';
+		$_SERVER['SCRIPT_NAME'] = '/index.php';
+		
+		$key = "app_key";
+		$secret = "app_secret";
 		$my_url = "http://127.0.0.1/gsoc/joomla-platform/twitter_test.php";
+		
+		$access_token = array('key' => 'token_key', 'secret' => 'token_secret');
 
 		$this->options = new JRegistry;
 		$this->input = new JInput;
 		$this->client = $this->getMock('JHttp', array('get', 'post', 'delete', 'put'));
+		$this->oauth = new JTwitterOAuth($this->options, $this->client, $this->input);
+		$this->oauth->setToken($access_token);
 
-		$this->object = new JTwitterLists($this->options, $this->client);
+		$this->object = new JTwitterLists($this->options, $this->client, $this->oauth);
 
 		$this->options->set('consumer_key', $key);
 		$this->options->set('consumer_secret', $secret);
 		$this->options->set('callback', $my_url);
 		$this->options->set('sendheaders', true);
-		$this->oauth = new JTwitterOauth($this->options, $this->client, $this->input);
-		$this->oauth->setToken(array('key' => $key, 'secret' => $secret));
 	}
 
 	/**
@@ -705,13 +709,13 @@ class JTwitterListsTest extends TestCase
 			{
 				// We don't have a valid entry
 				$this->setExpectedException('RuntimeException');
-				$this->object->deleteListMembers($this->oauth, $list, $user_id, $screen_name, $owner);
+				$this->object->deleteListMembers($list, $user_id, $screen_name, $owner);
 			}
 		}
 		else
 		{
 			$this->setExpectedException('RuntimeException');
-			$this->object->deleteListMembers($this->oauth, $list, $user_id, $screen_name, $owner);
+			$this->object->deleteListMembers($list, $user_id, $screen_name, $owner);
 		}
 
 		if ($user_id)
@@ -725,7 +729,7 @@ class JTwitterListsTest extends TestCase
 		if ($user_id == null && $screen_name == null)
 		{
 			$this->setExpectedException('RuntimeException');
-			$this->object->deleteListMembers($this->oauth, $list, $user_id, $screen_name, $owner);
+			$this->object->deleteListMembers($list, $user_id, $screen_name, $owner);
 		}
 
 		$path = $this->object->fetchUrl('/1/lists/members/destroy_all.json');
@@ -736,7 +740,7 @@ class JTwitterListsTest extends TestCase
 		->will($this->returnValue($returnData));
 
 		$this->assertThat(
-			$this->object->deleteListMembers($this->oauth, $list, $user_id, $screen_name, $owner),
+			$this->object->deleteListMembers($list, $user_id, $screen_name, $owner),
 			$this->equalTo(json_decode($this->sampleString))
 		);
 	}
@@ -782,13 +786,13 @@ class JTwitterListsTest extends TestCase
 			{
 				// We don't have a valid entry
 				$this->setExpectedException('RuntimeException');
-				$this->object->deleteListMembers($this->oauth, $list, $user_id, $screen_name, $owner);
+				$this->object->deleteListMembers($list, $user_id, $screen_name, $owner);
 			}
 		}
 		else
 		{
 			$this->setExpectedException('RuntimeException');
-			$this->object->deleteListMembers($this->oauth, $list, $user_id, $screen_name, $owner);
+			$this->object->deleteListMembers($list, $user_id, $screen_name, $owner);
 		}
 
 		if ($user_id)
@@ -802,7 +806,7 @@ class JTwitterListsTest extends TestCase
 		if ($user_id == null && $screen_name == null)
 		{
 			$this->setExpectedException('RuntimeException');
-			$this->object->deleteListMembers($this->oauth, $list, $user_id, $screen_name, $owner);
+			$this->object->deleteListMembers($list, $user_id, $screen_name, $owner);
 		}
 
 		$path = $this->object->fetchUrl('/1/lists/members/destroy_all.json');
@@ -812,7 +816,7 @@ class JTwitterListsTest extends TestCase
 		->with($path, $data)
 		->will($this->returnValue($returnData));
 
-		$this->object->deleteListMembers($this->oauth, $list, $user_id, $screen_name, $owner);
+		$this->object->deleteListMembers($list, $user_id, $screen_name, $owner);
 	}
 
 	/**
@@ -862,13 +866,13 @@ class JTwitterListsTest extends TestCase
 			{
 				// We don't have a valid entry
 				$this->setExpectedException('RuntimeException');
-				$this->object->subscribe($this->oauth, $list, $owner);
+				$this->object->subscribe($list, $owner);
 			}
 		}
 		else
 		{
 			$this->setExpectedException('RuntimeException');
-			$this->object->subscribe($this->oauth, $list, $owner);
+			$this->object->subscribe($list, $owner);
 		}
 
 		$path = $this->object->fetchUrl('/1/lists/subscribers/create.json');
@@ -879,7 +883,7 @@ class JTwitterListsTest extends TestCase
 		->will($this->returnValue($returnData));
 
 		$this->assertThat(
-			$this->object->subscribe($this->oauth, $list, $owner),
+			$this->object->subscribe($list, $owner),
 			$this->equalTo(json_decode($this->sampleString))
 		);
 	}
@@ -932,13 +936,13 @@ class JTwitterListsTest extends TestCase
 			{
 				// We don't have a valid entry
 				$this->setExpectedException('RuntimeException');
-				$this->object->subscribe($this->oauth, $list, $owner);
+				$this->object->subscribe($list, $owner);
 			}
 		}
 		else
 		{
 			$this->setExpectedException('RuntimeException');
-			$this->object->subscribe($this->oauth, $list, $owner);
+			$this->object->subscribe($list, $owner);
 		}
 
 		$path = $this->object->fetchUrl('/1/lists/subscribers/create.json');
@@ -948,7 +952,7 @@ class JTwitterListsTest extends TestCase
 		->with($path, $data)
 		->will($this->returnValue($returnData));
 
-		$this->object->subscribe($this->oauth, $list, $owner);
+		$this->object->subscribe($list, $owner);
 	}
 
 	/**
@@ -1022,13 +1026,13 @@ class JTwitterListsTest extends TestCase
 			{
 				// We don't have a valid entry
 				$this->setExpectedException('RuntimeException');
-				$this->object->isListMember($this->oauth, $list, $user, $owner);
+				$this->object->isListMember($list, $user, $owner);
 			}
 		}
 		else
 		{
 			$this->setExpectedException('RuntimeException');
-			$this->object->isListMember($this->oauth, $list, $user, $owner);
+			$this->object->isListMember($list, $user, $owner);
 		}
 
 		if (is_numeric($user))
@@ -1043,7 +1047,7 @@ class JTwitterListsTest extends TestCase
 		{
 			// We don't have a valid entry
 			$this->setExpectedException('RuntimeException');
-			$this->object->isListMember($this->oauth, $list, $user, $owner);
+			$this->object->isListMember($list, $user, $owner);
 		}
 
 		$data['include_entities'] = $entities;
@@ -1057,7 +1061,7 @@ class JTwitterListsTest extends TestCase
 		->will($this->returnValue($returnData));
 
 		$this->assertThat(
-			$this->object->isListMember($this->oauth, $list, $user, $owner, $entities, $skip_status),
+			$this->object->isListMember($list, $user, $owner, $entities, $skip_status),
 			$this->equalTo(json_decode($this->sampleString))
 		);
 	}
@@ -1114,13 +1118,13 @@ class JTwitterListsTest extends TestCase
 			{
 				// We don't have a valid entry
 				$this->setExpectedException('RuntimeException');
-				$this->object->isListMember($this->oauth, $list, $user, $owner);
+				$this->object->isListMember($list, $user, $owner);
 			}
 		}
 		else
 		{
 			$this->setExpectedException('RuntimeException');
-			$this->object->isListMember($this->oauth, $list, $user, $owner);
+			$this->object->isListMember($list, $user, $owner);
 		}
 
 		if (is_numeric($user))
@@ -1135,7 +1139,7 @@ class JTwitterListsTest extends TestCase
 		{
 			// We don't have a valid entry
 			$this->setExpectedException('RuntimeException');
-			$this->object->isListMember($this->oauth, $list, $user, $owner);
+			$this->object->isListMember($list, $user, $owner);
 		}
 
 		$data['include_entities'] = $entities;
@@ -1148,7 +1152,7 @@ class JTwitterListsTest extends TestCase
 		->with($path)
 		->will($this->returnValue($returnData));
 
-		$this->object->isListMember($this->oauth, $list, $user, $owner, $entities, $skip_status);
+		$this->object->isListMember($list, $user, $owner, $entities, $skip_status);
 	}
 
 	/**
@@ -1202,13 +1206,13 @@ class JTwitterListsTest extends TestCase
 			{
 				// We don't have a valid entry
 				$this->setExpectedException('RuntimeException');
-				$this->object->isListSubscriber($this->oauth, $list, $user, $owner);
+				$this->object->isListSubscriber($list, $user, $owner);
 			}
 		}
 		else
 		{
 			$this->setExpectedException('RuntimeException');
-			$this->object->isListSubscriber($this->oauth, $list, $user, $owner);
+			$this->object->isListSubscriber($list, $user, $owner);
 		}
 
 		if (is_numeric($user))
@@ -1223,7 +1227,7 @@ class JTwitterListsTest extends TestCase
 		{
 			// We don't have a valid entry
 			$this->setExpectedException('RuntimeException');
-			$this->object->isListSubscriber($this->oauth, $list, $user, $owner);
+			$this->object->isListSubscriber($list, $user, $owner);
 		}
 
 		$data['include_entities'] = $entities;
@@ -1237,7 +1241,7 @@ class JTwitterListsTest extends TestCase
 		->will($this->returnValue($returnData));
 
 		$this->assertThat(
-			$this->object->isListSubscriber($this->oauth, $list, $user, $owner, $entities, $skip_status),
+			$this->object->isListSubscriber($list, $user, $owner, $entities, $skip_status),
 			$this->equalTo(json_decode($this->sampleString))
 		);
 	}
@@ -1294,13 +1298,13 @@ class JTwitterListsTest extends TestCase
 			{
 				// We don't have a valid entry
 				$this->setExpectedException('RuntimeException');
-				$this->object->isListSubscriber($this->oauth, $list, $user, $owner);
+				$this->object->isListSubscriber($list, $user, $owner);
 			}
 		}
 		else
 		{
 			$this->setExpectedException('RuntimeException');
-			$this->object->isListSubscriber($this->oauth, $list, $user, $owner);
+			$this->object->isListSubscriber($list, $user, $owner);
 		}
 
 		if (is_numeric($user))
@@ -1315,7 +1319,7 @@ class JTwitterListsTest extends TestCase
 		{
 			// We don't have a valid entry
 			$this->setExpectedException('RuntimeException');
-			$this->object->isListSubscriber($this->oauth, $list, $user, $owner);
+			$this->object->isListSubscriber($list, $user, $owner);
 		}
 
 		$data['include_entities'] = $entities;
@@ -1328,7 +1332,7 @@ class JTwitterListsTest extends TestCase
 		->with($path)
 		->will($this->returnValue($returnData));
 
-		$this->object->isListSubscriber($this->oauth, $list, $user, $owner, $entities, $skip_status);
+		$this->object->isListSubscriber($list, $user, $owner, $entities, $skip_status);
 	}
 
 	/**
@@ -1369,13 +1373,13 @@ class JTwitterListsTest extends TestCase
 			{
 				// We don't have a valid entry
 				$this->setExpectedException('RuntimeException');
-				$this->object->unsubscribe($this->oauth, $list, $owner);
+				$this->object->unsubscribe($list, $owner);
 			}
 		}
 		else
 		{
 			$this->setExpectedException('RuntimeException');
-			$this->object->unsubscribe($this->oauth, $list, $owner);
+			$this->object->unsubscribe($list, $owner);
 		}
 
 		$path = $this->object->fetchUrl('/1/lists/subscribers/destroy.json');
@@ -1386,7 +1390,7 @@ class JTwitterListsTest extends TestCase
 		->will($this->returnValue($returnData));
 
 		$this->assertThat(
-			$this->object->unsubscribe($this->oauth, $list, $owner),
+			$this->object->unsubscribe($list, $owner),
 			$this->equalTo(json_decode($this->sampleString))
 		);
 	}
@@ -1430,13 +1434,13 @@ class JTwitterListsTest extends TestCase
 			{
 				// We don't have a valid entry
 				$this->setExpectedException('RuntimeException');
-				$this->object->unsubscribe($this->oauth, $list, $owner);
+				$this->object->unsubscribe($list, $owner);
 			}
 		}
 		else
 		{
 			$this->setExpectedException('RuntimeException');
-			$this->object->unsubscribe($this->oauth, $list, $owner);
+			$this->object->unsubscribe($list, $owner);
 		}
 
 		$path = $this->object->fetchUrl('/1/lists/subscribers/destroy.json');
@@ -1446,7 +1450,7 @@ class JTwitterListsTest extends TestCase
 		->with($path, $data)
 		->will($this->returnValue($returnData));
 
-		$this->object->unsubscribe($this->oauth, $list, $owner);
+		$this->object->unsubscribe($list, $owner);
 	}
 
 	/**
@@ -1489,13 +1493,13 @@ class JTwitterListsTest extends TestCase
 			{
 				// We don't have a valid entry
 				$this->setExpectedException('RuntimeException');
-				$this->object->addListMembers($this->oauth, $list, $user_id, $screen_name, $owner);
+				$this->object->addListMembers($list, $user_id, $screen_name, $owner);
 			}
 		}
 		else
 		{
 			$this->setExpectedException('RuntimeException');
-			$this->object->addListMembers($this->oauth, $list, $user_id, $screen_name, $owner);
+			$this->object->addListMembers($list, $user_id, $screen_name, $owner);
 		}
 
 		if ($user_id)
@@ -1509,7 +1513,7 @@ class JTwitterListsTest extends TestCase
 		if ($user_id == null && $screen_name == null)
 		{
 			$this->setExpectedException('RuntimeException');
-			$this->object->addListMembers($this->oauth, $list, $user_id, $screen_name, $owner);
+			$this->object->addListMembers($list, $user_id, $screen_name, $owner);
 		}
 
 		$path = $this->object->fetchUrl('/1/lists/members/create_all.json');
@@ -1520,7 +1524,7 @@ class JTwitterListsTest extends TestCase
 		->will($this->returnValue($returnData));
 
 		$this->assertThat(
-			$this->object->addListMembers($this->oauth, $list, $user_id, $screen_name, $owner),
+			$this->object->addListMembers($list, $user_id, $screen_name, $owner),
 			$this->equalTo(json_decode($this->sampleString))
 		);
 	}
@@ -1566,13 +1570,13 @@ class JTwitterListsTest extends TestCase
 			{
 				// We don't have a valid entry
 				$this->setExpectedException('RuntimeException');
-				$this->object->addListMembers($this->oauth, $list, $user_id, $screen_name, $owner);
+				$this->object->addListMembers($list, $user_id, $screen_name, $owner);
 			}
 		}
 		else
 		{
 			$this->setExpectedException('RuntimeException');
-			$this->object->addListMembers($this->oauth, $list, $user_id, $screen_name, $owner);
+			$this->object->addListMembers($list, $user_id, $screen_name, $owner);
 		}
 
 		if ($user_id)
@@ -1586,7 +1590,7 @@ class JTwitterListsTest extends TestCase
 		if ($user_id == null && $screen_name == null)
 		{
 			$this->setExpectedException('RuntimeException');
-			$this->object->addListMembers($this->oauth, $list, $user_id, $screen_name, $owner);
+			$this->object->addListMembers($list, $user_id, $screen_name, $owner);
 		}
 
 		$path = $this->object->fetchUrl('/1/lists/members/create_all.json');
@@ -1596,7 +1600,7 @@ class JTwitterListsTest extends TestCase
 		->with($path, $data)
 		->will($this->returnValue($returnData));
 
-		$this->object->addListMembers($this->oauth, $list, $user_id, $screen_name, $owner);
+		$this->object->addListMembers($list, $user_id, $screen_name, $owner);
 	}
 
 	/**
@@ -2139,13 +2143,13 @@ class JTwitterListsTest extends TestCase
 			{
 				// We don't have a valid entry
 				$this->setExpectedException('RuntimeException');
-				$this->object->updateList($this->oauth, $list, $owner);
+				$this->object->updateList($list, $owner);
 			}
 		}
 		else
 		{
 			$this->setExpectedException('RuntimeException');
-			$this->object->updateList($this->oauth, $list, $owner);
+			$this->object->updateList($list, $owner);
 		}
 
 		$data['name'] = $name;
@@ -2160,7 +2164,7 @@ class JTwitterListsTest extends TestCase
 		->will($this->returnValue($returnData));
 
 		$this->assertThat(
-			$this->object->updateList($this->oauth, $list, $owner, $name, $mode, $description),
+			$this->object->updateList($list, $owner, $name, $mode, $description),
 			$this->equalTo(json_decode($this->sampleString))
 		);
 	}
@@ -2208,13 +2212,13 @@ class JTwitterListsTest extends TestCase
 			{
 				// We don't have a valid entry
 				$this->setExpectedException('RuntimeException');
-				$this->object->updateList($this->oauth, $list, $owner);
+				$this->object->updateList($list, $owner);
 			}
 		}
 		else
 		{
 			$this->setExpectedException('RuntimeException');
-			$this->object->updateList($this->oauth, $list, $owner);
+			$this->object->updateList($list, $owner);
 		}
 
 		$data['name'] = $name;
@@ -2228,7 +2232,7 @@ class JTwitterListsTest extends TestCase
 		->with($path, $data)
 		->will($this->returnValue($returnData));
 
-		$this->object->updateList($this->oauth, $list, $owner, $name, $mode, $description);
+		$this->object->updateList($list, $owner, $name, $mode, $description);
 	}
 
 	/**
@@ -2260,7 +2264,7 @@ class JTwitterListsTest extends TestCase
 		->will($this->returnValue($returnData));
 
 		$this->assertThat(
-			$this->object->createList($this->oauth, $name, $mode, $description),
+			$this->object->createList($name, $mode, $description),
 			$this->equalTo(json_decode($this->sampleString))
 		);
 	}
@@ -2294,7 +2298,7 @@ class JTwitterListsTest extends TestCase
 		->with($path, $data)
 		->will($this->returnValue($returnData));
 
-		$this->object->createList($this->oauth, $name, $mode, $description);
+		$this->object->createList($name, $mode, $description);
 	}
 
 	/**
@@ -2335,13 +2339,13 @@ class JTwitterListsTest extends TestCase
 			{
 				// We don't have a valid entry
 				$this->setExpectedException('RuntimeException');
-				$this->object->deleteList($this->oauth, $list, $owner);
+				$this->object->deleteList($list, $owner);
 			}
 		}
 		else
 		{
 			$this->setExpectedException('RuntimeException');
-			$this->object->deleteList($this->oauth, $list, $owner);
+			$this->object->deleteList($list, $owner);
 		}
 
 		$path = $this->object->fetchUrl('/1/lists/destroy.json');
@@ -2352,7 +2356,7 @@ class JTwitterListsTest extends TestCase
 		->will($this->returnValue($returnData));
 
 		$this->assertThat(
-			$this->object->deleteList($this->oauth, $list, $owner),
+			$this->object->deleteList($list, $owner),
 			$this->equalTo(json_decode($this->sampleString))
 		);
 	}
@@ -2396,13 +2400,13 @@ class JTwitterListsTest extends TestCase
 			{
 				// We don't have a valid entry
 				$this->setExpectedException('RuntimeException');
-				$this->object->deleteList($this->oauth, $list, $owner);
+				$this->object->deleteList($list, $owner);
 			}
 		}
 		else
 		{
 			$this->setExpectedException('RuntimeException');
-			$this->object->deleteList($this->oauth, $list, $owner);
+			$this->object->deleteList($list, $owner);
 		}
 
 		$path = $this->object->fetchUrl('/1/lists/destroy.json');
@@ -2412,6 +2416,6 @@ class JTwitterListsTest extends TestCase
 		->with($path, $data)
 		->will($this->returnValue($returnData));
 
-		$this->object->deleteList($this->oauth, $list, $owner);
+		$this->object->deleteList($list, $owner);
 	}
 }

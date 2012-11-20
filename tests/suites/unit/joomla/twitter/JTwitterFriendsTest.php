@@ -7,9 +7,6 @@
  * @license     GNU General Public License version 2 or later; see LICENSE
  */
 
-require_once JPATH_PLATFORM . '/joomla/twitter/twitter.php';
-require_once JPATH_PLATFORM . '/joomla/twitter/friends.php';
-
 /**
  * Test class for JTwitterFriends.
  *
@@ -45,7 +42,7 @@ class JTwitterFriendsTest extends TestCase
 	protected $object;
 
 	/**
-	 * @var    JTwitterOauth  Authentication object for the Twitter object.
+	 * @var    JTwitterOAuth  Authentication object for the Twitter object.
 	 * @since  12.3
 	 */
 	protected $oauth;
@@ -78,22 +75,29 @@ class JTwitterFriendsTest extends TestCase
 	 */
 	protected function setUp()
 	{
-		$key = "lIio7RcLe5IASG5jpnZrA";
-		$secret = "dl3BrWij7LT04NUpy37BRJxGXpWgjNvMrneuQ11EveE";
+		$_SERVER['HTTP_HOST'] = 'example.com';
+		$_SERVER['HTTP_USER_AGENT'] = 'Mozilla/5.0';
+		$_SERVER['REQUEST_URI'] = '/index.php';
+		$_SERVER['SCRIPT_NAME'] = '/index.php';
+		
+		$key = "app_key";
+		$secret = "app_secret";
 		$my_url = "http://127.0.0.1/gsoc/joomla-platform/twitter_test.php";
+		
+		$access_token = array('key' => 'token_key', 'secret' => 'token_secret');
 
 		$this->options = new JRegistry;
 		$this->input = new JInput;
 		$this->client = $this->getMock('JHttp', array('get', 'post', 'delete', 'put'));
+		$this->oauth = new JTwitterOAuth($this->options, $this->client, $this->input);
+		$this->oauth->setToken($access_token);
 
-		$this->object = new JTwitterFriends($this->options, $this->client);
+		$this->object = new JTwitterFriends($this->options, $this->client, $this->oauth);
 
 		$this->options->set('consumer_key', $key);
 		$this->options->set('consumer_secret', $secret);
 		$this->options->set('callback', $my_url);
 		$this->options->set('sendheaders', true);
-		$this->oauth = new JTwitterOauth($this->options, $this->client, $this->input);
-		$this->oauth->setToken(array('key' => $key, 'secret' => $secret));
 	}
 
 	/**
@@ -659,7 +663,7 @@ class JTwitterFriendsTest extends TestCase
 		->will($this->returnValue($returnData));
 
 		$this->assertThat(
-			$this->object->getFriendshipsIncoming($this->oauth, $string_ids),
+			$this->object->getFriendshipsIncoming($string_ids),
 			$this->equalTo(json_decode($this->sampleString))
 		);
 	}
@@ -698,7 +702,7 @@ class JTwitterFriendsTest extends TestCase
 		->with($path)
 		->will($this->returnValue($returnData));
 
-		$this->object->getFriendshipsIncoming($this->oauth, $string_ids);
+		$this->object->getFriendshipsIncoming($string_ids);
 	}
 
 	/**
@@ -735,7 +739,7 @@ class JTwitterFriendsTest extends TestCase
 		->will($this->returnValue($returnData));
 
 		$this->assertThat(
-			$this->object->getFriendshipsOutgoing($this->oauth, $string_ids),
+			$this->object->getFriendshipsOutgoing($string_ids),
 			$this->equalTo(json_decode($this->sampleString))
 		);
 	}
@@ -774,7 +778,7 @@ class JTwitterFriendsTest extends TestCase
 		->with($path)
 		->will($this->returnValue($returnData));
 
-		$this->object->getFriendshipsOutgoing($this->oauth, $string_ids);
+		$this->object->getFriendshipsOutgoing($string_ids);
 	}
 
 	/**
@@ -825,7 +829,7 @@ class JTwitterFriendsTest extends TestCase
 		else
 		{
 			$this->setExpectedException('RuntimeException');
-			$this->object->follow($this->oauth, $user, $follow);
+			$this->object->follow($user, $follow);
 		}
 		$data['follow'] = $follow;
 
@@ -835,7 +839,7 @@ class JTwitterFriendsTest extends TestCase
 			->will($this->returnValue($returnData));
 
 		$this->assertThat(
-			$this->object->follow($this->oauth, $user, $follow),
+			$this->object->follow($user, $follow),
 			$this->equalTo(json_decode($this->sampleString))
 		);
 	}
@@ -871,7 +875,7 @@ class JTwitterFriendsTest extends TestCase
 		else
 		{
 			$this->setExpectedException('RuntimeException');
-			$this->object->follow($this->oauth, $user);
+			$this->object->follow($user);
 		}
 
 		$this->client->expects($this->once())
@@ -879,7 +883,7 @@ class JTwitterFriendsTest extends TestCase
 			->with('/1/friendships/create.json', $data)
 			->will($this->returnValue($returnData));
 
-		$this->object->follow($this->oauth, $user);
+		$this->object->follow($user);
 	}
 
 	/**
@@ -913,7 +917,7 @@ class JTwitterFriendsTest extends TestCase
 		else
 		{
 			$this->setExpectedException('RuntimeException');
-			$this->object->unfollow($this->oauth, $user, $entities);
+			$this->object->unfollow($user, $entities);
 		}
 		$data['include_entities'] = $entities;
 
@@ -923,7 +927,7 @@ class JTwitterFriendsTest extends TestCase
 			->will($this->returnValue($returnData));
 
 		$this->assertThat(
-			$this->object->unfollow($this->oauth, $user, $entities),
+			$this->object->unfollow($user, $entities),
 			$this->equalTo(json_decode($this->sampleString))
 		);
 	}
@@ -959,7 +963,7 @@ class JTwitterFriendsTest extends TestCase
 		else
 		{
 			$this->setExpectedException('RuntimeException');
-			$this->object->unfollow($this->oauth, $user);
+			$this->object->unfollow($user);
 		}
 
 		$this->client->expects($this->once())
@@ -967,7 +971,7 @@ class JTwitterFriendsTest extends TestCase
 			->with('/1/friendships/destroy.json', $data)
 			->will($this->returnValue($returnData));
 
-		$this->object->unfollow($this->oauth, $user);
+		$this->object->unfollow($user);
 	}
 
 	/**
@@ -1026,7 +1030,7 @@ class JTwitterFriendsTest extends TestCase
 		if ($id == null && $screen_name == null)
 		{
 			$this->setExpectedException('RuntimeException');
-			$this->object->getFriendshipsLookup($this->oauth, $screen_name, $id);
+			$this->object->getFriendshipsLookup($screen_name, $id);
 		}
 
 		$path = $this->oauth->toUrl('/1/friendships/lookup.json', $data);
@@ -1037,7 +1041,7 @@ class JTwitterFriendsTest extends TestCase
 		->will($this->returnValue($returnData));
 
 		$this->assertThat(
-			$this->object->getFriendshipsLookup($this->oauth, $screen_name, $id),
+			$this->object->getFriendshipsLookup($screen_name, $id),
 			$this->equalTo(json_decode($this->sampleString))
 		);
 	}
@@ -1080,7 +1084,7 @@ class JTwitterFriendsTest extends TestCase
 		if ($id == null && $screen_name == null)
 		{
 			$this->setExpectedException('RuntimeException');
-			$this->object->getFriendshipsLookup($this->oauth, $screen_name, $id);
+			$this->object->getFriendshipsLookup($screen_name, $id);
 		}
 
 		$path = $this->oauth->toUrl('/1/friendships/lookup.json', $data);
@@ -1090,7 +1094,7 @@ class JTwitterFriendsTest extends TestCase
 		->with($path)
 		->will($this->returnValue($returnData));
 
-		$this->object->getFriendshipsLookup($this->oauth, $screen_name, $id);
+		$this->object->getFriendshipsLookup($screen_name, $id);
 	}
 
 	/**
@@ -1125,7 +1129,7 @@ class JTwitterFriendsTest extends TestCase
 		else
 		{
 			$this->setExpectedException('RuntimeException');
-			$this->object->updateFriendship($this->oauth, $user, $device, $retweets);
+			$this->object->updateFriendship($user, $device, $retweets);
 		}
 		$data['device'] = $device;
 		$data['retweets'] = $retweets;
@@ -1136,7 +1140,7 @@ class JTwitterFriendsTest extends TestCase
 			->will($this->returnValue($returnData));
 
 		$this->assertThat(
-			$this->object->updateFriendship($this->oauth, $user, $device, $retweets),
+			$this->object->updateFriendship($user, $device, $retweets),
 			$this->equalTo(json_decode($this->sampleString))
 		);
 	}
@@ -1172,7 +1176,7 @@ class JTwitterFriendsTest extends TestCase
 		else
 		{
 			$this->setExpectedException('RuntimeException');
-			$this->object->updateFriendship($this->oauth, $user);
+			$this->object->updateFriendship($user);
 		}
 
 		$this->client->expects($this->once())
@@ -1180,7 +1184,7 @@ class JTwitterFriendsTest extends TestCase
 			->with('/1/friendships/update.json', $data)
 			->will($this->returnValue($returnData));
 
-		$this->object->updateFriendship($this->oauth, $user);
+		$this->object->updateFriendship($user);
 	}
 
 	/**
@@ -1217,7 +1221,7 @@ class JTwitterFriendsTest extends TestCase
 		->will($this->returnValue($returnData));
 
 		$this->assertThat(
-			$this->object->getFriendshipNoRetweetIds($this->oauth, $string_ids),
+			$this->object->getFriendshipNoRetweetIds($string_ids),
 			$this->equalTo(json_decode($this->sampleString))
 		);
 	}
@@ -1256,6 +1260,6 @@ class JTwitterFriendsTest extends TestCase
 		->with($path)
 		->will($this->returnValue($returnData));
 
-		$this->object->getFriendshipNoRetweetIds($this->oauth, $string_ids);
+		$this->object->getFriendshipNoRetweetIds($string_ids);
 	}
 }

@@ -7,9 +7,6 @@
  * @license     GNU General Public License version 2 or later; see LICENSE
  */
 
-require_once JPATH_PLATFORM . '/joomla/twitter/twitter.php';
-require_once JPATH_PLATFORM . '/joomla/twitter/users.php';
-
 /**
  * Test class for JTwitterUsers.
  *
@@ -78,22 +75,29 @@ class JTwitterUsersTest extends TestCase
 	 */
 	protected function setUp()
 	{
-		$key = "lIio7RcLe5IASG5jpnZrA";
-		$secret = "dl3BrWij7LT04NUpy37BRJxGXpWgjNvMrneuQ11EveE";
+		$_SERVER['HTTP_HOST'] = 'example.com';
+		$_SERVER['HTTP_USER_AGENT'] = 'Mozilla/5.0';
+		$_SERVER['REQUEST_URI'] = '/index.php';
+		$_SERVER['SCRIPT_NAME'] = '/index.php';
+		
+		$key = "app_key";
+		$secret = "app_secret";
 		$my_url = "http://127.0.0.1/gsoc/joomla-platform/twitter_test.php";
+		
+		$access_token = array('key' => 'token_key', 'secret' => 'token_secret');
 
 		$this->options = new JRegistry;
 		$this->input = new JInput;
 		$this->client = $this->getMock('JHttp', array('get', 'post', 'delete', 'put'));
+		$this->oauth = new JTwitterOAuth($this->options, $this->client, $this->input);
+		$this->oauth->setToken($access_token);
 
-		$this->object = new JTwitterUsers($this->options, $this->client);
+		$this->object = new JTwitterUsers($this->options, $this->client, $this->oauth);
 
 		$this->options->set('consumer_key', $key);
 		$this->options->set('consumer_secret', $secret);
 		$this->options->set('callback', $my_url);
 		$this->options->set('sendheaders', true);
-		$this->oauth = new JTwitterOauth($this->options, $this->client, $this->input);
-		$this->oauth->setToken(array('key' => $key, 'secret' => $secret));
 	}
 
 	/**
@@ -374,7 +378,7 @@ class JTwitterUsersTest extends TestCase
 		}
 
 		$this->assertThat(
-			$this->object->searchUsers($this->oauth, $query, $page, $per_page, $entities),
+			$this->object->searchUsers($query, $page, $per_page, $entities),
 			$this->equalTo(json_decode($this->sampleString))
 		);
 	}
@@ -414,7 +418,7 @@ class JTwitterUsersTest extends TestCase
 		->with($path)
 		->will($this->returnValue($returnData));
 
-		$this->object->searchUsers($this->oauth, $query);
+		$this->object->searchUsers($query);
 	}
 
 	/**

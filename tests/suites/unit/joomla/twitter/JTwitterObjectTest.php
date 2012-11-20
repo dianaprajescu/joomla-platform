@@ -7,8 +7,7 @@
  * @license     GNU General Public License version 2 or later; see LICENSE
  */
 
-require_once JPATH_PLATFORM . '/joomla/twitter/object.php';
-require_once __DIR__ . '/stubs/JTwitterObjectMock.php';
+include_once __DIR__ . '/stubs/JTwitterObjectMock.php';
 
 /**
  * Test class for JTwitterObject.
