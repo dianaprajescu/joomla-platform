@@ -68,6 +68,6 @@ This will retrieve extended information of a given user, specified by ID or scre
 #### More Information
 
 The following resources contain more information:
-* [http://api.joomla.org](Joomla! API Reference)
-* [https://dev.twitter.com/docs/api](Twitter REST API Reference)
-* [https://gist.github.com/3258852](Web Application using JTwitter package)
+* [Joomla! API Reference](http://api.joomla.org)
+* [Twitter REST API Reference](https://dev.twitter.com/docs/api)
+* [Web Application using JTwitter package](https://gist.github.com/3258852)
