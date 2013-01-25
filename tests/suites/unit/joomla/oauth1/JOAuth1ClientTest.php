@@ -7,7 +7,6 @@
  * @license     GNU General Public License version 2 or later; see LICENSE
  */
 
-require_once JPATH_PLATFORM . '/joomla/oauth1/client.php';
 include_once __DIR__ . '/stubs/JOAuth1ClientInspector.php';
 include_once __DIR__ . '/../application/stubs/JApplicationWebInspector.php';
 
@@ -17,25 +16,25 @@ include_once __DIR__ . '/../application/stubs/JApplicationWebInspector.php';
  *
  * @package     Joomla.UnitTest
  * @subpackage  OAuth
- * @since       12.3
+ * @since       13.1
  */
 class JOAuth1ClientTest extends TestCase
 {
 	/**
 	 * @var    Input  input for the OAuth object.
-	 * @since  12.3
+	 * @since  13.1
 	 */
 	protected $input;
 
 	/**
 	 * @var    JRegistry  Options for the OAuth object.
-	 * @since  12.3
+	 * @since  13.1
 	 */
 	protected $options;
 
 	/**
 	 * @var    JHttp  Mock http object.
-	 * @since  12.3
+	 * @since  13.1
 	 */
 	protected $client;
 
@@ -54,13 +53,13 @@ class JOAuth1ClientTest extends TestCase
 
 	/**
 	 * @var    string  Sample JSON string.
-	 * @since  12.3
+	 * @since  13.1
 	 */
 	protected $sampleString = '{"a":1,"b":2,"c":3,"d":4,"e":5}';
 
 	/**
 	 * @var    string  Sample JSON error message.
-	 * @since  12.3
+	 * @since  13.1
 	 */
 	protected $errorString = '{"errorCode":401, "message": "Generic error"}';
 
@@ -88,7 +87,7 @@ class JOAuth1ClientTest extends TestCase
 
 		$this->options->set('consumer_key', $key);
 		$this->options->set('consumer_secret', $secret);
-		$this->object = new JOAuth1ClientInspector(null, $this->options, $this->client, $this->input, $this->application);
+		$this->object = new JOAuth1ClientInspector($this->options, $this->client, $this->input, $this->application);
 	}
 
 	/**
@@ -107,7 +106,7 @@ class JOAuth1ClientTest extends TestCase
 	*
 	* @return array
 	*
-	* @since 12.3
+	* @since 13.1
 	*/
 	public function seedAuthenticate()
 	{
@@ -123,10 +122,14 @@ class JOAuth1ClientTest extends TestCase
 	/**
 	 * Tests the authenticate method
 	 *
+	 * @param   array    $token    The passed token.
+	 * @param   boolean  $fail     Mark if should fail or not.
+	 * @param   string   $version  Specify oauth version 1.0 or 1.0a.
+	 *
 	 * @return  void
 	 *
 	 * @dataProvider seedAuthenticate
-	 * @since   12.3
+	 * @since   13.1
 	 */
 	public function testAuthenticate($token, $fail, $version)
 	{
@@ -169,6 +172,7 @@ class JOAuth1ClientTest extends TestCase
 
 			// Access token.
 			$input = TestReflection::getValue($this->object, 'input');
+
 			if (strcmp($version, '1.0a') === 0)
 			{
 				TestReflection::setValue($this->object, 'version', $version);
@@ -196,23 +200,23 @@ class JOAuth1ClientTest extends TestCase
 							->with('secret', null, 'oauth_token')
 							->will($this->returnValue('session'));
 
-	    		JFactory::$session = $mockSession;
+				JFactory::$session = $mockSession;
 
 				$this->setExpectedException('DomainException');
 				$result = $this->object->authenticate();
 			}
 
-    		$mockSession->expects($this->at(0))
-    					->method('get')
-    					->with('key', null, 'oauth_token')
-    					->will($this->returnValue('token'));
+			$mockSession->expects($this->at(0))
+						->method('get')
+						->with('key', null, 'oauth_token')
+						->will($this->returnValue('token'));
 
-    		$mockSession->expects($this->at(1))
-    					->method('get')
-    					->with('secret', null, 'oauth_token')
-    					->will($this->returnValue('secret'));
+			$mockSession->expects($this->at(1))
+						->method('get')
+						->with('secret', null, 'oauth_token')
+						->will($this->returnValue('secret'));
 
-    		JFactory::$session = $mockSession;
+			JFactory::$session = $mockSession;
 
 			$returnData = new stdClass;
 			$returnData->code = 200;
@@ -235,7 +239,7 @@ class JOAuth1ClientTest extends TestCase
 	 *
 	 * @return  void
 	 *
-	 * @since   12.3
+	 * @since   13.1
 	 * @expectedException DomainException
 	 */
 	public function testGenerateRequestTokenFailure()
@@ -254,13 +258,12 @@ class JOAuth1ClientTest extends TestCase
 		TestReflection::invoke($this->object, '_generateRequestToken');
 	}
 
-
 	/**
 	* Provides test data.
 	*
 	* @return array
 	*
-	* @since 12.3
+	* @since 13.1
 	*/
 	public function seedOauthRequest()
 	{
@@ -280,7 +283,7 @@ class JOAuth1ClientTest extends TestCase
 	 * @dataProvider seedOauthRequest
 	 * @return  void
 	 *
-	 * @since   12.3
+	 * @since   13.1
 	 */
 	public function testOauthRequest($method)
 	{
@@ -321,7 +324,7 @@ class JOAuth1ClientTest extends TestCase
 	 *
 	 * @return  void
 	 *
-	 * @since   12.3
+	 * @since   13.1
 	 */
 	public function testSafeEncodeEmpty()
 	{
