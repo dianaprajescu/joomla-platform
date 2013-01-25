@@ -16,6 +16,13 @@ namespace animal;
  */
 class Cat
 {
+	/**
+	 * Return hello class name for testing
+	 *
+	 * @return   string
+	 *
+	 * @since    12.3
+	 */
 	public function say()
 	{
 		return 'hello';

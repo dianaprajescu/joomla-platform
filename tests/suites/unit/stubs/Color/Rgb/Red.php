@@ -16,6 +16,13 @@ namespace Color\Rgb;
  */
 class Red
 {
+	/**
+	 * Return red class name for testing
+	 *
+	 * @return   string
+	 *
+	 * @since    12.3
+	 */
 	public function color()
 	{
 		return 'red';
