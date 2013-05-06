@@ -3,7 +3,7 @@
  * @package     Joomla.UnitTest
  * @subpackage  Database
  *
- * @copyright   Copyright (C) 2005 - 2012 Open Source Matters. All rights reserved.
+ * @copyright   Copyright (C) 2005 - 2013 Open Source Matters. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -346,6 +346,22 @@ class JDatabaseQueryTest extends TestCase
 	}
 
 	/**
+	 * Tests the unionAll element of __toString.
+	 *
+	 * @return  void
+	 *
+	 * @covers  JDatabaseQuery::__toString
+	 * @since   13.1
+	 */
+	public function test__toStringUnionAll()
+	{
+		$this->markTestIncomplete('This test does not work!');
+		$this->_instance->select('*')
+		->unionAll('SELECT id FROM a');
+
+		$this->assertEquals("UNION ALL (SELECT id FROM a)", trim($this->_instance));
+	}
+	/**
 	 * Tests the JDatabaseQuery::call method.
 	 *
 	 * @return  void
@@ -442,6 +458,7 @@ class JDatabaseQueryTest extends TestCase
 			'columns',
 			'values',
 			'union',
+			'unionAll',
 			'exec',
 			'call',
 		);
@@ -492,6 +509,7 @@ class JDatabaseQueryTest extends TestCase
 			'columns',
 			'values',
 			'union',
+			'unionAll',
 			'exec',
 			'call',
 		);
@@ -547,6 +565,7 @@ class JDatabaseQueryTest extends TestCase
 			'update',
 			'insert',
 			'union',
+			'unionAll',
 		);
 
 		$clauses = array(
@@ -1833,5 +1852,104 @@ class JDatabaseQueryTest extends TestCase
 		$this->dbo = $this->getMockDatabase();
 
 		$this->_instance = new JDatabaseQueryInspector($this->dbo);
+	}
+
+	/**
+	 * Data for the testDateAdd test.
+	 *
+	 * @return  array
+	 *
+	 * @since   13.1
+	 */
+	public function seedDateAdd()
+	{
+		return array(
+				// date, interval, datepart, expected
+				'Add date'		=> array('2008-12-31', '1', 'DAY', "DATE_ADD('2008-12-31', INTERVAL 1 DAY)"),
+				'Subtract date'	=> array('2008-12-31', '-1', 'DAY', "DATE_ADD('2008-12-31', INTERVAL -1 DAY)"),
+				'Add datetime'	=> array('2008-12-31 23:59:59', '1', 'DAY', "DATE_ADD('2008-12-31 23:59:59', INTERVAL 1 DAY)"),
+		);
+	}
+
+	/**
+	 * Tests the JDatabaseQuery::DateAdd method
+	 *
+	 * @param   datetime  $date      The date or datetime to add to.
+	 * @param   string    $interval  The maximum length of the text.
+	 * @param   string    $datePart  The part of the date to be added to (such as day or micosecond)
+	 * @param   string    $expected  The expected result.
+	 *
+	 * @return  void
+	 *
+	 * @dataProvider  seedDateAdd
+	 * @since   13.1
+	 */
+	public function testDateAdd($date, $interval, $datePart, $expected)
+	{
+		$this->assertThat(
+				$this->_instance->dateAdd($date, $interval, $datePart),
+				$this->equalTo($expected)
+		);
+	}
+
+	/*
+	 * Tests the JDatabaseQuery::unionAll method.
+	 *
+	 * @return  void
+	 *
+	 * @covers  JDatabaseQuery::unionAll
+	 * @since   13.1
+	 */
+	public function testUnionAllUnion()
+	{
+		$this->_instance->unionAll = null;
+		$this->_instance->unionAll('SELECT name FROM foo');
+		$teststring = (string) $this->_instance->unionAll;
+		$this->assertThat(
+				$teststring,
+				$this->equalTo(PHP_EOL . "UNION ALL (SELECT name FROM foo)"),
+				'Tests rendered query with unionAll.'
+		);
+	}
+
+	/**
+	 * Tests the JDatabaseQuery::unionAll method.
+	 *
+	 * @return  void
+	 *
+	 * @covers  JDatabaseQuery::unionAll
+	 * @since   13.1
+	 */
+	public function testUnionAllArray()
+	{
+		$this->_instance->unionAll = null;
+		$this->_instance->unionAll(array('SELECT name FROM foo', 'SELECT name FROM bar'));
+		$teststring = (string) $this->_instance->unionAll;
+		$this->assertThat(
+				$teststring,
+				$this->equalTo(PHP_EOL . "UNION ALL (SELECT name FROM foo)" . PHP_EOL . "UNION ALL (SELECT name FROM bar)"),
+				'Tests rendered query with two union alls as an array.'
+		);
+	}
+
+	/**
+	 * Tests the JDatabaseQuery::unionAll method.
+	 *
+	 * @return  void
+	 *
+	 * @covers  JDatabaseQuery::unionAll
+	 * @since   13.1
+	 */
+	public function testUnionAllTwo()
+	{
+		$this->_instance->unionAll = null;
+		$this->_instance->unionAll('SELECT name FROM foo');
+		$this->_instance->unionAll('SELECT name FROM bar');
+		$teststring = (string) $this->_instance->unionAll;
+		$this->assertThat(
+				$teststring,
+				$this->equalTo(PHP_EOL . "UNION ALL (SELECT name FROM foo)" . PHP_EOL . "UNION ALL (SELECT name FROM bar)"),
+				'Tests rendered query with two union alls sequentially.'
+		);
 	}
 }

@@ -3,7 +3,7 @@
  * @package     Joomla.Platform
  * @subpackage  Form
  *
- * @copyright   Copyright (C) 2005 - 2012 Open Source Matters, Inc. All rights reserved.
+ * @copyright   Copyright (C) 2005 - 2013 Open Source Matters, Inc. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE
  */
 
@@ -47,6 +47,7 @@ class JFormFieldPassword extends JFormField
 		$disabled	= ((string) $this->element['disabled'] == 'true') ? ' disabled="disabled"' : '';
 		$meter		= ((string) $this->element['strengthmeter'] == 'true');
 		$threshold	= $this->element['threshold'] ? (int) $this->element['threshold'] : 66;
+		$required   = $this->required ? ' required="required" aria-required="true"' : '';
 
 		$script = '';
 
@@ -65,6 +66,6 @@ class JFormFieldPassword extends JFormField
 
 		return '<input type="password" name="' . $this->name . '" id="' . $this->id . '"' .
 			' value="' . htmlspecialchars($this->value, ENT_COMPAT, 'UTF-8') . '"' .
-			$auto . $class . $readonly . $disabled . $size . $maxLength . '/>' . $script;
+			$auto . $class . $readonly . $disabled . $size . $maxLength . $required . '/>' . $script;
 	}
 }

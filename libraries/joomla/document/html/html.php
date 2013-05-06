@@ -3,7 +3,7 @@
  * @package     Joomla.Platform
  * @subpackage  Document
  *
- * @copyright   Copyright (C) 2005 - 2012 Open Source Matters, Inc. All rights reserved.
+ * @copyright   Copyright (C) 2005 - 2013 Open Source Matters, Inc. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE
  */
 
@@ -93,7 +93,7 @@ class JDocumentHTML extends JDocument
 	protected $_caching = null;
 
 	/**
-	 * Set to true when the document should be output as HTML%
+	 * Set to true when the document should be output as HTML5
 	 *
 	 * @var    boolean
 	 * @since  12.1
@@ -331,7 +331,7 @@ class JDocumentHTML extends JDocument
 	 *
 	 * @param   bool  $state  True when HTML5 should be output
 	 *
-	 * @return  void
+	 * @return  JDocumentHTML instance of $this to allow chaining
 	 *
 	 * @since   12.1
 	 */
@@ -341,6 +341,8 @@ class JDocumentHTML extends JDocument
 		{
 			$this->_html5 = $state;
 		}
+
+		return $this;
 	}
 
 	/**
@@ -540,6 +542,7 @@ class JDocumentHTML extends JDocument
 				$query->from('#__menu');
 				$query->where('parent_id = ' . $active->id);
 				$query->where('published = 1');
+				$dbo->setQuery($query);
 				$children = $dbo->loadResult();
 			}
 			else

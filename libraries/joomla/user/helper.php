@@ -3,7 +3,7 @@
  * @package     Joomla.Platform
  * @subpackage  User
  *
- * @copyright   Copyright (C) 2005 - 2012 Open Source Matters, Inc. All rights reserved.
+ * @copyright   Copyright (C) 2005 - 2013 Open Source Matters, Inc. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE
  */
 
@@ -62,16 +62,19 @@ abstract class JUserHelper
 			$user->save();
 		}
 
-		// Set the group data for any preloaded user objects.
-		$temp = JFactory::getUser((int) $userId);
-		$temp->groups = $user->groups;
-
-		// Set the group data for the user object in the session.
-		$temp = JFactory::getUser();
-
-		if ($temp->id == $userId)
+		if (session_id())
 		{
+			// Set the group data for any preloaded user objects.
+			$temp = JFactory::getUser((int) $userId);
 			$temp->groups = $user->groups;
+
+			// Set the group data for the user object in the session.
+			$temp = JFactory::getUser();
+
+			if ($temp->id == $userId)
+			{
+				$temp->groups = $user->groups;
+			}
 		}
 
 		return true;
@@ -173,16 +176,19 @@ abstract class JUserHelper
 		// Store the user object.
 		$user->save();
 
-		// Set the group data for any preloaded user objects.
-		$temp = JFactory::getUser((int) $userId);
-		$temp->groups = $user->groups;
-
-		// Set the group data for the user object in the session.
-		$temp = JFactory::getUser();
-
-		if ($temp->id == $userId)
+		if ($session_id())
 		{
+			// Set the group data for any preloaded user objects.
+			$temp = JFactory::getUser((int) $userId);
 			$temp->groups = $user->groups;
+
+			// Set the group data for the user object in the session.
+			$temp = JFactory::getUser();
+
+			if ($temp->id == $userId)
+			{
+				$temp->groups = $user->groups;
+			}
 		}
 
 		return true;

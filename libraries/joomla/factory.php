@@ -2,7 +2,7 @@
 /**
  * @package    Joomla.Platform
  *
- * @copyright  Copyright (C) 2005 - 2012 Open Source Matters, Inc. All rights reserved.
+ * @copyright  Copyright (C) 2005 - 2013 Open Source Matters, Inc. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE
  */
 
@@ -17,7 +17,7 @@ defined('JPATH_PLATFORM') or die;
 abstract class JFactory
 {
 	/**
-	 * @var    JApplication
+	 * @var    JApplicationBase
 	 * @since  11.1
 	 */
 	public static $application = null;
@@ -80,15 +80,15 @@ abstract class JFactory
 	/**
 	 * Get a application object.
 	 *
-	 * Returns the global {@link JApplication} object, only creating it if it doesn't already exist.
+	 * Returns the global {@link JApplicationBase} object, only creating it if it doesn't already exist.
 	 *
 	 * @param   mixed   $id      A client identifier or name.
 	 * @param   array   $config  An optional associative array of configuration settings.
 	 * @param   string  $prefix  Application prefix
 	 *
-	 * @return  JApplication object
+	 * @return  JApplicationBase object
 	 *
-	 * @see     JApplication
+	 * @see     JApplicationBase
 	 * @since   11.1
 	 * @throws  Exception
 	 */
@@ -96,12 +96,32 @@ abstract class JFactory
 	{
 		if (!self::$application)
 		{
+			/*
+			 * @deprecated  13.3 - JFactory::getApplication() will no longer attempt to retrieve an instance of JApplication if self::$application is not set.
+			 *                     Instead, an Exception will be thrown if the object is not set.
+			 */
+			JLog::add(
+				sprintf(
+					'Using %s to instantiate applications is deprecated.  JApplicationBase classes should register directly to JFactory::$application.',
+					__METHOD__
+				),
+				JLog::WARNING,
+				'deprecated'
+			);
+
 			if (!$id)
 			{
 				throw new Exception('Application Instantiation Error', 500);
 			}
 
-			self::$application = JApplication::getInstance($id, $config, $prefix);
+			if (class_exists('JApplication'))
+			{
+				self::$application = JApplication::getInstance($id, $config, $prefix);
+			}
+			else
+			{
+				throw new Exception('JApplication not loaded, unable to load JApplication instance', 500);
+			}
 		}
 
 		return self::$application;
@@ -332,29 +352,6 @@ abstract class JFactory
 		$copy = clone self::$mailer;
 
 		return $copy;
-	}
-
-	/**
-	 * Get a parsed XML Feed Source
-	 *
-	 * @param   string   $url         Url for feed source.
-	 * @param   integer  $cache_time  Time to cache feed for (using internal cache mechanism).
-	 *
-	 * @return  mixed  SimplePie parsed object on success, false on failure.
-	 *
-	 * @since   11.1
-	 * @deprecated  13.3  Use JSimplepieFactory::getFeedParser() instead.
-	 */
-	public static function getFeedParser($url, $cache_time = 0)
-	{
-		if (!class_exists('JSimplepieFactory'))
-		{
-			throw new BadMethodCallException('JSimplepieFactory not found');
-		}
-
-		JLog::add(__METHOD__ . ' is deprecated.   Use JSimplepieFactory::getFeedParser() instead.', JLog::WARNING, 'deprecated');
-
-		return JSimplepieFactory::getFeedParser($url, $cache_time);
 	}
 
 	/**

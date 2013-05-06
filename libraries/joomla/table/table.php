@@ -3,7 +3,7 @@
  * @package     Joomla.Platform
  * @subpackage  Table
  *
- * @copyright   Copyright (C) 2005 - 2012 Open Source Matters, Inc. All rights reserved.
+ * @copyright   Copyright (C) 2005 - 2013 Open Source Matters, Inc. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE
  */
 
@@ -502,7 +502,7 @@ abstract class JTable extends JObject
 	/**
 	 * Method to reset class properties to the defaults set in the class
 	 * definition. It will ignore the primary key as well as any private class
-	 * properties.
+	 * properties (except $_errors).
 	 *
 	 * @return  void
 	 *
@@ -520,6 +520,9 @@ abstract class JTable extends JObject
 				$this->$k = $v->Default;
 			}
 		}
+
+		// Reset table errors
+		$this->_errors = array();
 	}
 
 	/**
